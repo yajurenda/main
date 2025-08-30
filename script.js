@@ -16,14 +16,21 @@ const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
 
-// 購入音声（buy_sound.mp3）
-const purchaseSound = new Audio("buy_sound.mp3");  // アップロードした音声ファイル名に変更
+// 音声設定（クリック音と購入音）
+const clickSound = new Audio("click1.mp3");  // クリック時の音声
+const purchaseSound = new Audio("buy_sound.mp3");  // 購入時の音声
 
 // 音を鳴らす関数
-function playSound() {
+function playClickSound() {
+  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
+  clickSound.currentTime = 0;  // 再生位置を最初に戻す
+  clickSound.play();  // クリック音を再生
+}
+
+function playPurchaseSound() {
   if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
   purchaseSound.currentTime = 0;  // 再生位置を最初に戻す
-  purchaseSound.play();  // 音を再生
+  purchaseSound.play();  // 購入音を再生
 }
 
 // クリック処理
@@ -32,7 +39,7 @@ clicker.addEventListener("click", () => {
   total += clickPower;
   if (count > best) best = count;
 
-  playSound();  // 音を鳴らす
+  playClickSound();  // クリック時に音を鳴らす
   render();
 });
 
@@ -97,7 +104,7 @@ function renderShop(category = "all") {
     shopList.appendChild(li);
 
     document.getElementById(`buy-${i}`).addEventListener("click", () => {
-      playSound();  // 購入時にも音を鳴らす
+      playPurchaseSound();  // 購入時にも音を鳴らす
       buyItem(i);
     });
   });
@@ -131,7 +138,7 @@ clicker.addEventListener("click", () => {
   count += clickPower;
   total += clickPower;
   if (count > best) best = count;
-  playSound();  // 音を鳴らす
+  playClickSound();  // クリック時に音を鳴らす
   render();
 });
 
