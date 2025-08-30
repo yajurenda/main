@@ -250,3 +250,39 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+
+/* バッジリストの表示・非表示 */
+.badge-container {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#badge-list-container {
+  display: none;  /* 初期状態で隠す */
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  border-radius: 5px;
+  color: #fff;
+  margin-top: 20px;
+}
+
+#badge-list li {
+  font-size: 1.2rem;
+  margin: 5px 0;
+  color: #ff0;
+}
+
+#toggle-badge-list {
+  padding: 10px;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#toggle-badge-list:hover {
+  background: #45a049;
+}
