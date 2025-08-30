@@ -1,93 +1,71 @@
 body {
-  font-family: "Segoe UI", "メイリオ", sans-serif;
+  font-family: "Noto Sans JP", sans-serif;
   background: #f5f7fa;
   margin: 0;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  min-height: 100vh;
+  padding: 0;
+  text-align: center;
 }
 
-/* ===== ロゴ ===== */
-.brand {
+/* ロゴ */
+.logo {
+  max-width: 600px;
+  height: auto;
+  display: block;
+  margin: 30px auto;
+}
+
+/* 2カラムレイアウト */
+.layout {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 1.2rem 1rem 0.5rem;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 20px;
 }
 
-.brand img {
-  width: clamp(200px, 70vw, 720px); /* 画面サイズに応じて調整 */
-  height: auto;
-  aspect-ratio: 16/9;
-  object-fit: contain;
-  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.18));
-}
-
-.card {
-  background: white;
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  text-align: center;
-  width: 320px;
-  margin-top: 0.5rem;
-}
-
-h1 {
-  margin-bottom: 1rem;
-  font-size: 1.8rem;
-}
-
-.stats {
-  margin-bottom: 1.5rem;
-}
-
-.stats div {
-  font-size: 1.4rem;
-  margin: 0.3rem 0;
-}
-
-.stats .sub {
-  font-size: 1rem;
-  color: #555;
+/* ゲーム側 */
+.game {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  flex: 1;
+  max-width: 400px;
 }
 
 #clicker {
   border: none;
-  background: #ff7675;
-  border-radius: 50%;
-  padding: 15px;
+  background: none;
   cursor: pointer;
-  transition: transform 0.15s ease, background 0.3s;
+  margin: 20px 0;
 }
-
-#clicker:hover {
-  background: #ff5252;
-}
-
 #clicker img {
-  width: 180px;
-  border-radius: 50%;
-  transition: transform 0.15s ease;
+  width: 200px;
+  border-radius: 12px;
+  transition: transform 0.1s ease;
 }
-
-/* クリックアニメーション */
-#clicker.clicked img {
+#clicker:active img {
   transform: scale(0.9);
 }
 
-.toggle {
-  display: inline-block;
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #444;
+/* コメント欄 */
+.comments {
+  flex: 1;
+  max-width: 500px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: left;
 }
 
-.tip {
-  font-size: 0.8rem;
-  color: #888;
-  margin-top: 1rem;
+/* スマホ対応 (縦並び) */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+  .comments {
+    max-width: 100%;
+  }
 }
