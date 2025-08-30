@@ -16,21 +16,46 @@ const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
 
+// 音声設定（click1.mp3 だけ使用）
+const sound = new Audio("click1.mp3");
+
+// 音を鳴らす関数
+function playSound() {
+  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
+  sound.currentTime = 0;  // 再生位置を最初に戻す
+  sound.play();  // 音を再生
+}
+
+// クリック処理
+clicker.addEventListener("click", () => {
+  count += clickPower;
+  total += clickPower;
+  if (count > best) best = count;
+
+  playSound();  // 音を鳴らす
+  render();
+});
+
+// エンターキーを無効化
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault(); // エンターキーのデフォルト動作（送信や改行）を無効化
+  }
+});
+
+// ショップのアイテム
 const shopItems = [
-  // オート
   { type: "auto", name: "24歳です", effect: 1, cost: 100 },
   { type: "auto", name: "学生です", effect: 5, cost: 500 },
   { type: "auto", name: "じゃあオナニー", effect: 20, cost: 2000 },
   { type: "auto", name: "...とかっていうのは？", effect: 100, cost: 10000 },
   { type: "auto", name: "やりますねぇ！", effect: 500, cost: 50000 },
 
-  // 精力剤
   { type: "click", name: "アイスティー", effect: 1, cost: 50 },
   { type: "click", name: "暴れんなよ", effect: 3, cost: 300 },
   { type: "click", name: "お前のことが好きだったんだよ", effect: 10, cost: 2000 },
   { type: "click", name: "イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect: 50, cost: 15000 },
 
-  // ブースト
   { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
 ];
 
@@ -103,6 +128,7 @@ clicker.addEventListener("click", () => {
   count += clickPower;
   total += clickPower;
   if (count > best) best = count;
+  playSound();  // 音を鳴らす
   render();
 });
 
@@ -123,52 +149,5 @@ function render() {
   totalEl.textContent = total;
   renderShop();
 }
-
-// クリック処理
-clicker.addEventListener("click", () => {
-  count += clickPower;
-  total += clickPower;
-  if (count > best) best = count;
-  render();
-});
-
-// エンターキーを無効化
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault(); // エンターキーのデフォルト動作（送信や改行）を無効化
-  }
-});
-
-// 音声を配列に入れる
-const sounds = [
-  new Audio("click1.mp3"),
-];
-
-// 音を鳴らす関数
-function playSound() {
-  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
-  const sound = sounds[Math.floor(Math.random() * sounds.length)];
-  sound.currentTime = 0;  // 再生位置を最初に戻す
-  sound.play();  // 音を再生
-}
-
-// クリック処理
-clicker.addEventListener("click", () => {
-  count += clickPower;
-  total += clickPower;
-  if (count > best) best = count;
-
-  playSound(); // 音を鳴らす
-  render();
-});
-
-// ミュート機能の設定
-muteEl.addEventListener("change", () => {
-  if (muteEl.checked) {
-    // ミュート時は音を止める
-    sounds.forEach(sound => sound.pause());
-  }
-});
-
 
 render();
