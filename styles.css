@@ -1,7 +1,16 @@
 /* styles.css */
 body {
   font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #4caf50;
+  padding: 10px 0;
   text-align: center;
+  color: white;
 }
 
 h1 {
@@ -14,6 +23,9 @@ button {
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
 }
 
 button:hover {
@@ -27,19 +39,75 @@ button:hover {
   color: white;
   border: none;
   cursor: pointer;
+  border-radius: 50%;
 }
 
 #clicker:hover {
   background-color: #45a049;
 }
 
-footer {
+.stats {
+  margin: 10px 0;
+}
+
+.shop {
+  width: 250px;
+  background-color: #fff;
+  padding: 20px;
   margin-top: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.shop h2 {
+  margin-top: 0;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.tab:hover {
+  background-color: #45a049;
+}
+
+#shop-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+#shop-list li {
+  background-color: #fafafa;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+#shop-list li button {
+  background-color: #ff9800;
+}
+
+footer {
+  padding: 20px;
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
 }
 
 footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
+  color: white;
   text-decoration: none;
 }
 
