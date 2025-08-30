@@ -250,3 +250,38 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+
+/* Creditページ */
+.credit {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.credit h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.credit .content {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+footer {
+  margin-top: 20px;
+}
+
+footer a {
+  font-size: 1.2rem;
+  color: #4caf50;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
