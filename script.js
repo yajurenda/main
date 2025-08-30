@@ -12,43 +12,82 @@ const clicker = document.getElementById("clicker");
 const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
+const leaderboardEl = document.getElementById("leaderboard"); // ランキング表示用
 
 // 音声設定（クリック音と購入音）
 const clickSound = new Audio("click1.mp3");  // クリック時の音声
 const purchaseSound = new Audio("buy_sound.mp3");  // 購入時の音声
 
-// クリック時の音を鳴らす関数
-function playClickSound() {
-  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
-  clickSound.currentTime = 0;  // 再生位置を最初に戻す
-  clickSound.play();  // クリック音を再生
+// バッジのデータ
+const badges = [
+  { id: 1, name: "千里の道も野獣から", description: "1クリックで獲得", condition: (count) => count >= 1 },
+  { id: 2, name: "王道をイク", description: "19クリックで獲得", condition: (count) => count >= 19 },
+  { id: 3, name: "試行思考(シコシコ)", description: "45クリックで獲得", condition: (count) => count >= 45 },
+  { id: 4, name: "見ろよ見ろよ", description: "364クリックで獲得", condition: (count) => count >= 364 },
+  { id: 5, name: "中々やりますねぇ", description: "810クリックで獲得", condition: (count) => count >= 810 },
+  { id: 6, name: "⚠️あなたはイキスギました！⚠️", description: "1919クリックで獲得", condition: (count) => count >= 1919 },
+  { id: 7, name: "生粋とイキスギのオナリスト", description: "4545クリックで獲得", condition: (count) => count >= 4545 },
+  { id: 8, name: "Okay, come on.(いいよこいよ)", description: "114514クリックで獲得", condition: (count) => count >= 114514 },
+  { id: 9, name: "ホラ、見ろよ見ろよ、ホラ", description: "364364クリックで獲得", condition: (count) => count >= 364364 },
+  { id: 10, name: "遊んでくれてありがとう❗", description: "1145141919810クリックで獲得", condition: (count) => count >= 1145141919810 }
+];
+
+let acquiredBadges = [];
+
+// バッジの状態を確認して更新
+function checkBadges() {
+  badges.forEach(badge => {
+    if (badge.condition(count) && !acquiredBadges.includes(badge.id)) {
+      acquiredBadges.push(badge.id);
+      showBadgeNotification(badge);  // バッジ獲得時の通知表示
+      renderBadges();  // バッジを画面に表示
+    }
+  });
 }
 
-// 購入時の音を鳴らす関数
-function playPurchaseSound() {
-  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
-  purchaseSound.currentTime = 0;  // 再生位置を最初に戻す
-  purchaseSound.play();  // 購入音を再生
+// バッジの通知を表示
+function showBadgeNotification(badge) {
+  const notification = document.createElement("div");
+  notification.classList.add("badge-notification");
+  notification.innerHTML = `バッジ獲得: <span style="color: rainbow;">${badge.name}</span>`;
+  document.body.appendChild(notification);
+
+  // 通知表示後、5秒後に自動で消える
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 5000);
 }
+
+// バッジの表示
+function renderBadges() {
+  const badgeList = document.getElementById("badge-list");
+  badgeList.innerHTML = '';
+
+  acquiredBadges.forEach(badgeId => {
+    const badge = badges.find(b => b.id === badgeId);
+    const badgeElement = document.createElement("li");
+    badgeElement.textContent = `${badge.name}: ${badge.description}`;
+    badgeList.appendChild(badgeElement);
+  });
+}
+
+// バッジリストを表示・非表示にする
+document.getElementById("toggle-badge-list").addEventListener("click", () => {
+  const badgeListContainer = document.getElementById("badge-list-container");
+  const isVisible = badgeListContainer.style.display === "block";
+  badgeListContainer.style.display = isVisible ? "none" : "block";
+});
 
 // クリック処理
 clicker.addEventListener("click", () => {
-  count += clickPower;  // クリック時にcountを増加
-  total += clickPower;  // 合計も増加
-  if (count > best) best = count;  // 最高スコアを更新
+  count += clickPower;
+  total += clickPower;
+  if (count > best) best = count;
 
   playClickSound();  // クリック時に音を鳴らす
-  render();  // 描画更新
+  render();
 
   checkBadges();  // バッジ確認
-});
-
-
-// エンターキーを無効化
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault(); // エンターキーのデフォルト動作（送信や改行）を無効化
-  }
 });
 
 // アイテム購入
@@ -118,158 +157,4 @@ function renderShop(category = "all") {
       playPurchaseSound();  // 購入時に音を鳴らす
       buyItem(i);
     });
-  });
-}
-
-
-// 自動加算
-setInterval(() => {
-  if (autoPower > 0) {
-    count += autoPower;
-    total += autoPower;
-    if (count > best) best = count;
-    render();
-  }
-}, 1000);
-
-// 描画
-function render() {
-  countEl.textContent = `${count}回`;
-  bestEl.textContent = best;
-  totalEl.textContent = total;
-  renderShop();
-}
-
-render();
-
-const badges = [
-  {
-    id: 1,
-    name: "千里の道も野獣から",
-    description: "1クリックで獲得",
-    condition: (count) => count >= 1,
-  },
-  {
-    id: 2,
-    name: "王道をイク",
-    description: "19クリックで獲得",
-    condition: (count) => count >= 19,
-  },
-  {
-    id: 3,
-    name: "試行思考(シコシコ)",
-    description: "45クリックで獲得",
-    condition: (count) => count >= 45,
-  },
-  {
-    id: 4,
-    name: "見ろよ見ろよ",
-    description: "364クリックで獲得",
-    condition: (count) => count >= 364,
-  },
-  {
-    id: 5,
-    name: "中々やりますねぇ",
-    description: "810クリックで獲得",
-    condition: (count) => count >= 810,
-  },
-  {
-    id: 6,
-    name: "⚠️あなたはイキスギました！⚠️",
-    description: "1919クリックで獲得",
-    condition: (count) => count >= 1919,
-  },
-  {
-    id: 7,
-    name: "生粋とイキスギのオナリスト",
-    description: "4545クリックで獲得",
-    condition: (count) => count >= 4545,
-  },
-  {
-    id: 8,
-    name: "Okay, come on.(いいよこいよ)",
-    description: "114514クリックで獲得",
-    condition: (count) => count >= 114514,
-  },
-  {
-    id: 9,
-    name: "ホラ、見ろよ見ろよ、ホラ",
-    description: "364364クリックで獲得",
-    condition: (count) => count >= 364364,
-  },
-  {
-    id: 10,
-    name: "遊んでくれてありがとう❗",
-    description: "1145141919810クリックで獲得",
-    condition: (count) => count >= 1145141919810,
-  }
-];
-
-let acquiredBadges = [];  // 獲得したバッジを追跡
-
-// バッジの状態を確認して更新
-function checkBadges() {
-  badges.forEach(badge => {
-    if (badge.condition(count) && !acquiredBadges.includes(badge.id)) {
-      acquiredBadges.push(badge.id);
-      showBadgeNotification(badge);  // バッジ獲得時の通知表示
-      renderBadges();  // バッジを画面に表示
-    }
-  });
-}
-
-// バッジの通知を表示
-function showBadgeNotification(badge) {
-  const notification = document.createElement("div");
-  notification.classList.add("badge-notification");
-  notification.innerHTML = `バッジ獲得: <span style="color: rainbow;">${badge.name}</span>`;
-
-  document.body.appendChild(notification);
-
-  // 通知表示後、5秒後に自動で消える
-  setTimeout(() => {
-    notification.style.display = "none";
-  }, 5000);
-}
-
-// バッジの表示
-function renderBadges() {
-  const badgeList = document.getElementById("badge-list");
-  badgeList.innerHTML = '';
-
-  acquiredBadges.forEach(badgeId => {
-    const badge = badges.find(b => b.id === badgeId);
-    const badgeElement = document.createElement("li");
-    badgeElement.textContent = `${badge.name}: ${badge.description}`;
-    badgeList.appendChild(badgeElement);
-  });
-}
-
-// バッジリストを表示・非表示にする
-document.getElementById("toggle-badge-list").addEventListener("click", () => {
-  const badgeListContainer = document.getElementById("badge-list-container");
-  const isVisible = badgeListContainer.style.display === "block";
-  badgeListContainer.style.display = isVisible ? "none" : "block";
-});
-
-.badge-notification {
-  position: fixed;
-  top: 10%;
-  right: 10%;
-  padding: 10px 20px;
-  background: rgba(0, 255, 0, 0.8);
-  border-radius: 5px;
-  color: #fff;
-  font-size: 1.2rem;
-  z-index: 9999;
-  animation: slideIn 1s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    right: -300px;
-  }
-  to {
-    right: 10px;
-  }
-}
+ 
