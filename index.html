@@ -1,138 +1,49 @@
-body {
-  font-family: "Noto Sans JP", sans-serif;
-  background: #f5f7fa;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  flex-direction: column;
-  text-align: center; /* 中央揃え */
-}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>やじゅれんだ！</title>
+  <link rel="stylesheet" href="styles.css"> <!-- 外部CSSリンク -->
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
+  </header>
 
-/* ロゴ */
-.logo {
-  max-width: 600px;
-  height: auto;
-  display: block;
-  margin: 30px auto;
-}
+  <main class="layout">
+    <!-- ゲーム本体 -->
+    <section class="game">
+      <h1>やじゅれんだ！</h1>
+      <div class="stats">
+        <div id="count">0回</div>
+        <div>最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
+        <div>CPS: <span id="cps">0.00</span></div>
+      </div>
 
-/* ゲーム＆ショップレイアウト */
-.layout {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 30px;
-  flex-direction: column;  /* ゲームとショップが縦に並ぶ */
-  padding: 20px;
-  width: 100%;
-  max-width: 900px;  /* 幅を制限 */
-  margin: 0 auto;  /* 中央揃え */
-}
+      <button id="clicker" class="round-button">
+        <img src="click.png" alt="クリック" />
+      </button>
 
-/* ゲーム本体 */
-.game {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  flex: 1;
-  max-width: 400px;
-  margin: 0 auto;  /* 中央揃え */
-}
+      <label><input id="mute" type="checkbox"> ミュート</label>
+      <p class="tip">※ 初回はクリック後に音が有効になります。</p>
+    </section>
 
-/* 丸型ボタン */
-.round-button {
-  background: #ff7675;
-  border-radius: 50%;
-  padding: 20px;
-  cursor: pointer;
-  transition: transform 0.1s ease, background 0.3s;
-  display: inline-block;
-  margin-bottom: 20px; /* ボタンと次の要素の間に余白 */
-}
+    <!-- ショップ -->
+    <aside class="shop">
+      <h2>ショップ</h2>
+      <div class="tabs">
+        <button class="tab" data-category="all">全て</button>
+        <button class="tab" data-category="auto">オート</button>
+        <button class="tab" data-category="click">精力剤</button>
+        <button class="tab" data-category="boost">ブースト</button>
+        <button class="tab" data-category="low">安い順</button>
+        <button class="tab" data-category="high">高い順</button>
+      </div>
+      <ul id="shop-list"></ul>
+    </aside>
+  </main>
 
-.round-button:hover {
-  background: #ff5252;
-}
-
-.round-button img {
-  width: 180px;
-  border-radius: 50%;
-  transition: transform 0.1s ease;
-}
-
-/* ショップ */
-.shop {
-  flex: 1;
-  max-width: 600px;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: left;
-  margin-top: 20px;
-}
-
-.tabs {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tab {
-  padding: 10px 20px;
-  border: none;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s;
-}
-
-.tab:hover {
-  background: #45a049;
-}
-
-.shop ul {
-  list-style: none;
-  padding: 0;
-}
-
-.shop li {
-  margin: 10px 0;
-  padding: 10px;
-  background: #f0f0f0;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.shop button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 6px;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-}
-
-.shop button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-/* スマホ対応 */
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-    align-items: center;
-  }
-  .shop {
-    max-width: 100%;
-  }
-}
+  <script src="script.js"></script> <!-- JSリンク -->
+</body>
+</html>
