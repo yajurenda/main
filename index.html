@@ -7,12 +7,10 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- ロゴ -->
   <header>
     <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
   </header>
 
-  <!-- 2カラムレイアウト -->
   <main class="layout">
     <!-- ゲーム本体 -->
     <section class="game">
@@ -27,34 +25,17 @@
         <img src="click.png" alt="やじゅれんだ用画像" />
       </button>
 
-      <div class="controls">
-        <label><input id="mute" type="checkbox"> ミュート</label>
-      </div>
+      <label><input id="mute" type="checkbox"> ミュート</label>
       <p class="tip">※ 初回はブラウザの仕様でクリック後に音が有効になります。</p>
     </section>
 
-    <!-- コメント欄 -->
-    <aside class="comments">
-      <h2>コメント</h2>
-      <div id="disqus_thread"></div>
+    <!-- ショップ -->
+    <aside class="shop">
+      <h2>ショップ</h2>
+      <ul id="shop-list"></ul>
     </aside>
   </main>
 
   <script src="script.js"></script>
-
-  <!-- Disqus (自分の shortname に置き換え) -->
-  <script>
-    var disqus_config = function () {
-      this.page.url = window.location.href;
-      this.page.identifier = "yajurenda-page";
-    };
-
-    (function() {
-      var d = document, s = d.createElement('script');
-      s.src = 'https://YOUR-SHORTNAME-HERE.disqus.com/embed.js';  // ← shortname を変更
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-    })();
-  </script>
 </body>
 </html>
