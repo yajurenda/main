@@ -1,0 +1,14 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  margin: 20px;
+}
+
+button {
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+img {
+  width: 200px;
+}
