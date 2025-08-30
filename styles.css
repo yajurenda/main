@@ -267,6 +267,10 @@ footer a:hover {
 .fullscreen-mode .layout {
   flex-direction: row; /* 横並び */
   align-items: flex-start;
+  gap: 40px;
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
 }
 
 .fullscreen-mode .game {
