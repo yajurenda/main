@@ -1,59 +1,37 @@
 /* styles.css */
-
-/* バッジリストの表示・非表示 */
-.badge-container {
-  position: fixed;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
+body {
+  font-family: Arial, sans-serif;
 }
 
-#badge-list-container {
-  display: none;  /* 初期状態で隠す */
-  background: rgba(0, 0, 0, 0.7);
-  padding: 10px;
-  border-radius: 5px;
-  color: #fff;
-  margin-top: 20px;
+h1 {
+  text-align: center;
 }
 
-#badge-list li {
-  font-size: 1.2rem;
-  margin: 5px 0;
-  color: #ff0;
+section {
+  margin: 20px;
 }
 
-#toggle-badge-list {
-  padding: 10px;
-  background: #4caf50;
-  color: #fff;
+#clicker {
+  font-size: 24px;
+  padding: 20px;
+  background-color: #4caf50;
+  color: white;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
 }
 
-#toggle-badge-list:hover {
-  background: #45a049;
+#clicker:hover {
+  background-color: #45a049;
 }
 
-.badge-notification {
-  position: fixed;
-  top: 10%;
-  right: 10%;
-  padding: 10px 20px;
-  background: rgba(0, 255, 0, 0.8);
-  border-radius: 5px;
-  color: #fff;
-  font-size: 1.2rem;
-  z-index: 9999;
-  animation: slideIn 1s ease-out;
+button {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
-@keyframes slideIn {
-  from {
-    right: -300px;
-  }
-  to {
-    right: 10px;
-  }
+button:hover {
+  background-color: #45a049;
 }
