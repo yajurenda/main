@@ -27,6 +27,7 @@ body {
   gap: 30px;
   padding: 20px;
   width: 100%;
+  flex-direction: column; /* これでゲームとショップが縦に並ぶ */
 }
 
 /* ゲーム本体 */
@@ -54,13 +55,14 @@ body {
   transform: scale(0.9);
 }
 
-/* 丸アイコンのクリックボタン */
+/* 丸型ボタン */
 .round-button {
   background: #ff7675;
   border-radius: 50%;
-  padding: 15px;
+  padding: 20px;
   cursor: pointer;
   transition: transform 0.1s ease, background 0.3s;
+  display: inline-block;
 }
 
 .round-button:hover {
@@ -76,12 +78,13 @@ body {
 /* ショップ */
 .shop {
   flex: 1;
-  max-width: 400px;
+  max-width: 600px;
   background: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: left;
+  margin-top: 20px;
 }
 
 .tabs {
