@@ -1,38 +1,56 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>やじゅれんだ！</title>
-  <meta name="description" content="画像をクリックして気持ちよくカウントを伸ばそう。" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css"> <!-- 外部CSSリンク -->
 </head>
 <body>
-  <main class="wrap">
-    <h1>やじゅれんだ！</h1>
+  <header>
+    <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
+  </header>
 
-    <div class="stats">
-      <div class="stat"><span id="count">0</span><small>回</small></div>
-      <div class="stat sub">最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
-      <div class="stat sub">CPS: <span id="cps">0.00</span></div>
-    </div>
+  <main class="layout">
+    <!-- ゲーム本体 -->
+    <section class="game">
+      <h1>やじゅれんだ！</h1>
+      <div class="stats">
+        <div id="count">0回</div>
+        <div>最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
+        <div>CPS: <span id="cps">0.00</span></div>
+      </div>
 
-    <button id="clicker" aria-label="クリックでカウント増加＆音が鳴ります">
-      <img src="click.png" alt="やじゅれんだ用画像" draggable="false" />
-      <span class="pulse" aria-hidden="true"></span>
-    </button>
+      <button id="clicker" class="round-button">
+        <img src="click.png" alt="クリック" />
+      </button>
 
-    <div class="controls">
-      <label class="toggle">
-        <input id="mute" type="checkbox">
-        <span>ミュート</span>
-      </label>
-      <button id="reset" class="ghost">リセット</button>
-    </div>
+      <p class="tip">※ 初回はクリック後に音が有効になります。</p>
+    </section>
 
-    <p class="tip">※ 初回はブラウザの仕様でユーザー操作後に音が有効になります。</p>
+    <!-- ショップ -->
+    <aside class="shop">
+      <div class="shop-header">
+        <label><input id="mute" type="checkbox"> ミュート</label> <!-- ミュート設定 -->
+      </div>
+      <h2>ショップ</h2>
+      <div class="tabs">
+        <button class="tab" data-category="auto">オート</button>
+        <button class="tab" data-category="click">精力剤</button>
+        <button class="tab" data-category="boost">ブースト</button>
+        <button class="tab" data-category="low">安い順</button>
+        <button class="tab" data-category="high">高い順</button>
+      </div>
+      <ul id="shop-list"></ul> <!-- 商品リスト -->
+    </aside>
+
+    <!-- Aboutページへのリンク -->
+    <footer>
+      <a href="about.html">About</a> | 
+      <a href="form.html">Form</a> <!-- フォームページへのリンク -->
+    </footer>
   </main>
 
-  <script src="script.js"></script>
+  <script src="script.js"></script> <!-- JSリンク -->
 </body>
 </html>
