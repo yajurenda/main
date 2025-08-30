@@ -2,5 +2,3 @@
 
 結構バグったり画面が変わったりします
 一旦完成したらまた告知します
-
-mail📨：yajurendainfo@gmail.com
