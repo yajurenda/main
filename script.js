@@ -2,7 +2,7 @@ let count = 0;
 let best = 0;
 let total = 0;
 let cps = 0;
-let clickPower = 1;  // 初期クリックごとの増加量を1に設定
+let clickPower = 1;
 let autoPower = 0;
 let lastClickTime = Date.now();
 let boostActive = false;
@@ -16,42 +16,44 @@ const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
 
-// 音声設定（クリック音と購入音）
-const clickSound = new Audio("click1.mp3");  // クリック時の音声
-const purchaseSound = new Audio("buy_sound.mp3");  // 購入時の音声
+const clickSound = new Audio("click1.mp3");
+const purchaseSound = new Audio("buy_sound.mp3");
 
-// クリック時の音を鳴らす関数
 function playClickSound() {
-  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
-  clickSound.currentTime = 0;  // 再生位置を最初に戻す
-  clickSound.play();  // クリック音を再生
+  if (muteEl.checked) return;
+  clickSound.currentTime = 0;
+  clickSound.play();
 }
-
-// 購入時の音を鳴らす関数
 function playPurchaseSound() {
-  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
-  purchaseSound.currentTime = 0;  // 再生位置を最初に戻す
-  purchaseSound.play();  // 購入音を再生
+  if (muteEl.checked) return;
+  purchaseSound.currentTime = 0;
+  purchaseSound.play();
 }
 
-// クリック処理
+// ✅ CPS計算を追加
 clicker.addEventListener("click", () => {
+  const now = Date.now();
+  const diff = (now - lastClickTime) / 1000; // 秒
+  if (diff > 0) {
+    cps = 1 / diff; // 1秒あたりのクリック数
+  }
+  lastClickTime = now;
+
   count += clickPower;
   total += clickPower;
   if (count > best) best = count;
 
-  playClickSound();  // クリック時に音を鳴らす
+  playClickSound();
   render();
 });
 
-// エンターキーを無効化
+// エンターキー無効化
 document.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
-    event.preventDefault(); // エンターキーのデフォルト動作（送信や改行）を無効化
+    event.preventDefault();
   }
 });
 
-// ショップのアイテム
 const shopItems = [
   { type: "auto", name: "24歳です", effect: 1, cost: 100 },
   { type: "auto", name: "学生です", effect: 5, cost: 500 },
@@ -67,7 +69,6 @@ const shopItems = [
   { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
 ];
 
-// タブ切り替え
 tabs.forEach(tab => {
   tab.addEventListener("click", () => {
     const category = tab.getAttribute("data-category");
@@ -77,12 +78,10 @@ tabs.forEach(tab => {
   });
 });
 
-// ショップ表示
 function renderShop(category = "all") {
   shopList.innerHTML = "";
   let filteredItems = shopItems;
 
-  // カテゴリフィルタリング
   if (category === "auto") {
     filteredItems = shopItems.filter(item => item.type === "auto");
   } else if (category === "click") {
@@ -90,9 +89,9 @@ function renderShop(category = "all") {
   } else if (category === "boost") {
     filteredItems = shopItems.filter(item => item.type === "boost");
   } else if (category === "low") {
-    filteredItems = shopItems.sort((a, b) => a.cost - b.cost);
+    filteredItems = [...shopItems].sort((a, b) => a.cost - b.cost);
   } else if (category === "high") {
-    filteredItems = shopItems.sort((a, b) => b.cost - a.cost);
+    filteredItems = [...shopItems].sort((a, b) => b.cost - a.cost);
   }
 
   filteredItems.forEach((item, i) => {
@@ -105,13 +104,12 @@ function renderShop(category = "all") {
     shopList.appendChild(li);
 
     document.getElementById(`buy-${i}`).addEventListener("click", () => {
-      playPurchaseSound();  // 購入時にも音を鳴らす
+      playPurchaseSound();
       buyItem(i);
     });
   });
 }
 
-// アイテム購入
 function buyItem(index) {
   const item = shopItems[index];
   if (count < item.cost) return;
@@ -128,22 +126,12 @@ function buyItem(index) {
       setTimeout(() => {
         clickPower /= item.effect;
         boostActive = false;
-      }, 30000); // 30秒
+      }, 30000);
     }
   }
   render();
 }
 
-// クリック処理
-clicker.addEventListener("click", () => {
-  count += clickPower;
-  total += clickPower;
-  if (count > best) best = count;
-  playClickSound();  // クリック時に音を鳴らす
-  render();
-});
-
-// 自動加算
 setInterval(() => {
   if (autoPower > 0) {
     count += autoPower;
@@ -153,11 +141,11 @@ setInterval(() => {
   }
 }, 1000);
 
-// 描画
 function render() {
   countEl.textContent = `${count}回`;
   bestEl.textContent = best;
   totalEl.textContent = total;
+  cpsEl.textContent = cps.toFixed(2); // ✅ CPSを表示
   renderShop();
 }
 
