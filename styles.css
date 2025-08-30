@@ -19,7 +19,7 @@ body {
   margin: 30px auto;
 }
 
-/* 2カラムレイアウト */
+/* ゲーム＆ショップレイアウト */
 .layout {
   display: flex;
   justify-content: center;
@@ -90,6 +90,12 @@ body {
   margin-top: 20px;
 }
 
+.shop-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
 .tabs {
   display: flex;
   justify-content: center;
@@ -138,6 +144,18 @@ body {
 .shop button:disabled {
   background: #ccc;
   cursor: not-allowed;
+}
+
+/* ミュート設定の位置 */
+.shop-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.shop-header label {
+  font-size: 16px;
 }
 
 /* スマホ対応 */
