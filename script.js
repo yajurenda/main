@@ -222,3 +222,43 @@ const badges = [
     condition: (count) => count >= 1145141919810,
   }
 ];
+
+let acquiredBadges = [];  // 獲得したバッジを追跡
+
+// バッジの状態を確認して更新
+function checkBadges() {
+  badges.forEach(badge => {
+    if (badge.condition(count) && !acquiredBadges.includes(badge.id)) {
+      acquiredBadges.push(badge.id);
+      showBadgeNotification(badge);  // バッジ獲得時の通知表示
+      renderBadges();  // バッジを画面に表示
+    }
+  });
+}
+
+// バッジの通知を表示
+function showBadgeNotification(badge) {
+  const notification = document.createElement("div");
+  notification.classList.add("badge-notification");
+  notification.innerHTML = `バッジ獲得: <span style="color: rainbow;">${badge.name}</span>`;
+
+  document.body.appendChild(notification);
+
+  // 通知表示後、5秒後に自動で消える
+  setTimeout(() => {
+    notification.style.display = "none";
+  }, 5000);
+}
+
+// バッジの表示
+function renderBadges() {
+  const badgeList = document.getElementById("badge-list");
+  badgeList.innerHTML = '';
+
+  acquiredBadges.forEach(badgeId => {
+    const badge = badges.find(b => b.id === badgeId);
+    const badgeElement = document.createElement("li");
+    badgeElement.textContent = `${badge.name}: ${badge.description}`;
+    badgeList.appendChild(badgeElement);
+  });
+}
