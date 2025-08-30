@@ -33,13 +33,16 @@ function playPurchaseSound() {
 
 // クリック処理
 clicker.addEventListener("click", () => {
-  count += clickPower;
-  total += clickPower;
-  if (count > best) best = count;
+  count += clickPower;  // クリック時にcountを増加
+  total += clickPower;  // 合計も増加
+  if (count > best) best = count;  // 最高スコアを更新
 
   playClickSound();  // クリック時に音を鳴らす
-  render();
+  render();  // 描画更新
+
+  checkBadges();  // バッジ確認
 });
+
 
 // エンターキーを無効化
 document.addEventListener("keydown", (event) => {
@@ -87,19 +90,10 @@ const shopItems = [
   { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
 ];
 
-// タブ切り替え
-tabs.forEach(tab => {
-  tab.addEventListener("click", () => {
-    const category = tab.getAttribute("data-category");
-    renderShop(category);
-    tabs.forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-  });
-});
-
 // ショップ表示
 function renderShop(category = "all") {
-  shopList.innerHTML = "";
+  shopList.innerHTML = "";  // まずリストを空にしてから描画
+
   let filteredItems = shopItems;
 
   // カテゴリフィルタリング
@@ -109,10 +103,6 @@ function renderShop(category = "all") {
     filteredItems = shopItems.filter(item => item.type === "click");
   } else if (category === "boost") {
     filteredItems = shopItems.filter(item => item.type === "boost");
-  } else if (category === "low") {
-    filteredItems = shopItems.sort((a, b) => a.cost - b.cost);
-  } else if (category === "high") {
-    filteredItems = shopItems.sort((a, b) => b.cost - a.cost);
   }
 
   filteredItems.forEach((item, i) => {
@@ -125,20 +115,12 @@ function renderShop(category = "all") {
     shopList.appendChild(li);
 
     document.getElementById(`buy-${i}`).addEventListener("click", () => {
-      playPurchaseSound();  // 購入時にも音を鳴らす
+      playPurchaseSound();  // 購入時に音を鳴らす
       buyItem(i);
     });
   });
 }
 
-// クリック処理
-clicker.addEventListener("click", () => {
-  count += clickPower;
-  total += clickPower;
-  if (count > best) best = count;
-  playClickSound();  // クリック時に音を鳴らす
-  render();
-});
 
 // 自動加算
 setInterval(() => {
