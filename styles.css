@@ -4,6 +4,11 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
 /* ロゴ */
@@ -21,9 +26,9 @@ body {
   align-items: flex-start;
   gap: 30px;
   padding: 20px;
+  width: 100%;
 }
 
-/* ゲーム本体 */
 .game {
   background: #fff;
   padding: 20px;
@@ -33,22 +38,6 @@ body {
   max-width: 400px;
 }
 
-#clicker {
-  border: none;
-  background: none;
-  cursor: pointer;
-  margin: 20px 0;
-}
-#clicker img {
-  width: 200px;
-  border-radius: 12px;
-  transition: transform 0.1s ease;
-}
-#clicker:active img {
-  transform: scale(0.9);
-}
-
-/* ショップ */
 .shop {
   flex: 1;
   max-width: 400px;
@@ -59,10 +48,7 @@ body {
   text-align: left;
 }
 
-.shop h2 {
-  text-align: center;
-}
-
+/* ショップ */
 .shop ul {
   list-style: none;
   padding: 0;
@@ -86,6 +72,7 @@ body {
   color: white;
   cursor: pointer;
 }
+
 .shop button:disabled {
   background: #ccc;
   cursor: not-allowed;
