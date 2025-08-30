@@ -150,3 +150,16 @@ function render() {
 }
 
 render();
+
+const fullscreenToggle = document.getElementById("fullscreen-toggle");
+
+fullscreenToggle.addEventListener("click", () => {
+  document.body.classList.toggle("fullscreen-mode");
+
+  // アイコンの切り替え
+  if (document.body.classList.contains("fullscreen-mode")) {
+    fullscreenToggle.textContent = "fullscreen_exit";
+  } else {
+    fullscreenToggle.textContent = "fullscreen";
+  }
+});
