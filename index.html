@@ -4,9 +4,15 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>やじゅれんだ！</title>
+  <link rel="preload" as="image" href="logo.png"><!-- ロゴ先読み -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- ロゴ -->
+  <header class="brand" aria-label="やじゅれんだ ロゴ">
+    <img src="logo.png" alt="やじゅれんだ ロゴ" width="3840" height="2160" />
+  </header>
+
   <main class="card">
     <h1>やじゅれんだ！</h1>
 
@@ -26,7 +32,7 @@
       <span>ミュート</span>
     </label>
 
-    <p class="tip">※初回プレイはクリック後に音が有効になりますねぇ！</p>
+    <p class="tip">※ 初回はクリック後に音が有効になります。</p>
   </main>
 
   <script src="script.js"></script>
