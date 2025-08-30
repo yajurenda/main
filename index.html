@@ -1,50 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="styles.css"> <!-- CSSリンク -->
+  <meta name="description" content="画像をクリックして気持ちよくカウントを伸ばそう。" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
-  </header>
+  <main class="wrap">
+    <h1>やじゅれんだ！</h1>
 
-  <main>
-    <!-- ゲーム本体 -->
-    <section class="game">
-      <h1>やじゅれんだ！</h1>
-      <div class="stats">
-        <div id="count">0回</div>
-        <div>最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
-      </div>
+    <div class="stats">
+      <div class="stat"><span id="count">0</span><small>回</small></div>
+      <div class="stat sub">最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
+      <div class="stat sub">CPS: <span id="cps">0.00</span></div>
+    </div>
 
-      <button id="clicker" class="click-btn">
-        <img src="click.png" alt="クリック" class="click-icon" />
-      </button>
-      <p class="tip">※ 初回はクリック後に音が有効になります。</p>
-    </section>
+    <button id="clicker" aria-label="クリックでカウント増加＆音が鳴ります">
+      <img src="click.png" alt="やじゅれんだ用画像" draggable="false" />
+      <span class="pulse" aria-hidden="true"></span>
+    </button>
 
-    <!-- ショップ -->
-    <aside class="shop">
-      <h2>ショップ</h2>
-      <div class="tabs">
-        <button class="tab" data-category="all">全て</button>
-        <button class="tab" data-category="auto">オート</button>
-        <button class="tab" data-category="click">精力剤</button>
-        <button class="tab" data-category="boost">ブースト</button>
-        <button class="tab" data-category="low">安い順</button>
-        <button class="tab" data-category="high">高い順</button>
-      </div>
-      <ul id="shop-list"></ul> <!-- 商品リスト -->
-    </aside>
+    <div class="controls">
+      <label class="toggle">
+        <input id="mute" type="checkbox">
+        <span>ミュート</span>
+      </label>
+      <button id="reset" class="ghost">リセット</button>
+    </div>
 
-    <footer>
-      <a href="about.html">About</a> | <a href="form.html">Form</a>
-    </footer>
+    <p class="tip">※ 初回はブラウザの仕様でユーザー操作後に音が有効になります。</p>
   </main>
 
-  <script src="script.js"></script> <!-- JSリンク -->
+  <script src="script.js"></script>
 </body>
 </html>
