@@ -1,60 +1,40 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" as="image" href="logo.png"><!-- ロゴ先読み -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <!-- ロゴ -->
-  <header>
-    <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
+  <header class="brand" aria-label="やじゅれんだ ロゴ">
+    <img src="logo.png" alt="やじゅれんだ ロゴ" width="3840" height="2160" />
   </header>
 
-  <!-- 2カラムレイアウト -->
-  <main class="layout">
-    <!-- ゲーム本体 -->
-    <section class="game">
-      <h1>やじゅれんだ！</h1>
-      <div class="stats">
-        <div id="count">0回</div>
-        <div>最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
-        <div>CPS: <span id="cps">0.00</span></div>
-      </div>
+  <main class="card">
+    <h1>やじゅれんだ！</h1>
 
-      <button id="clicker">
-        <img src="click.png" alt="やじゅれんだ用画像" />
-      </button>
+    <div class="stats">
+      <div><span id="count">0</span><small> 回</small></div>
+      <div class="sub">最高: <span id="best">0</span></div>
+      <div class="sub">合計: <span id="total">0</span></div>
+      <div class="sub">CPS: <span id="cps">0.00</span></div>
+    </div>
 
-      <div class="controls">
-        <label><input id="mute" type="checkbox"> ミュート</label>
-      </div>
-      <p class="tip">※ 初回はブラウザの仕様でクリック後に音が有効になります。</p>
-    </section>
+    <button id="clicker" aria-label="クリックでカウント増加＆音が鳴ります">
+      <img src="click.png" alt="やじゅれんだ用画像" draggable="false" />
+    </button>
 
-    <!-- コメント欄 -->
-    <aside class="comments">
-      <h2>コメント</h2>
-      <div id="disqus_thread"></div>
-    </aside>
+    <label class="toggle">
+      <input id="mute" type="checkbox">
+      <span>ミュート</span>
+    </label>
+
+    <p class="tip">※ 初回はクリック後に音が有効になります。</p>
   </main>
 
   <script src="script.js"></script>
-
-  <!-- Disqus (自分の shortname に置き換え) -->
-  <script>
-    var disqus_config = function () {
-      this.page.url = window.location.href;
-      this.page.identifier = "yajurenda-page";
-    };
-
-    (function() {
-      var d = document, s = d.createElement('script');
-      s.src = 'https://YOUR-SHORTNAME-HERE.disqus.com/embed.js';  // ← shortname を変更
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-    })();
-  </script>
 </body>
 </html>
