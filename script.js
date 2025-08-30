@@ -159,3 +159,66 @@ function render() {
 }
 
 render();
+
+const badges = [
+  {
+    id: 1,
+    name: "千里の道も野獣から",
+    description: "1クリックで獲得",
+    condition: (count) => count >= 1,
+  },
+  {
+    id: 2,
+    name: "王道をイク",
+    description: "19クリックで獲得",
+    condition: (count) => count >= 19,
+  },
+  {
+    id: 3,
+    name: "試行思考(シコシコ)",
+    description: "45クリックで獲得",
+    condition: (count) => count >= 45,
+  },
+  {
+    id: 4,
+    name: "見ろよ見ろよ",
+    description: "364クリックで獲得",
+    condition: (count) => count >= 364,
+  },
+  {
+    id: 5,
+    name: "中々やりますねぇ",
+    description: "810クリックで獲得",
+    condition: (count) => count >= 810,
+  },
+  {
+    id: 6,
+    name: "⚠️あなたはイキスギました！⚠️",
+    description: "1919クリックで獲得",
+    condition: (count) => count >= 1919,
+  },
+  {
+    id: 7,
+    name: "生粋とイキスギのオナリスト",
+    description: "4545クリックで獲得",
+    condition: (count) => count >= 4545,
+  },
+  {
+    id: 8,
+    name: "Okay, come on.(いいよこいよ)",
+    description: "114514クリックで獲得",
+    condition: (count) => count >= 114514,
+  },
+  {
+    id: 9,
+    name: "ホラ、見ろよ見ろよ、ホラ",
+    description: "364364クリックで獲得",
+    condition: (count) => count >= 364364,
+  },
+  {
+    id: 10,
+    name: "遊んでくれてありがとう❗",
+    description: "1145141919810クリックで獲得",
+    condition: (count) => count >= 1145141919810,
+  }
+];
