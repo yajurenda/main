@@ -8,10 +8,10 @@
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
+    <img src="logo.png" alt="やじゅれだロゴ" class="logo">
   </header>
 
-  <main class="layout">
+  <main>
     <!-- ゲーム本体 -->
     <section class="game">
       <h1>やじゅれんだ！</h1>
@@ -20,27 +20,27 @@
         <div>最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
       </div>
 
-      <button id="clicker" class="round-button">
-        <img src="click.png" alt="クリック" />
+      <button id="clicker" class="click-btn">
+        <img src="click.png" alt="クリック" class="click-icon" />
       </button>
-
-      <p class="tip">※ 初回はクリック後に音が有効になります。</p>
     </section>
 
     <!-- ショップ -->
     <aside class="shop">
       <h2>ショップ</h2>
       <div class="tabs">
+        <button class="tab" data-category="all">全て</button>
         <button class="tab" data-category="auto">オート</button>
         <button class="tab" data-category="click">精力剤</button>
         <button class="tab" data-category="boost">ブースト</button>
+        <button class="tab" data-category="low">安い順</button>
+        <button class="tab" data-category="high">高い順</button>
       </div>
       <ul id="shop-list"></ul> <!-- 商品リスト -->
     </aside>
 
     <footer>
-      <a href="about.html">About</a> | 
-      <a href="form.html">Form</a>
+      <a href="about.html">About</a> | <a href="form.html">Form</a>
     </footer>
   </main>
 
