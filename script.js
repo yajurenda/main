@@ -20,13 +20,14 @@ const tabs = document.querySelectorAll(".tab");
 const clickSound = new Audio("click1.mp3");  // クリック時の音声
 const purchaseSound = new Audio("buy_sound.mp3");  // 購入時の音声
 
-// 音を鳴らす関数
+// クリック時の音を鳴らす関数
 function playClickSound() {
   if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
   clickSound.currentTime = 0;  // 再生位置を最初に戻す
   clickSound.play();  // クリック音を再生
 }
 
+// 購入時の音を鳴らす関数
 function playPurchaseSound() {
   if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
   purchaseSound.currentTime = 0;  // 再生位置を最初に戻す
