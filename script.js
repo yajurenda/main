@@ -262,3 +262,32 @@ function renderBadges() {
     badgeList.appendChild(badgeElement);
   });
 }
+
+// バッジリストを表示・非表示にする
+document.getElementById("toggle-badge-list").addEventListener("click", () => {
+  const badgeListContainer = document.getElementById("badge-list-container");
+  const isVisible = badgeListContainer.style.display === "block";
+  badgeListContainer.style.display = isVisible ? "none" : "block";
+});
+
+.badge-notification {
+  position: fixed;
+  top: 10%;
+  right: 10%;
+  padding: 10px 20px;
+  background: rgba(0, 255, 0, 0.8);
+  border-radius: 5px;
+  color: #fff;
+  font-size: 1.2rem;
+  z-index: 9999;
+  animation: slideIn 1s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    right: -300px;
+  }
+  to {
+    right: 10px;
+  }
+}
