@@ -124,4 +124,20 @@ function render() {
   renderShop();
 }
 
+// クリック処理
+clicker.addEventListener("click", () => {
+  count += clickPower;
+  total += clickPower;
+  if (count > best) best = count;
+  render();
+});
+
+// エンターキーを無効化
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault(); // エンターキーのデフォルト動作（送信や改行）を無効化
+  }
+});
+
+
 render();
