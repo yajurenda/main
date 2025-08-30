@@ -1,16 +1,13 @@
 let count = 0;
 let best = 0;
 let total = 0;
-let cps = 0;
 let clickPower = 1;  // 初期クリックごとの増加量を1に設定
 let autoPower = 0;
-let lastClickTime = Date.now();
 let boostActive = false;
 
 const countEl = document.getElementById("count");
 const bestEl = document.getElementById("best");
 const totalEl = document.getElementById("total");
-const cpsEl = document.getElementById("cps");
 const clicker = document.getElementById("clicker");
 const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
@@ -42,9 +39,6 @@ clicker.addEventListener("click", () => {
 
   playClickSound();  // クリック時に音を鳴らす
   render();
-
-  // 特定の回数に達した時にダイアログ表示
-  checkAchievements(count);
 });
 
 // エンターキーを無効化
@@ -53,6 +47,29 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault(); // エンターキーのデフォルト動作（送信や改行）を無効化
   }
 });
+
+// アイテム購入
+function buyItem(index) {
+  const item = shopItems[index];
+  if (count < item.cost) return;
+
+  count -= item.cost;
+  if (item.type === "auto") {
+    autoPower += item.effect;
+  } else if (item.type === "click") {
+    clickPower += item.effect;
+  } else if (item.type === "boost") {
+    if (!boostActive) {
+      boostActive = true;
+      clickPower *= item.effect;
+      setTimeout(() => {
+        clickPower /= item.effect;
+        boostActive = false;
+      }, 30000); // 30秒
+    }
+  }
+  render();
+}
 
 // ショップのアイテム
 const shopItems = [
@@ -112,29 +129,6 @@ function renderShop(category = "all") {
       buyItem(i);
     });
   });
-}
-
-// アイテム購入
-function buyItem(index) {
-  const item = shopItems[index];
-  if (count < item.cost) return;
-
-  count -= item.cost;
-  if (item.type === "auto") {
-    autoPower += item.effect;
-  } else if (item.type === "click") {
-    clickPower += item.effect;
-  } else if (item.type === "boost") {
-    if (!boostActive) {
-      boostActive = true;
-      clickPower *= item.effect;
-      setTimeout(() => {
-        clickPower /= item.effect;
-        boostActive = false;
-      }, 30000); // 30秒
-    }
-  }
-  render();
 }
 
 // クリック処理
