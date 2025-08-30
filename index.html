@@ -1,55 +1,45 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="styles.css"> <!-- 外部CSSリンク -->
-</head>
-<body>
-  <header>
-    <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
-  </header>
+/* フォームページ */
+.form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 20px auto;
+  text-align: center;
+}
 
-  <main class="layout">
-    <!-- ゲーム本体 -->
-    <section class="game">
-      <h1>やじゅれんだ！</h1>
-      <div class="stats">
-        <div id="count">0回</div>
-        <div>最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
-        <div>CPS: <span id="cps">0.00</span></div>
-      </div>
+.form h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
 
-      <button id="clicker" class="round-button">
-        <img src="click.png" alt="クリック" />
-      </button>
+.form-button {
+  padding: 15px 30px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
 
-      <p class="tip">※ 初回はクリック後に音が有効になります。</p>
-    </section>
+.form-button:hover {
+  background: #45a049;
+}
 
-    <!-- ショップ -->
-    <aside class="shop">
-      <div class="shop-header">
-        <label><input id="mute" type="checkbox"> ミュート</label> <!-- ミュート設定 -->
-      </div>
-      <h2>ショップ</h2>
-      <div class="tabs">
-        <button class="tab" data-category="auto">オート</button>
-        <button class="tab" data-category="click">精力剤</button>
-        <button class="tab" data-category="boost">ブースト</button>
-        <button class="tab" data-category="low">安い順</button>
-        <button class="tab" data-category="high">高い順</button>
-      </div>
-      <ul id="shop-list"></ul> <!-- 商品リスト -->
-    </aside>
+/* フッター */
+footer {
+  margin-top: 20px;
+}
 
-    <!-- Aboutページへのリンク -->
-    <footer>
-      <a href="about.html">About</a>
-    </footer>
-  </main>
+footer a {
+  font-size: 1.2rem;
+  color: #4caf50;
+  text-decoration: none;
+}
 
-  <script src="script.js"></script> <!-- JSリンク -->
-</body>
-</html>
+footer a:hover {
+  text-decoration: underline;
+}
