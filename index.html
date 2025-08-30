@@ -7,29 +7,26 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="wrap">
+  <main class="card">
     <h1>やじゅれんだ！</h1>
 
     <div class="stats">
-      <div class="stat"><span id="count">0</span><small>回</small></div>
-      <div class="stat sub">最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
-      <div class="stat sub">CPS: <span id="cps">0.00</span></div>
+      <div><span id="count">0</span><small> 回</small></div>
+      <div class="sub">最高: <span id="best">0</span></div>
+      <div class="sub">合計: <span id="total">0</span></div>
+      <div class="sub">CPS: <span id="cps">0.00</span></div>
     </div>
 
     <button id="clicker" aria-label="クリックでカウント増加＆音が鳴ります">
       <img src="click.png" alt="やじゅれんだ用画像" draggable="false" />
     </button>
 
-    <div class="controls">
-      <label class="toggle">
-        <input id="mute" type="checkbox">
-        <span>ミュート</span>
-      </label>
-      <button id="reset" class="ghost">リセット</button>
-      <button id="theme-toggle" class="ghost">🌙 ナイトモード</button>
-    </div>
+    <label class="toggle">
+      <input id="mute" type="checkbox">
+      <span>ミュート</span>
+    </label>
 
-    <p class="tip">※ 初回はブラウザの仕様でユーザー操作後に音が有効になります。</p>
+    <p class="tip">※初回プレイはクリック後に音が有効になりますねぇ！</p>
   </main>
 
   <script src="script.js"></script>
