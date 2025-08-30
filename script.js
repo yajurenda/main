@@ -9,7 +9,6 @@ const countEl = document.getElementById("count");
 const bestEl = document.getElementById("best");
 const totalEl = document.getElementById("total");
 const clicker = document.getElementById("clicker");
-const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
 
@@ -19,14 +18,12 @@ const purchaseSound = new Audio("buy_sound.mp3");  // 購入時の音声
 
 // クリック時の音を鳴らす関数
 function playClickSound() {
-  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
   clickSound.currentTime = 0;  // 再生位置を最初に戻す
   clickSound.play();  // クリック音を再生
 }
 
 // 購入時の音を鳴らす関数
 function playPurchaseSound() {
-  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
   purchaseSound.currentTime = 0;  // 再生位置を最初に戻す
   purchaseSound.play();  // 購入音を再生
 }
@@ -39,13 +36,6 @@ clicker.addEventListener("click", () => {
 
   playClickSound();  // クリック時に音を鳴らす
   render();  // 描画更新
-});
-
-// エンターキーを無効化
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault(); // エンターキーのデフォルト動作（送信や改行）を無効化
-  }
 });
 
 // ショップのアイテム
@@ -87,6 +77,10 @@ function renderShop(category = "all") {
     filteredItems = shopItems.filter(item => item.type === "click");
   } else if (category === "boost") {
     filteredItems = shopItems.filter(item => item.type === "boost");
+  } else if (category === "low") {
+    filteredItems = shopItems.sort((a, b) => a.cost - b.cost);
+  } else if (category === "high") {
+    filteredItems = shopItems.sort((a, b) => b.cost - a.cost);
   }
 
   filteredItems.forEach((item, i) => {
