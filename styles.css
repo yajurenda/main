@@ -23,7 +23,7 @@ body {
   padding: 20px;
 }
 
-/* ゲーム側 */
+/* ゲーム本体 */
 .game {
   background: #fff;
   padding: 20px;
@@ -48,10 +48,10 @@ body {
   transform: scale(0.9);
 }
 
-/* コメント欄 */
-.comments {
+/* ショップ */
+.shop {
   flex: 1;
-  max-width: 500px;
+  max-width: 400px;
   background: #fff;
   padding: 20px;
   border-radius: 12px;
@@ -59,13 +59,45 @@ body {
   text-align: left;
 }
 
-/* スマホ対応 (縦並び) */
+.shop h2 {
+  text-align: center;
+}
+
+.shop ul {
+  list-style: none;
+  padding: 0;
+}
+
+.shop li {
+  margin: 10px 0;
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shop button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+.shop button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* スマホ対応 */
 @media (max-width: 900px) {
   .layout {
     flex-direction: column;
     align-items: center;
   }
-  .comments {
+  .shop {
     max-width: 100%;
   }
 }
