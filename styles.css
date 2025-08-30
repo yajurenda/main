@@ -4,9 +4,26 @@ body {
   margin: 0;
   padding: 2rem;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   min-height: 100vh;
+}
+
+/* ===== ロゴ ===== */
+.brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.2rem 1rem 0.5rem;
+}
+
+.brand img {
+  width: clamp(200px, 70vw, 720px); /* 画面サイズに応じて調整 */
+  height: auto;
+  aspect-ratio: 16/9;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.18));
 }
 
 .card {
@@ -16,6 +33,7 @@ body {
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
   text-align: center;
   width: 320px;
+  margin-top: 0.5rem;
 }
 
 h1 {
