@@ -3,12 +3,12 @@ body {
   background: #f5f7fa;
   margin: 0;
   padding: 0;
-  text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   flex-direction: column;
+  text-align: center;
 }
 
 /* ロゴ */
@@ -25,9 +25,11 @@ body {
   justify-content: center;
   align-items: flex-start;
   gap: 30px;
+  flex-direction: column;  /* ゲームとショップが縦に並ぶ */
   padding: 20px;
   width: 100%;
-  flex-direction: column; /* これでゲームとショップが縦に並ぶ */
+  max-width: 900px;  /* 幅を制限 */
+  margin: 0 auto;  /* 中央揃え */
 }
 
 /* ゲーム本体 */
@@ -63,6 +65,7 @@ body {
   cursor: pointer;
   transition: transform 0.1s ease, background 0.3s;
   display: inline-block;
+  margin-bottom: 20px; /* ボタンと次の要素の間に余白 */
 }
 
 .round-button:hover {
