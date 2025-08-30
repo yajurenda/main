@@ -38,7 +38,7 @@ clicker.addEventListener("click", () => {
   if (count > best) best = count;
 
   playClickSound();  // クリック時に音を鳴らす
-  render();
+  render();  // 描画更新
 });
 
 // エンターキーを無効化
@@ -47,29 +47,6 @@ document.addEventListener("keydown", (event) => {
     event.preventDefault(); // エンターキーのデフォルト動作（送信や改行）を無効化
   }
 });
-
-// アイテム購入
-function buyItem(index) {
-  const item = shopItems[index];
-  if (count < item.cost) return;
-
-  count -= item.cost;
-  if (item.type === "auto") {
-    autoPower += item.effect;
-  } else if (item.type === "click") {
-    clickPower += item.effect;
-  } else if (item.type === "boost") {
-    if (!boostActive) {
-      boostActive = true;
-      clickPower *= item.effect;
-      setTimeout(() => {
-        clickPower /= item.effect;
-        boostActive = false;
-      }, 30000); // 30秒
-    }
-  }
-  render();
-}
 
 // ショップのアイテム
 const shopItems = [
@@ -99,7 +76,8 @@ tabs.forEach(tab => {
 
 // ショップ表示
 function renderShop(category = "all") {
-  shopList.innerHTML = "";
+  shopList.innerHTML = "";  // まずリストを空にしてから描画
+
   let filteredItems = shopItems;
 
   // カテゴリフィルタリング
@@ -109,10 +87,6 @@ function renderShop(category = "all") {
     filteredItems = shopItems.filter(item => item.type === "click");
   } else if (category === "boost") {
     filteredItems = shopItems.filter(item => item.type === "boost");
-  } else if (category === "low") {
-    filteredItems = shopItems.sort((a, b) => a.cost - b.cost);
-  } else if (category === "high") {
-    filteredItems = shopItems.sort((a, b) => b.cost - a.cost);
   }
 
   filteredItems.forEach((item, i) => {
@@ -125,37 +99,41 @@ function renderShop(category = "all") {
     shopList.appendChild(li);
 
     document.getElementById(`buy-${i}`).addEventListener("click", () => {
-      playPurchaseSound();  // 購入時にも音を鳴らす
+      playPurchaseSound();  // 購入時に音を鳴らす
       buyItem(i);
     });
   });
 }
 
-// クリック処理
-clicker.addEventListener("click", () => {
-  count += clickPower;
-  total += clickPower;
-  if (count > best) best = count;
-  playClickSound();  // クリック時に音を鳴らす
-  render();
-});
+// アイテム購入
+function buyItem(index) {
+  const item = shopItems[index];
+  if (count < item.cost) return;
 
-// 自動加算
-setInterval(() => {
-  if (autoPower > 0) {
-    count += autoPower;
-    total += autoPower;
-    if (count > best) best = count;
-    render();
+  count -= item.cost;
+  if (item.type === "auto") {
+    autoPower += item.effect;
+  } else if (item.type === "click") {
+    clickPower += item.effect;
+  } else if (item.type === "boost") {
+    if (!boostActive) {
+      boostActive = true;
+      clickPower *= item.effect;
+      setTimeout(() => {
+        clickPower /= item.effect;
+        boostActive = false;
+      }, 30000); // 30秒
+    }
   }
-}, 1000);
+  render();
+}
 
-// 描画
+// 描画更新
 function render() {
   countEl.textContent = `${count}回`;
   bestEl.textContent = best;
   totalEl.textContent = total;
-  renderShop();
+  renderShop();  // ショップの表示を更新
 }
 
-render();
+render();  // 初期描画
