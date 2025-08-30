@@ -29,6 +29,7 @@ body {
   width: 100%;
 }
 
+/* ゲーム本体 */
 .game {
   background: #fff;
   padding: 20px;
@@ -38,6 +39,41 @@ body {
   max-width: 400px;
 }
 
+#clicker {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin: 20px 0;
+}
+#clicker img {
+  width: 200px;
+  border-radius: 12px;
+  transition: transform 0.1s ease;
+}
+#clicker:active img {
+  transform: scale(0.9);
+}
+
+/* 丸アイコンのクリックボタン */
+.round-button {
+  background: #ff7675;
+  border-radius: 50%;
+  padding: 15px;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.3s;
+}
+
+.round-button:hover {
+  background: #ff5252;
+}
+
+.round-button img {
+  width: 180px;
+  border-radius: 50%;
+  transition: transform 0.1s ease;
+}
+
+/* ショップ */
 .shop {
   flex: 1;
   max-width: 400px;
@@ -48,7 +84,27 @@ body {
   text-align: left;
 }
 
-/* ショップ */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.tab:hover {
+  background: #45a049;
+}
+
 .shop ul {
   list-style: none;
   padding: 0;
