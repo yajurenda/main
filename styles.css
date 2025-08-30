@@ -1,4 +1,4 @@
-/* デフォルトはナイトモード */
+/* 全体レイアウト */
 body {
   font-family: "Arial", "メイリオ", sans-serif;
   text-align: center;
@@ -6,65 +6,74 @@ body {
   padding: 0;
   background: linear-gradient(135deg, #1e1e2f, #2c2c44);
   color: #fff;
-  transition: background 0.3s, color 0.3s;
 }
 
+/* タイトル */
 h1 {
+  font-size: 2.5rem;
   margin: 20px 0;
-  font-size: 2em;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
 }
 
+/* ステータス部分 */
 .stats {
-  margin: 10px 0;
+  margin: 10px 0 20px;
+  font-size: 1.2rem;
 }
 
+/* クリックボタン */
 #clicker {
-  border: none;
-  background: none;
+  background: #fff;
+  border: 4px solid #6c5ce7;
+  border-radius: 12px;
+  padding: 0;
   cursor: pointer;
+  transition: transform 0.1s ease;
 }
 
 #clicker img {
-  width: 250px;
+  display: block;
+  width: 200px;
+  height: auto;
   border-radius: 8px;
 }
 
-.controls {
-  margin: 15px 0;
+/* クリック時に少し縮むアニメーション */
+#clicker:active {
+  transform: scale(0.95);
 }
 
-button {
-  margin: 0 5px;
+/* コントロール部分 */
+.controls {
+  margin: 20px 0;
+}
+
+button, label {
+  font-size: 1rem;
+  margin: 5px;
   padding: 6px 12px;
-  border-radius: 6px;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
 }
 
 /* リセットボタン */
 #reset {
   background: #ff7675;
-  color: white;
+  color: #fff;
 }
 
-/* テーマ切替ボタン */
-#theme-toggle {
-  background: #ffeaa7;
-  color: #333;
+#reset:hover {
+  background: #d63031;
 }
 
-/* ライトモード */
-body.light {
-  background: linear-gradient(135deg, #f5f7fa, #dfe9f3);
-  color: #333;
+/* ミュート */
+label {
+  cursor: pointer;
 }
 
-body.light #reset {
-  background: #ff7675;
-  color: white;
-}
-
-body.light #theme-toggle {
-  background: #333;
-  color: white;
+/* ヒントテキスト */
+.tip {
+  font-size: 0.9rem;
+  color: #ccc;
 }
