@@ -100,7 +100,6 @@ clicker.addEventListener("click", () => {
   count += clickPower;
   total += clickPower;
   if (count > best) best = count;
-  playSound();
   render();
 });
 
@@ -122,4 +121,4 @@ function render() {
   renderShop();
 }
 
-render
+render();
