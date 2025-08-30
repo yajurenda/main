@@ -1,79 +1,75 @@
-/* 全体レイアウト */
 body {
-  font-family: "Arial", "メイリオ", sans-serif;
-  text-align: center;
+  font-family: "Segoe UI", "メイリオ", sans-serif;
+  background: #f5f7fa;
   margin: 0;
-  padding: 0;
-  background: linear-gradient(135deg, #1e1e2f, #2c2c44);
-  color: #fff;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-/* タイトル */
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 320px;
+}
+
 h1 {
-  font-size: 2.5rem;
-  margin: 20px 0;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
 }
 
-/* ステータス部分 */
 .stats {
-  margin: 10px 0 20px;
-  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
-/* クリックボタン */
+.stats div {
+  font-size: 1.4rem;
+  margin: 0.3rem 0;
+}
+
+.stats .sub {
+  font-size: 1rem;
+  color: #555;
+}
+
 #clicker {
-  background: #fff;
-  border: 4px solid #6c5ce7;
-  border-radius: 12px;
-  padding: 0;
+  border: none;
+  background: #ff7675;
+  border-radius: 50%;
+  padding: 15px;
   cursor: pointer;
-  transition: transform 0.1s ease;
+  transition: transform 0.15s ease, background 0.3s;
+}
+
+#clicker:hover {
+  background: #ff5252;
 }
 
 #clicker img {
-  display: block;
-  width: 200px;
-  height: auto;
-  border-radius: 8px;
+  width: 180px;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
 }
 
-/* クリック時に少し縮むアニメーション */
-#clicker:active {
-  transform: scale(0.95);
+/* クリックアニメーション */
+#clicker.clicked img {
+  transform: scale(0.9);
 }
 
-/* コントロール部分 */
-.controls {
-  margin: 20px 0;
-}
-
-button, label {
-  font-size: 1rem;
-  margin: 5px;
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-/* リセットボタン */
-#reset {
-  background: #ff7675;
-  color: #fff;
-}
-
-#reset:hover {
-  background: #d63031;
-}
-
-/* ミュート */
-label {
-  cursor: pointer;
-}
-
-/* ヒントテキスト */
-.tip {
+.toggle {
+  display: inline-block;
+  margin-top: 1rem;
   font-size: 0.9rem;
-  color: #ccc;
+  color: #444;
+}
+
+.tip {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 1rem;
 }
