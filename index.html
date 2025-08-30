@@ -5,10 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>やじゅれんだ！</title>
   <link rel="stylesheet" href="styles.css"> <!-- 外部CSSリンク -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> <!-- アイコン -->
 </head>
 <body>
   <header>
     <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
+    <span id="fullscreen-toggle" class="material-icons fullscreen-icon">fullscreen</span>
   </header>
 
   <main class="layout">
@@ -31,7 +33,7 @@
     <!-- ショップ -->
     <aside class="shop">
       <div class="shop-header">
-        <label><input id="mute" type="checkbox"> ミュート</label> <!-- ミュート設定 -->
+        <label><input id="mute" type="checkbox"> ミュート</label>
       </div>
       <h2>ショップ</h2>
       <div class="tabs">
@@ -41,24 +43,16 @@
         <button class="tab" data-category="low">安い順</button>
         <button class="tab" data-category="high">高い順</button>
       </div>
-      <ul id="shop-list"></ul> <!-- 商品リスト -->
+      <ul id="shop-list"></ul>
     </aside>
 
-    <!-- Aboutページへのリンク -->
+    <!-- フッター -->
     <footer>
       <a href="about.html">About</a> | 
-      <a href="form.html">Form</a> <!-- フォームページへのリンク -->
+      <a href="form.html">Form</a>
     </footer>
   </main>
 
-  <script src="script.js"></script> <!-- JSリンク -->
-
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <header>
-  <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
-  <span id="fullscreen-toggle" class="material-icons fullscreen-icon">fullscreen</span>
-</header>
-
-  
+  <script src="script.js"></script>
 </body>
 </html>
