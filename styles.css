@@ -250,3 +250,35 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+
+/* フルスクリーンアイコン */
+.fullscreen-icon {
+  font-size: 36px;
+  cursor: pointer;
+  margin-left: 15px;
+  vertical-align: middle;
+  color: #333;
+}
+.fullscreen-icon:hover {
+  color: #4caf50;
+}
+
+/* 全画面モード */
+.fullscreen-mode .layout {
+  flex-direction: row; /* 横並び */
+  align-items: flex-start;
+}
+
+.fullscreen-mode .game {
+  flex: 1;
+  max-width: 50%; /* 左半分 */
+}
+
+.fullscreen-mode .shop {
+  flex: 1;
+  max-width: 50%; /* 右半分 */
+}
+
+.fullscreen-mode #count {
+  font-size: 3rem; /* 回数を大きく表示 */
+}
