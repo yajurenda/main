@@ -1,7 +1,7 @@
 let count = 0;
 let best = 0;
 let total = 0;
-let cps = 0; // clicks per second
+let cps = 0;
 let clickPower = 1;
 let autoPower = 0;
 let lastClickTime = Date.now();
@@ -14,17 +14,8 @@ const cpsEl = document.getElementById("cps");
 const clicker = document.getElementById("clicker");
 const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
+const tabs = document.querySelectorAll(".tab");
 
-// 音声
-const sounds = [new Audio("click1.mp3"), new Audio("click2.mp3")];
-function playSound() {
-  if (muteEl.checked) return;
-  const sound = sounds[Math.floor(Math.random() * sounds.length)];
-  sound.currentTime = 0;
-  sound.play();
-}
-
-// ショップの商品
 const shopItems = [
   { type: "auto", name: "24歳です", effect: 1, cost: 100 },
   { type: "auto", name: "学生です", effect: 5, cost: 500 },
@@ -40,10 +31,35 @@ const shopItems = [
   { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
 ];
 
+// タブ切り替え
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    const category = tab.getAttribute("data-category");
+    renderShop(category);
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+  });
+});
+
 // ショップ表示
-function renderShop() {
+function renderShop(category = "all") {
   shopList.innerHTML = "";
-  shopItems.forEach((item, i) => {
+  let filteredItems = shopItems;
+
+  // カテゴリフィルタリング
+  if (category === "auto") {
+    filteredItems = shopItems.filter(item => item.type === "auto");
+  } else if (category === "click") {
+    filteredItems = shopItems.filter(item => item.type === "click");
+  } else if (category === "boost") {
+    filteredItems = shopItems.filter(item => item.type === "boost");
+  } else if (category === "low") {
+    filteredItems = shopItems.sort((a, b) => a.cost - b.cost);
+  } else if (category === "high") {
+    filteredItems = shopItems.sort((a, b) => b.cost - a.cost);
+  }
+
+  filteredItems.forEach((item, i) => {
     const li = document.createElement("li");
     li.innerHTML = `
       <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name} 
@@ -98,13 +114,6 @@ setInterval(() => {
   }
 }, 1000);
 
-// CPS計算
-setInterval(() => {
-  const now = Date.now();
-  cps = ((total) / ((now - lastClickTime) / 1000)).toFixed(2);
-  cpsEl.textContent = cps;
-}, 1000);
-
 // 描画
 function render() {
   countEl.textContent = `${count}回`;
@@ -113,4 +122,4 @@ function render() {
   renderShop();
 }
 
-render();
+render
