@@ -21,17 +21,25 @@
         <div>CPS: <span id="cps">0.00</span></div>
       </div>
 
-      <button id="clicker">
-        <img src="click.png" alt="やじゅれんだ用画像" />
+      <button id="clicker" class="round-button">
+        <img src="click.png" alt="クリック" />
       </button>
 
       <label><input id="mute" type="checkbox"> ミュート</label>
-      <p class="tip">※ 初回はブラウザの仕様でクリック後に音が有効になります。</p>
+      <p class="tip">※ 初回はクリック後に音が有効になります。</p>
     </section>
 
     <!-- ショップ -->
     <aside class="shop">
       <h2>ショップ</h2>
+      <div class="tabs">
+        <button class="tab" data-category="all">全て</button>
+        <button class="tab" data-category="auto">オート</button>
+        <button class="tab" data-category="click">精力剤</button>
+        <button class="tab" data-category="boost">ブースト</button>
+        <button class="tab" data-category="low">安い順</button>
+        <button class="tab" data-category="high">高い順</button>
+      </div>
       <ul id="shop-list"></ul>
     </aside>
   </main>
