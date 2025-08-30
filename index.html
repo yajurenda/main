@@ -1,13 +1,50 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <title>現在一時停止中</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>やじゅれんだ！</title>
+  <link rel="stylesheet" href="styles.css"> <!-- CSSリンク -->
 </head>
 <body>
-    <!-- ここに文章を記述します -->
-    <h1>【現在サービス停止中】開発、むず</h1>
-    <p>野獣先輩erっていうAIと協力して作ってるけどむずすきやろ</p>
-    <h2>明日頑張ります</h2>
-    <p>なるべく使いやすく遊びやすく楽しく、そんな感じで朝4時起きで作るわ（起きれたら）</p>
+  <header>
+    <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
+  </header>
+
+  <main>
+    <!-- ゲーム本体 -->
+    <section class="game">
+      <h1>やじゅれんだ！</h1>
+      <div class="stats">
+        <div id="count">0回</div>
+        <div>最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
+      </div>
+
+      <button id="clicker" class="click-btn">
+        <img src="click.png" alt="クリック" class="click-icon" />
+      </button>
+      <p class="tip">※ 初回はクリック後に音が有効になります。</p>
+    </section>
+
+    <!-- ショップ -->
+    <aside class="shop">
+      <h2>ショップ</h2>
+      <div class="tabs">
+        <button class="tab" data-category="all">全て</button>
+        <button class="tab" data-category="auto">オート</button>
+        <button class="tab" data-category="click">精力剤</button>
+        <button class="tab" data-category="boost">ブースト</button>
+        <button class="tab" data-category="low">安い順</button>
+        <button class="tab" data-category="high">高い順</button>
+      </div>
+      <ul id="shop-list"></ul> <!-- 商品リスト -->
+    </aside>
+
+    <footer>
+      <a href="about.html">About</a> | <a href="form.html">Form</a>
+    </footer>
+  </main>
+
+  <script src="script.js"></script> <!-- JSリンク -->
 </body>
 </html>
