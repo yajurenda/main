@@ -17,17 +17,20 @@ const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
 
 const shopItems = [
+  // オート
   { type: "auto", name: "24歳です", effect: 1, cost: 100 },
   { type: "auto", name: "学生です", effect: 5, cost: 500 },
   { type: "auto", name: "じゃあオナニー", effect: 20, cost: 2000 },
   { type: "auto", name: "...とかっていうのは？", effect: 100, cost: 10000 },
   { type: "auto", name: "やりますねぇ！", effect: 500, cost: 50000 },
 
+  // 精力剤
   { type: "click", name: "アイスティー", effect: 1, cost: 50 },
   { type: "click", name: "暴れんなよ", effect: 3, cost: 300 },
   { type: "click", name: "お前のことが好きだったんだよ", effect: 10, cost: 2000 },
-  { type: "click", name: "イキスギィ！", effect: 50, cost: 15000 },
+  { type: "click", name: "イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect: 50, cost: 15000 },
 
+  // ブースト
   { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
 ];
 
