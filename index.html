@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css"> <!-- 外部CSSリンク -->
 </head>
 <body>
   <header>
@@ -25,12 +25,14 @@
         <img src="click.png" alt="クリック" />
       </button>
 
-      <label><input id="mute" type="checkbox"> ミュート</label>
       <p class="tip">※ 初回はクリック後に音が有効になります。</p>
     </section>
 
     <!-- ショップ -->
     <aside class="shop">
+      <div class="shop-header">
+        <label><input id="mute" type="checkbox"> ミュート</label> <!-- ミュート設定 -->
+      </div>
       <h2>ショップ</h2>
       <div class="tabs">
         <button class="tab" data-category="auto">オート</button>
@@ -39,10 +41,10 @@
         <button class="tab" data-category="low">安い順</button>
         <button class="tab" data-category="high">高い順</button>
       </div>
-      <ul id="shop-list"></ul>
+      <ul id="shop-list"></ul> <!-- 商品リスト -->
     </aside>
   </main>
 
-  <script src="script.js"></script>
+  <script src="script.js"></script> <!-- JSリンク -->
 </body>
 </html>
