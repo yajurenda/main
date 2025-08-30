@@ -16,14 +16,14 @@ const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
 
-// 音声設定（click1.mp3 だけ使用）
-const sound = new Audio("click1.mp3");
+// 購入音声（buy_sound.mp3）
+const purchaseSound = new Audio("buy_sound.mp3");  // アップロードした音声ファイル名に変更
 
 // 音を鳴らす関数
 function playSound() {
   if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
-  sound.currentTime = 0;  // 再生位置を最初に戻す
-  sound.play();  // 音を再生
+  purchaseSound.currentTime = 0;  // 再生位置を最初に戻す
+  purchaseSound.play();  // 音を再生
 }
 
 // クリック処理
@@ -96,7 +96,10 @@ function renderShop(category = "all") {
     `;
     shopList.appendChild(li);
 
-    document.getElementById(`buy-${i}`).addEventListener("click", () => buyItem(i));
+    document.getElementById(`buy-${i}`).addEventListener("click", () => {
+      playSound();  // 購入時にも音を鳴らす
+      buyItem(i);
+    });
   });
 }
 
