@@ -139,5 +139,36 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+// 音声を配列に入れる
+const sounds = [
+  new Audio("click1.mp3"),
+];
+
+// 音を鳴らす関数
+function playSound() {
+  if (muteEl.checked) return;  // ミュートがONの場合、音を鳴らさない
+  const sound = sounds[Math.floor(Math.random() * sounds.length)];
+  sound.currentTime = 0;  // 再生位置を最初に戻す
+  sound.play();  // 音を再生
+}
+
+// クリック処理
+clicker.addEventListener("click", () => {
+  count += clickPower;
+  total += clickPower;
+  if (count > best) best = count;
+
+  playSound(); // 音を鳴らす
+  render();
+});
+
+// ミュート機能の設定
+muteEl.addEventListener("change", () => {
+  if (muteEl.checked) {
+    // ミュート時は音を止める
+    sounds.forEach(sound => sound.pause());
+  }
+});
+
 
 render();
