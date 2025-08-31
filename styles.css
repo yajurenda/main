@@ -1,188 +1,126 @@
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f4f9;
   margin: 0;
   padding: 0;
-  background: #f9f9f9;
+  color: #333;
 }
 
 header {
-  background: #333;
-  color: white;
-  padding: 10px;
+  text-align: center;
+  padding: 20px;
+}
+
+.logo {
+  height: 60px;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.stats {
+  margin-top: 10px;
 }
 
 main {
   display: flex;
   justify-content: space-around;
-  margin: 20px;
-  gap: 20px;
+  padding: 20px;
 }
 
-.game {
-  flex: 1;
+.clicker {
+  text-align: center;
 }
 
-#clicker {
+#clickButton {
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  border: 4px solid #ccc;
+  border: 5px solid #ddd;
   cursor: pointer;
-  transition: transform 0.1s;
+  transition: transform 0.1s ease;
 }
-#clicker:active {
+
+#clickButton:active {
   transform: scale(0.95);
 }
 
 .shop {
   flex: 1;
-  text-align: left;
+  margin: 0 20px;
 }
 
-.filter-buttons {
-  margin-bottom: 10px;
-}
-.filter-buttons button {
-  margin: 2px;
+.filters button {
+  margin: 3px;
   padding: 5px 10px;
-  border: none;
-  background: #ddd;
-  cursor: pointer;
   border-radius: 5px;
-}
-.filter-buttons button:hover {
-  background: #bbb;
+  border: none;
+  background: #e0e0e0;
+  cursor: pointer;
 }
 
-#shop-list {
+.filters button:hover {
+  background: #ccc;
+}
+
+#shopItems {
   list-style: none;
   padding: 0;
 }
-#shop-list li {
-  margin: 5px 0;
-  padding: 8px;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+
+#shopItems li {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 8px 0;
+  padding: 10px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-#shop-list button {
-  padding: 5px 10px;
+#shopItems button {
+  background: #bbb;
   border: none;
+  padding: 5px 10px;
   border-radius: 5px;
-  background: #4CAF50;
-  color: white;
   cursor: pointer;
 }
-#shop-list button:disabled {
-  background: #aaa;
-  cursor: not-allowed;
+
+#shopItems button:enabled {
+  background: #4CAF50;
+  color: white;
+}
+
+#shopItems button:disabled {
+  background: #ddd;
 }
 
 .badges {
   flex: 0.5;
-  text-align: left;
 }
 
-#badge-list {
-  list-style: none;
-  padding: 0;
+.badges-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-#badge-list li {
-  margin: 5px;
+
+.badge {
   padding: 10px;
   background: #ddd;
   border-radius: 8px;
   text-align: center;
+  font-weight: bold;
 }
 
-footer {
-  margin-top: 20px;
-  padding: 10px;
-}
-
-/* Aboutページ */
-.about {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.about h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.about .content {
-  font-size: 1.2rem;
-  white-space: pre-wrap; /* 改行を適切に表示 */
-  line-height: 1.6;
-}
-
-footer {
-  margin-top: 20px;
-}
-
-footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
-
-/* フォームページ */
-.form {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.form h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.form-button {
-  padding: 15px 30px;
-  background: #4caf50;
+.badge.unlocked {
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
   color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background 0.3s;
 }
 
-.form-button:hover {
-  background: #45a049;
-}
-
-/* フッター */
 footer {
+  text-align: center;
+  padding: 10px;
   margin-top: 20px;
-}
-
-footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
+  background: #eee;
 }
