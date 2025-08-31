@@ -176,3 +176,49 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+
+
+/* 既存のCSSの下に追加 */
+.badges {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  max-width: 400px;
+}
+
+.badges ul {
+  list-style: none;
+  padding: 0;
+}
+
+.badges li {
+  margin: 8px 0;
+  padding: 8px;
+  border-radius: 6px;
+  background: #eee;
+}
+
+.badges li.unlocked {
+  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
+  color: white;
+  font-weight: bold;
+}
+
+.badge-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: opacity 0.3s ease;
+}
+.badge-notification.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
