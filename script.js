@@ -72,13 +72,17 @@ function updateBadgePanel() {
   list.innerHTML = "";
   badges.forEach(b => {
     const li = document.createElement("li");
-    li.textContent = b.name;
     if (unlockedBadges.includes(b.name)) {
+      li.textContent = b.name;
       li.classList.add("unlocked");
+    } else {
+      li.textContent = "？？？"; // ← 未獲得は隠す
+      li.classList.add("locked");
     }
     list.appendChild(li);
   });
 }
+
 
 // バッチパネル開閉
 document.getElementById("badge-btn").addEventListener("click", () => {
