@@ -70,18 +70,21 @@ const shopItems = [
   { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
 ];
 
+let currentCategory = "all"; // ← 現在のタブを保存
+
 // タブ切り替え
 tabs.forEach(tab => {
   tab.addEventListener("click", () => {
-    const category = tab.getAttribute("data-category");
-    renderShop(category);
+    currentCategory = tab.getAttribute("data-category"); // ← 選ばれたタブを記憶
+    renderShop(currentCategory);
+
     tabs.forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
   });
 });
 
 // ショップ表示
-function renderShop(category = "all") {
+function renderShop(category = currentCategory) { // ← デフォルトを現在のカテゴリに
   shopList.innerHTML = "";
   let filteredItems = [...shopItems];
 
@@ -107,54 +110,11 @@ function renderShop(category = "all") {
   });
 }
 
-// アイテム購入
-function buyItem(index) {
-  const item = shopItems[index];
-  if (count < item.cost) return;
-
-  count -= item.cost;
-  if (item.type === "auto") {
-    autoPower += item.effect;
-  } else if (item.type === "click") {
-    clickPower += item.effect;
-  } else if (item.type === "boost") {
-    if (!boostActive) {
-      boostActive = true;
-      clickPower *= item.effect;
-      setTimeout(() => {
-        clickPower /= item.effect;
-        boostActive = false;
-      }, 30000);
-    }
-  }
-  render();
-}
-
-// 自動加算
-setInterval(() => {
-  if (autoPower > 0) {
-    count += autoPower;
-    total += autoPower;
-    if (count > best) best = count;
-    render();
-  }
-}, 1000);
-
-// CPS自動減衰
-setInterval(() => {
-  cps *= 0.9;
-  if (cps < 0.01) cps = 0;
-  render();
-}, 1000);
-
 // 描画
 function render() {
   countEl.textContent = `${count}回`;
   bestEl.textContent = best;
   totalEl.textContent = total;
   cpsEl.textContent = cps.toFixed(2);
-  renderShop();
+  renderShop(currentCategory); // ← 現在のタブで再描画
 }
-
-render();
-
