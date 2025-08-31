@@ -84,31 +84,32 @@ tabs.forEach(tab => {
 });
 
 // ショップ表示
-function renderShop(category = currentCategory) { // ← デフォルトを現在のカテゴリに
+function renderShop(category = currentCategory) {
   shopList.innerHTML = "";
-  let filteredItems = [...shopItems];
+  let filteredItems = shopItems.map((item, index) => ({ ...item, id: index })); // ← id付与
 
-  if (category === "auto") filteredItems = shopItems.filter(item => item.type === "auto");
-  else if (category === "click") filteredItems = shopItems.filter(item => item.type === "click");
-  else if (category === "boost") filteredItems = shopItems.filter(item => item.type === "boost");
-  else if (category === "low") filteredItems = [...shopItems].sort((a, b) => a.cost - b.cost);
-  else if (category === "high") filteredItems = [...shopItems].sort((a, b) => b.cost - a.cost);
+  if (category === "auto") filteredItems = filteredItems.filter(item => item.type === "auto");
+  else if (category === "click") filteredItems = filteredItems.filter(item => item.type === "click");
+  else if (category === "boost") filteredItems = filteredItems.filter(item => item.type === "boost");
+  else if (category === "low") filteredItems = [...filteredItems].sort((a, b) => a.cost - b.cost);
+  else if (category === "high") filteredItems = [...filteredItems].sort((a, b) => b.cost - a.cost);
 
-  filteredItems.forEach((item, i) => {
+  filteredItems.forEach((item) => {
     const li = document.createElement("li");
     li.innerHTML = `
       <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name} 
       ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}`} [${item.cost}回]</span>
-      <button id="buy-${i}" ${count < item.cost ? "disabled" : ""}>購入</button>
+      <button id="buy-${item.id}" ${count < item.cost ? "disabled" : ""}>購入</button>
     `;
     shopList.appendChild(li);
 
-    document.getElementById(`buy-${i}`).addEventListener("click", () => {
+    document.getElementById(`buy-${item.id}`).addEventListener("click", () => {
       playPurchaseSound();
-      buyItem(i);
+      buyItem(item.id); // ← idを渡すので shopItems とズレない
     });
   });
 }
+
 
 // 描画
 function render() {
