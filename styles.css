@@ -83,3 +83,55 @@
   z-index: 1000;
   font-weight: bold;
 }
+
+/* レイアウト：横並び */
+.layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap; /* 狭い画面では折り返し */
+}
+
+/* 各パネル（ゲーム、ショップ、バッジ）共通 */
+.panel {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  flex: 1;
+  min-width: 280px;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* バッジ一覧 */
+#badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+.badge {
+  padding: 10px 15px;
+  border-radius: 8px;
+  background: #ddd;
+  color: #555;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+.badge:hover {
+  transform: scale(1.1);
+}
+.badge.unlocked {
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  background-size: 400% 400%;
+  color: white;
+  animation: rainbow 3s linear infinite;
+}
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
