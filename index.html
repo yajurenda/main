@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="styles.css"> <!-- 外部CSSリンク -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
@@ -32,6 +32,7 @@
     <aside class="shop">
       <div class="shop-header">
         <label><input id="mute" type="checkbox"> ミュート</label>
+        <button id="badge-btn" class="badge-btn">🏅バッチ</button>
       </div>
       <h2>ショップ</h2>
       <div class="tabs">
@@ -43,12 +44,22 @@
       </div>
       <ul id="shop-list"></ul>
     </aside>
-
-    <footer>
-      <a href="about.html">About</a> | 
-      <a href="form.html">Form</a>
-    </footer>
   </main>
+
+  <!-- バッチパネル -->
+  <div id="badge-panel" class="badge-panel">
+    <h2>🏅 獲得バッチ一覧</h2>
+    <ul id="badge-list"></ul>
+    <button id="close-badge" class="close-btn">閉じる</button>
+  </div>
+
+  <!-- 通知 -->
+  <div id="badge-toast" class="badge-toast"></div>
+
+  <footer>
+    <a href="about.html">About</a> | 
+    <a href="form.html">Form</a>
+  </footer>
 
   <script src="script.js"></script>
 </body>
