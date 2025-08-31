@@ -177,8 +177,6 @@ footer a:hover {
   text-decoration: underline;
 }
 
-
-/* 既存のCSSの下に追加 */
 .badges {
   background: #fff;
   padding: 20px;
@@ -208,15 +206,16 @@ footer a:hover {
 
 .badge-notification {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   background: #4caf50;
   color: white;
   padding: 12px 20px;
   border-radius: 8px;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  transition: opacity 0.3s ease;
+  opacity: 1;
+  transition: opacity 0.5s ease;
 }
 .badge-notification.hidden {
   opacity: 0;
