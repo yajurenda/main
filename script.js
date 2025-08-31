@@ -1,157 +1,119 @@
 let count = 0;
-let best = 0;
-let total = 0;
+let totalCount = 0;
+let record = 0;
 let cps = 0;
-let clickPower = 1;
-let autoPower = 0;
-let lastClickTime = Date.now();
-let boostActive = false;
+let clickValue = 1;
+let autoCps = 0;
+let mute = false;
 
-const countEl = document.getElementById("count");
-const bestEl = document.getElementById("best");
-const totalEl = document.getElementById("total");
-const cpsEl = document.getElementById("cps");
 const clicker = document.getElementById("clicker");
-const muteEl = document.getElementById("mute");
+const countDisplay = document.getElementById("count");
+const recordDisplay = document.getElementById("record");
+const cpsDisplay = document.getElementById("cps");
+const muteCheckbox = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
-const tabs = document.querySelectorAll(".tab");
 const badgeList = document.getElementById("badge-list");
 
 const clickSound = new Audio("click1.mp3");
-const purchaseSound = new Audio("buy_sound.mp3");
+const buySound = new Audio("buy_sound.mp3");
 
-function playClickSound() {
-  if (muteEl.checked) return;
-  clickSound.currentTime = 0;
-  clickSound.play();
-}
-function playPurchaseSound() {
-  if (muteEl.checked) return;
-  purchaseSound.currentTime = 0;
-  purchaseSound.play();
-}
+// ミュート切り替え
+muteCheckbox.addEventListener("change", () => {
+  mute = muteCheckbox.checked;
+});
 
-// ✅ クリック
+// クリック処理
 clicker.addEventListener("click", () => {
-  const now = Date.now();
-  const diff = (now - lastClickTime) / 1000;
-  if (diff > 0) cps = 1 / diff;
-  lastClickTime = now;
-
-  count += clickPower;
-  total += clickPower;
-  if (count > best) best = count;
-
-  playClickSound();
-  checkBadges();
-  render();
+  count += clickValue;
+  totalCount += clickValue;
+  updateDisplay();
+  if (!mute) clickSound.play();
 });
 
-// ✅ エンターキー禁止
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    event.preventDefault();
-  }
-});
-
-const shopItems = [
-  { type: "auto", name: "24歳です", effect: 1, cost: 100 },
-  { type: "auto", name: "学生です", effect: 5, cost: 500 },
-  { type: "auto", name: "じゃあオナニー", effect: 20, cost: 2000 },
-  { type: "auto", name: "...とかっていうのは？", effect: 100, cost: 10000 },
-  { type: "auto", name: "やりますねぇ！", effect: 500, cost: 50000 },
-
-  { type: "click", name: "アイスティー", effect: 1, cost: 50 },
-  { type: "click", name: "暴れんなよ", effect: 3, cost: 300 },
-  { type: "click", name: "お前のことが好きだったんだよ", effect: 10, cost: 2000 },
-  { type: "click", name: "イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect: 50, cost: 15000 },
-
-  { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
-];
-
-tabs.forEach(tab => {
-  tab.addEventListener("click", () => {
-    const category = tab.getAttribute("data-category");
-    renderShop(category);
-    tabs.forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-  });
-});
-
-function renderShop(category = "all") {
-  shopList.innerHTML = "";
-  let filteredItems = shopItems;
-
-  if (category === "auto") filteredItems = shopItems.filter(i => i.type === "auto");
-  else if (category === "click") filteredItems = shopItems.filter(i => i.type === "click");
-  else if (category === "boost") filteredItems = shopItems.filter(i => i.type === "boost");
-  else if (category === "low") filteredItems = [...shopItems].sort((a, b) => a.cost - b.cost);
-  else if (category === "high") filteredItems = [...shopItems].sort((a, b) => b.cost - a.cost);
-
-  filteredItems.forEach((item, i) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name} 
-      ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}` } [${item.cost}回]</span>
-      <button id="buy-${i}" ${count < item.cost ? "disabled" : ""}>購入</button>
-    `;
-    shopList.appendChild(li);
-
-    document.getElementById(`buy-${i}`).addEventListener("click", () => {
-      playPurchaseSound();
-      buyItem(i);
-    });
-  });
-}
-
-function buyItem(index) {
-  const item = shopItems[index];
-  if (count < item.cost) return;
-
-  count -= item.cost;
-  if (item.type === "auto") autoPower += item.effect;
-  else if (item.type === "click") clickPower += item.effect;
-  else if (item.type === "boost" && !boostActive) {
-    boostActive = true;
-    clickPower *= item.effect;
-    setTimeout(() => {
-      clickPower /= item.effect;
-      boostActive = false;
-    }, 30000);
-  }
-  checkBadges();
-  render();
-}
-
-// ✅ バッジシステム
-function checkBadges() {
-  const badgeElems = badgeList.querySelectorAll(".badge");
-  if (total >= 100) badgeElems[0].classList.replace("locked", "unlocked");
-  if (total >= 500) badgeElems[1].classList.replace("locked", "unlocked");
-  if (total >= 2000) badgeElems[2].classList.replace("locked", "unlocked");
-  if (total >= 10000) badgeElems[3].classList.replace("locked", "unlocked");
-  if (total >= 20000) badgeElems[4].classList.replace("locked", "unlocked");
-  if (total >= 50000) badgeElems[5].classList.replace("locked", "unlocked");
-  if (total >= 100000) badgeElems[6].classList.replace("locked", "unlocked");
-  if (total >= 200000) badgeElems[7].classList.replace("locked", "unlocked");
-}
-
+// 自動加算処理
 setInterval(() => {
-  if (autoPower > 0) {
-    count += autoPower;
-    total += autoPower;
-    if (count > best) best = count;
-    checkBadges();
-    render();
-  }
+  count += autoCps;
+  totalCount += autoCps;
+  updateDisplay();
 }, 1000);
 
-function render() {
-  countEl.textContent = `${count}回`;
-  bestEl.textContent = best;
-  totalEl.textContent = total;
-  cpsEl.textContent = cps.toFixed(2);
-  renderShop(document.querySelector(".tab.active").dataset.category);
+// 表示更新
+function updateDisplay() {
+  countDisplay.textContent = `${count}回`;
+  record = Math.max(record, totalCount);
+  recordDisplay.textContent = `最高: ${record} / 合計: ${totalCount}`;
+  cpsDisplay.textContent = `CPS: ${(autoCps + clickValue).toFixed(2)}`;
 }
 
-render();
+// ショップ商品一覧
+const shopItems = [
+  { name: "オート｜24歳です", type: "auto", effect: 1, cost: 100 },
+  { name: "オート｜学生です", type: "auto", effect: 5, cost: 500 },
+  { name: "オート｜じゃあオナニー", type: "auto", effect: 20, cost: 2000 },
+  { name: "オート｜...とかっていうのは？", type: "auto", effect: 100, cost: 10000 },
+  { name: "オート｜やりますねぇ！", type: "auto", effect: 500, cost: 50000 },
+  { name: "精力剤｜アイスティー", type: "click", effect: 1, cost: 50 },
+  { name: "精力剤｜暴れんなよ", type: "click", effect: 3, cost: 300 },
+  { name: "精力剤｜お前のことが好きだったんだよ", type: "click", effect: 10, cost: 2000 },
+  { name: "精力剤｜イキスギィ！イク！イクイクイクイク…アッ……ァ...", type: "click", effect: 50, cost: 15000 },
+  { name: "ブースト｜ンアッー！", type: "boost", effect: 2, cost: 1000 }
+];
+
+// ショップ描画
+function renderShop(items) {
+  shopList.innerHTML = "";
+  items.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${item.name} [${item.cost}回]`;
+    const btn = document.createElement("button");
+    btn.textContent = "購入";
+    btn.disabled = count < item.cost;
+    btn.addEventListener("click", () => buyItem(index));
+    li.appendChild(btn);
+    shopList.appendChild(li);
+  });
+}
+
+// 購入処理
+function buyItem(index) {
+  const item = shopItems[index];
+  if (count >= item.cost) {
+    count -= item.cost;
+    if (item.type === "auto") autoCps += item.effect;
+    if (item.type === "click") clickValue += item.effect;
+    if (item.type === "boost") activateBoost(item.effect);
+    if (!mute) buySound.play();
+    updateDisplay();
+    renderShop(shopItems);
+  }
+}
+
+// ブースト
+function activateBoost(multiplier) {
+  clickValue *= multiplier;
+  setTimeout(() => {
+    clickValue /= multiplier;
+  }, 30000); // 30秒
+}
+
+// フィルタ・ソート
+document.querySelectorAll("[data-filter]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const type = btn.dataset.filter;
+    if (type === "all") renderShop(shopItems);
+    else renderShop(shopItems.filter(i => i.type === type));
+  });
+});
+
+document.querySelectorAll("[data-sort]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const sorted = [...shopItems].sort((a, b) => 
+      btn.dataset.sort === "asc" ? a.cost - b.cost : b.cost - a.cost
+    );
+    renderShop(sorted);
+  });
+});
+
+// 初期描画
+renderShop(shopItems);
+updateDisplay();
