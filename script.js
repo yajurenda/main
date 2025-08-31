@@ -203,3 +203,45 @@ function updateBadgePanel() {
     badgeList.appendChild(li);
   });
 }
+
+// ===== 保存機能 =====
+function saveGame() {
+  const saveData = {
+    count: count,
+    best: best,
+    total: total,
+    autoPower: autoPower,
+    clickPower: clickPower,
+    badges: badges,
+    shopItems: shopItems // ショップの購入状況ごと保存
+  };
+  localStorage.setItem("yajurenSave", JSON.stringify(saveData));
+}
+
+// ===== 読み込み機能 =====
+function loadGame() {
+  const data = localStorage.getItem("yajurenSave");
+  if (data) {
+    const saveData = JSON.parse(data);
+
+    count = saveData.count || 0;
+    best = saveData.best || 0;
+    total = saveData.total || 0;
+    autoPower = saveData.autoPower || 0;
+    clickPower = saveData.clickPower || 1;
+    badges = saveData.badges || badges;
+
+    // ショップ復元（保存されてるものがあれば）
+    if (saveData.shopItems) {
+      shopItems = saveData.shopItems;
+    }
+  }
+  render();
+  renderBadges();
+}
+
+// ===== 自動保存（30秒ごと） =====
+setInterval(saveGame, 30000);
+
+// ===== ページ読み込み時に復元 =====
+window.onload = loadGame;
