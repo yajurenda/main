@@ -221,3 +221,19 @@ footer a:hover {
   opacity: 0;
   pointer-events: none;
 }
+
+.badge-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #333;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  max-width: 250px;
+  word-break: keep-all;
+}
