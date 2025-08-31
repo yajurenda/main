@@ -1,53 +1,73 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>やじゅれんだ</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="ロゴ" class="logo">
-    <h1>やじゅれんだ！</h1>
-    <div class="stats">
-      <p><span id="count">0</span>回</p>
-      <p>最高: <span id="maxCount">0</span> / 合計: <span id="totalCount">0</span></p>
-      <p>CPS: <span id="cps">0.00</span></p>
+  <!-- Header -->
+  <header class="site-header">
+    <img src="logo.png" alt="やじゅれんだ ロゴ" class="logo"/>
+    <div class="volume">
+      <label class="mute"><input id="mute" type="checkbox"> ミュート</label>
+      <input id="volume" type="range" min="0" max="1" step="0.01" value="1" aria-label="音量"/>
     </div>
   </header>
 
-  <main>
-    <section class="clicker">
-      <img src="click.png" id="clickButton" alt="クリック">
-      <p>※ 初回クリック後に音が有効になります。</p>
-      <label><input type="checkbox" id="mute"> ミュート</label>
-    </section>
-
-    <section class="shop">
-      <h2>ショップ</h2>
-      <div class="filters">
-        <button data-filter="all">すべて</button>
-        <button data-filter="auto">オート</button>
-        <button data-filter="power">精力剤</button>
-        <button data-filter="boost">ブースト</button>
-        <button data-sort="cheap">安い順</button>
-        <button data-sort="expensive">高い順</button>
+  <!-- 3カラム -->
+  <main class="grid">
+    <!-- ゲーム本体 -->
+    <section class="card game">
+      <h1 class="title">やじゅれんだ！</h1>
+      <div class="stats">
+        <div class="count"><span id="count">0</span>回</div>
+        <div class="sub">最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
+        <div class="sub">CPS: <span id="cps">0.00</span></div>
       </div>
-      <ul id="shopItems"></ul>
+
+      <button id="clicker" class="round-button" aria-label="連打">
+        <img src="click.png" alt="クリック"/>
+      </button>
+
+      <p class="note">※ 初回クリック後に音が有効になります。</p>
     </section>
 
-    <section class="badges">
-      <h2>獲得バッジ</h2>
-      <div id="badgesContainer" class="badges-grid"></div>
+    <!-- ショップ -->
+    <section class="card shop">
+      <h2>ショップ</h2>
+
+      <div class="tabs">
+        <button class="tab active" data-category="all">すべて</button>
+        <button class="tab" data-category="auto">オート</button>
+        <button class="tab" data-category="click">精力剤</button>
+        <button class="tab" data-category="boost">ブースト</button>
+        <button class="tab" data-category="low">安い順</button>
+        <button class="tab" data-category="high">高い順</button>
+      </div>
+
+      <ul id="shop-list" class="shop-list"></ul>
     </section>
+
+    <!-- バッジ -->
+    <aside class="card badges">
+      <h2>獲得バッジ</h2>
+      <ul id="badge-list" class="badge-list"></ul>
+    </aside>
   </main>
 
-  <footer>
-    <a href="about.html">About</a> | <a href="form.html">Form</a>
+  <footer class="site-footer">
+    <a href="about.html">About</a> ・ <a href="form.html">Form</a>
   </footer>
 
-  <audio id="clickSound" src="click1.mp3"></audio>
-  <audio id="buySound" src="buy_sound.mp3"></audio>
+  <!-- トースト通知 -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Audio -->
+  <audio id="se-click" src="click1.mp3" preload="auto"></audio>
+  <audio id="se-buy"   src="buy_sound.mp3" preload="auto"></audio>
+
   <script src="script.js"></script>
 </body>
 </html>
