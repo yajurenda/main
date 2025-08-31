@@ -25,14 +25,14 @@ body {
   justify-content: center;
   align-items: flex-start;
   gap: 30px;
-  flex-wrap: wrap;
+  flex-direction: column;
   padding: 20px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
-/* ゲーム */
+/* ゲーム本体 */
 .game {
   background: #fff;
   padding: 20px;
@@ -48,11 +48,13 @@ body {
   cursor: pointer;
   margin: 20px 0;
 }
+
 #clicker img {
   width: 200px;
-  border-radius: 50%;
+  border-radius: 12px;
   transition: transform 0.1s ease;
 }
+
 #clicker:active img {
   transform: scale(0.9);
 }
@@ -67,34 +69,44 @@ body {
   display: inline-block;
   margin-bottom: 20px;
 }
+
 .round-button:hover {
   background: #ff5252;
+}
+
+.round-button img {
+  width: 180px;
+  border-radius: 50%;
+  transition: transform 0.1s ease;
 }
 
 /* ショップ */
 .shop {
   flex: 1;
-  max-width: 500px;
+  max-width: 600px;
   background: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: left;
+  margin-top: 20px;
 }
 
 .shop-header {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 15px;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
 }
+
 .tab {
-  padding: 6px 14px;
+  padding: 10px 20px;
   border: none;
   background: #4caf50;
   color: white;
@@ -102,9 +114,7 @@ body {
   border-radius: 5px;
   transition: background 0.3s;
 }
-.tab.active {
-  background: #2e7d32;
-}
+
 .tab:hover {
   background: #45a049;
 }
@@ -113,15 +123,17 @@ body {
   list-style: none;
   padding: 0;
 }
+
 .shop li {
-  margin: 8px 0;
-  padding: 8px;
+  margin: 10px 0;
+  padding: 10px;
   background: #f0f0f0;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .shop button {
   padding: 5px 10px;
   border: none;
@@ -130,155 +142,148 @@ body {
   color: white;
   cursor: pointer;
 }
+
 .shop button:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
 
-/* バッジ */
-.badge-panel {
+/* バッジ一覧 */
+.badges {
   flex: 1;
-  max-width: 250px;
+  max-width: 600px;
   background: #fff;
-  padding: 15px;
+  padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: left;
+  margin-top: 20px;
 }
-.badge-panel ul {
+
+.badges ul {
   list-style: none;
   padding: 0;
 }
-.badge-panel li {
-  padding: 6px;
-  margin: 6px 0;
-  border-radius: 6px;
+
+.badges li {
+  margin: 10px 0;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.badges li.locked {
+  background: #ddd;
+  color: #aaa;
+}
+
+.badges li.unlocked {
+  background: #ffeaa7;
+  font-weight: bold;
+}
+
+.badges li:hover {
+  background: #ffeaa7;
+}
+
+/* バッジ通知 */
+.badge-notice {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff7675;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  display: none;
+  animation: fadeInOut 3s ease;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(20px); }
+}
+
+/* スマホ対応 */
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+    align-items: center;
+  }
+  .shop, .badges {
+    max-width: 100%;
+  }
+}
+
+/* Aboutページ */
+.about {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 20px auto;
   text-align: center;
 }
-.badge-panel li.locked {
-  background: #ddd;
-  color: #777;
-  font-style: italic;
+
+.about h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
-.badge-panel li.unlocked {
-  background: #ffe082;
-  font-weight: bold;
+
+.about .content {
+  font-size: 1.2rem;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* フォームページ */
+.form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.form h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.form-button {
+  padding: 15px 30px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.form-button:hover {
+  background: #45a049;
 }
 
 /* フッター */
 footer {
-  margin: 20px auto;
+  margin-top: 20px;
 }
+
 footer a {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #4caf50;
   text-decoration: none;
 }
+
 footer a:hover {
   text-decoration: underline;
-}
-
-/* 既存のCSSの下に追加 */
-.badges {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-top: 20px;
-  max-width: 400px;
-}
-
-.badges ul {
-  list-style: none;
-  padding: 0;
-}
-
-.badges li {
-  margin: 8px 0;
-  padding: 8px;
-  border-radius: 6px;
-  background: #eee;
-}
-
-.badges li.unlocked {
-  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-  color: white;
-  font-weight: bold;
-}
-
-.badge-notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #4caf50;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  transition: opacity 0.3s ease;
-}
-.badge-notification.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.badges {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-top: 20px;
-  max-width: 400px;
-}
-
-.badges ul {
-  list-style: none;
-  padding: 0;
-}
-
-.badges li {
-  margin: 8px 0;
-  padding: 8px;
-  border-radius: 6px;
-  background: #eee;
-}
-
-.badges li.unlocked {
-  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-  color: white;
-  font-weight: bold;
-}
-
-.badge-notification {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #4caf50;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-.badge-notification.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.badge-notification {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #333;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 1rem;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  opacity: 1;
-  transition: opacity 0.5s ease;
-  max-width: 250px;
-  word-break: keep-all;
 }
