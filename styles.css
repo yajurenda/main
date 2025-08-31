@@ -3,11 +3,6 @@ body {
   background: #f5f7fa;
   margin: 0;
   padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  flex-direction: column;
   text-align: center;
 }
 
@@ -19,16 +14,15 @@ body {
   margin: 30px auto;
 }
 
-/* ゲーム＆ショップレイアウト */
+/* レイアウト */
 .layout {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   gap: 30px;
-  flex-direction: row;  /* 横並びに変更 */
   padding: 20px;
   width: 100%;
-  max-width: 1200px;  /* 幅を広げる */
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -59,7 +53,6 @@ body {
   transform: scale(0.9);
 }
 
-/* 丸型ボタン */
 .round-button {
   background: #ff7675;
   border-radius: 50%;
@@ -77,7 +70,6 @@ body {
 .round-button img {
   width: 180px;
   border-radius: 50%;
-  transition: transform 0.1s ease;
 }
 
 /* ショップ */
@@ -89,12 +81,6 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: left;
-}
-
-.shop-header {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
 }
 
 .tabs {
@@ -111,16 +97,10 @@ body {
   color: white;
   cursor: pointer;
   border-radius: 5px;
-  transition: background 0.3s;
 }
 
-.tab:hover {
-  background: #45a049;
-}
-
-.shop ul {
-  list-style: none;
-  padding: 0;
+.tab.active {
+  background: #2e7d32;
 }
 
 .shop li {
@@ -133,189 +113,46 @@ body {
   align-items: center;
 }
 
-.shop button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 6px;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-}
-
-.shop button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-/* ミュート設定 */
-.shop-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.shop-header label {
-  font-size: 16px;
-}
-
-/* バッジ一覧 */
+/* バッジ */
 .badges {
-  margin-top: 20px;
-  padding: 20px;
   background: #fff;
+  margin: 20px auto;
+  padding: 20px;
   border-radius: 12px;
+  max-width: 1200px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: center;
 }
 
-.badges h2 {
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-}
-
-.badge-list {
+#badge-list {
   display: flex;
+  gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
 }
 
 .badge {
-  width: 100px;
-  height: 100px;
-  border-radius: 12px;
-  background: #ddd;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #666;
+  padding: 10px;
+  background: #e0e0e0;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
+  min-width: 100px;
+  text-align: center;
 }
 
 .badge.unlocked {
-  background: linear-gradient(135deg, #ffd700, #ffb347);
+  background: linear-gradient(45deg, #ffcc00, #ff66cc, #66ccff);
   color: white;
-}
-
-.badge.hidden {
-  background: #bbb;
-  color: transparent;
-  text-shadow: none;
-}
-
-/* 獲得通知 */
-.badge-toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #4caf50;
-  color: white;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
   font-weight: bold;
 }
 
-@keyframes fadein {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeout {
-  from { opacity: 1; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(20px); }
-}
-
-/* スマホ対応 */
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-    align-items: center;
-  }
-  .shop {
-    max-width: 100%;
-  }
-  .badge-list {
-    gap: 10px;
-  }
-  .badge {
-    width: 80px;
-    height: 80px;
-    font-size: 0.8rem;
-  }
-}
-
-/* Aboutページ */
-.about {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.about h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.about .content {
-  font-size: 1.2rem;
-  white-space: pre-wrap;
-  line-height: 1.6;
-}
-
-footer {
-  margin-top: 20px;
-}
-
-footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
-
-/* フォームページ */
-.form {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.form h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.form-button {
-  padding: 15px 30px;
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.form-button:hover {
-  background: #45a049;
+/* 通知 */
+#notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #333;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  display: none;
 }
