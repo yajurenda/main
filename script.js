@@ -203,3 +203,19 @@ function updateBadgePanel() {
     badgeList.appendChild(li);
   });
 }
+
+// ✅ バッジ表示
+function renderBadges() {
+  badgeList.innerHTML = "";
+  badges.forEach(badge => {
+    const div = document.createElement("div");
+    div.className = "badge";
+    if (unlockedBadges.has(badge.id)) {
+      div.classList.add("unlocked");
+      div.textContent = badge.name;
+    } else {
+      div.textContent = "???";
+    }
+    badgeList.appendChild(div);
+  });
+}
