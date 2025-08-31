@@ -25,11 +25,11 @@ body {
   justify-content: center;
   align-items: flex-start;
   gap: 30px;
-  flex-direction: column;  /* ゲームとショップが縦に並ぶ */
+  flex-direction: row;  /* 横並びに変更 */
   padding: 20px;
   width: 100%;
-  max-width: 900px;  /* 幅を制限 */
-  margin: 0 auto;  /* 中央揃え */
+  max-width: 1200px;  /* 幅を広げる */
+  margin: 0 auto;
 }
 
 /* ゲーム本体 */
@@ -67,7 +67,7 @@ body {
   cursor: pointer;
   transition: transform 0.1s ease, background 0.3s;
   display: inline-block;
-  margin-bottom: 20px; /* ボタンと次の要素の間に余白 */
+  margin-bottom: 20px;
 }
 
 .round-button:hover {
@@ -89,7 +89,6 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: left;
-  margin-top: 20px;
 }
 
 .shop-header {
@@ -148,7 +147,7 @@ body {
   cursor: not-allowed;
 }
 
-/* ミュート設定の位置 */
+/* ミュート設定 */
 .shop-header {
   display: flex;
   justify-content: center;
@@ -160,6 +159,81 @@ body {
   font-size: 16px;
 }
 
+/* バッジ一覧 */
+.badges {
+  margin-top: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.badges h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.badge {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background: #ddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+
+.badge.unlocked {
+  background: linear-gradient(135deg, #ffd700, #ffb347);
+  color: white;
+}
+
+.badge.hidden {
+  background: #bbb;
+  color: transparent;
+  text-shadow: none;
+}
+
+/* 獲得通知 */
+.badge-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  font-weight: bold;
+}
+
+@keyframes fadein {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeout {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(20px); }
+}
+
 /* スマホ対応 */
 @media (max-width: 900px) {
   .layout {
@@ -168,6 +242,14 @@ body {
   }
   .shop {
     max-width: 100%;
+  }
+  .badge-list {
+    gap: 10px;
+  }
+  .badge {
+    width: 80px;
+    height: 80px;
+    font-size: 0.8rem;
   }
 }
 
@@ -189,7 +271,7 @@ body {
 
 .about .content {
   font-size: 1.2rem;
-  white-space: pre-wrap; /* 改行を適切に表示 */
+  white-space: pre-wrap;
   line-height: 1.6;
 }
 
@@ -236,19 +318,4 @@ footer a:hover {
 
 .form-button:hover {
   background: #45a049;
-}
-
-/* フッター */
-footer {
-  margin-top: 20px;
-}
-
-footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
 }
