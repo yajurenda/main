@@ -4,42 +4,29 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
   flex-direction: column;
-  text-align: center;
+  align-items: center;
 }
 
-/* ロゴ */
-.logo {
-  max-width: 600px;
-  height: auto;
-  display: block;
-  margin: 30px auto;
-}
-
-/* レイアウト */
+/* レイアウト 横並び */
 .layout {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 30px;
-  flex-direction: column;
-  padding: 20px;
+  gap: 20px;
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: 20px auto;
 }
 
-/* ゲーム本体 */
+/* ゲーム */
 .game {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   flex: 1;
-  max-width: 400px;
+  text-align: center;
 }
 
 #clicker {
@@ -48,75 +35,22 @@ body {
   cursor: pointer;
   margin: 20px 0;
 }
-
 #clicker img {
   width: 200px;
-  border-radius: 12px;
+  border-radius: 50%;
   transition: transform 0.1s ease;
 }
-
 #clicker:active img {
   transform: scale(0.9);
-}
-
-/* 丸型ボタン */
-.round-button {
-  background: #ff7675;
-  border-radius: 50%;
-  padding: 20px;
-  cursor: pointer;
-  transition: transform 0.1s ease, background 0.3s;
-  display: inline-block;
-  margin-bottom: 20px;
-}
-
-.round-button:hover {
-  background: #ff5252;
-}
-
-.round-button img {
-  width: 180px;
-  border-radius: 50%;
-  transition: transform 0.1s ease;
 }
 
 /* ショップ */
 .shop {
   flex: 1;
-  max-width: 600px;
   background: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: left;
-  margin-top: 20px;
-}
-
-.shop-header {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.tabs {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tab {
-  padding: 10px 20px;
-  border: none;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s;
-}
-
-.tab:hover {
-  background: #45a049;
 }
 
 .shop ul {
@@ -142,148 +76,53 @@ body {
   color: white;
   cursor: pointer;
 }
-
 .shop button:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
 
-/* バッジ一覧 */
+/* バッジ */
 .badges {
-  flex: 1;
-  max-width: 600px;
+  flex: 0.8;
   background: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: left;
-  margin-top: 20px;
 }
 
 .badges ul {
   list-style: none;
   padding: 0;
 }
-
 .badges li {
-  margin: 10px 0;
-  padding: 10px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
+  margin: 8px 0;
+  padding: 6px 10px;
+  border-radius: 6px;
 }
-
 .badges li.locked {
-  background: #ddd;
   color: #aaa;
 }
-
 .badges li.unlocked {
-  background: #ffeaa7;
+  color: #ff9800;
   font-weight: bold;
-}
-
-.badges li:hover {
-  background: #ffeaa7;
+  cursor: pointer;
 }
 
 /* バッジ通知 */
-.badge-notice {
+#badge-notice {
   position: fixed;
-  bottom: 20px;
   right: 20px;
-  background: #ff7675;
-  color: white;
-  padding: 15px 20px;
+  bottom: 20px;
+  background: #333;
+  color: #fff;
+  padding: 12px 20px;
   border-radius: 8px;
-  font-weight: bold;
   display: none;
   animation: fadeInOut 3s ease;
 }
-
 @keyframes fadeInOut {
   0% { opacity: 0; transform: translateY(20px); }
   10% { opacity: 1; transform: translateY(0); }
   90% { opacity: 1; }
   100% { opacity: 0; transform: translateY(20px); }
-}
-
-/* スマホ対応 */
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-    align-items: center;
-  }
-  .shop, .badges {
-    max-width: 100%;
-  }
-}
-
-/* Aboutページ */
-.about {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.about h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.about .content {
-  font-size: 1.2rem;
-  white-space: pre-wrap;
-  line-height: 1.6;
-}
-
-/* フォームページ */
-.form {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.form h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.form-button {
-  padding: 15px 30px;
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.form-button:hover {
-  background: #45a049;
-}
-
-/* フッター */
-footer {
-  margin-top: 20px;
-}
-
-footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
 }
