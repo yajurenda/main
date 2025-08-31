@@ -104,3 +104,85 @@ footer {
   margin-top: 20px;
   padding: 10px;
 }
+
+/* Aboutページ */
+.about {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.about h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.about .content {
+  font-size: 1.2rem;
+  white-space: pre-wrap; /* 改行を適切に表示 */
+  line-height: 1.6;
+}
+
+footer {
+  margin-top: 20px;
+}
+
+footer a {
+  font-size: 1.2rem;
+  color: #4caf50;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* フォームページ */
+.form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.form h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.form-button {
+  padding: 15px 30px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.form-button:hover {
+  background: #45a049;
+}
+
+/* フッター */
+footer {
+  margin-top: 20px;
+}
+
+footer a {
+  font-size: 1.2rem;
+  color: #4caf50;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
