@@ -187,3 +187,19 @@ function render() {
 
 render();
 updateBadgePanel();
+
+// updateBadgePanel の修正版
+function updateBadgePanel() {
+  badgeList.innerHTML = "";
+  badges.forEach(b => {
+    const li = document.createElement("li");
+    li.textContent = b.unlocked ? b.name : "？？？";
+    if (b.unlocked) {
+      li.classList.add("unlocked");
+      li.addEventListener("click", () => {
+        showBadgeNotification(`${b.name}：${b.clicks}回で獲得`);
+      });
+    }
+    badgeList.appendChild(li);
+  });
+}
