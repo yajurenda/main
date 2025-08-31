@@ -3,56 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="layout">
-    <!-- ゲーム本体 -->
-    <section class="game panel">
+  <div class="container">
+    <header>
       <h1>やじゅれんだ！</h1>
-      <p id="count">0回</p>
-      <p>最高: <span id="best">0</span> / 合計: <span id="total">0</span></p>
-      <p>CPS: <span id="cps">0.00</span></p>
-      <button id="clicker" class="round-button">
-        <img src="yaju.jpg" alt="クリック">
-      </button>
-      <p class="note">※ 初回クリック後に音が有効になります。</p>
-    </section>
+      <div class="stats">
+        <p id="count">0回</p>
+        <p>最高: <span id="best">0</span> / 合計: <span id="total">0</span></p>
+        <p>CPS: <span id="cps">0.00</span></p>
+      </div>
+    </header>
 
-    <!-- ショップ -->
-    <aside class="shop panel">
-      <div class="shop-header">
+    <main>
+      <div class="click-area">
+        <img id="clicker" src="logo.png" alt="クリック" class="circle-img">
+        <p>※ 初回クリック後に音が有効になります。</p>
         <label><input type="checkbox" id="mute"> ミュート</label>
       </div>
-      <h2>ショップ</h2>
-      <div class="tabs">
-        <button class="tab active" data-category="all">すべて</button>
-        <button class="tab" data-category="auto">オート</button>
-        <button class="tab" data-category="click">精力剤</button>
-        <button class="tab" data-category="boost">ブースト</button>
-        <button class="tab" data-category="low">安い順</button>
-        <button class="tab" data-category="high">高い順</button>
+
+      <div class="shop">
+        <h2>ショップ</h2>
+        <div class="tabs">
+          <button class="tab active" data-category="all">すべて</button>
+          <button class="tab" data-category="auto">オート</button>
+          <button class="tab" data-category="click">精力剤</button>
+          <button class="tab" data-category="boost">ブースト</button>
+          <button class="tab" data-category="low">安い順</button>
+          <button class="tab" data-category="high">高い順</button>
+        </div>
+        <ul id="shop-list"></ul>
       </div>
-      <ul id="shop-list"></ul>
-    </aside>
 
-    <!-- バッジ -->
-    <aside class="badges panel">
-      <h2>獲得バッジ</h2>
-      <ul id="badge-list">
-        <li class="badge">？？？</li>
-        <li class="badge">？？？</li>
-        <li class="badge">？？？</li>
-        <li class="badge">？？？</li>
-        <li class="badge">？？？</li>
-      </ul>
-    </aside>
-  </main>
+      <aside class="badges">
+        <h2>獲得バッジ</h2>
+        <div id="badge-list" class="badge-list">
+          <span class="badge locked">？？？</span>
+          <span class="badge locked">？？？</span>
+          <span class="badge locked">？？？</span>
+          <span class="badge locked">？？？</span>
+          <span class="badge locked">？？？</span>
+          <span class="badge locked">？？？</span>
+          <span class="badge locked">？？？</span>
+          <span class="badge locked">？？？</span>
+        </div>
+      </aside>
+    </main>
 
-  <footer>
-    <a href="about.html">About</a> | 
-    <a href="form.html">Form</a>
-  </footer>
+    <footer>
+      <a href="about.html">About</a> | 
+      <a href="form.html">Form</a>
+    </footer>
+  </div>
 
   <script src="script.js"></script>
 </body>
