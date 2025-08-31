@@ -70,16 +70,16 @@ function checkBadges() {
   updateBadgePanel();
 }
 
-// バッジ通知
+// バッジ通知（右下に出す）
 function showBadgeNotification(name) {
-  badgeNotification.textContent = `バッチを獲得: ${name}`;
+  badgeNotification.textContent = `バッジ獲得: ${name}`;
   badgeNotification.classList.remove("hidden");
   setTimeout(() => {
     badgeNotification.classList.add("hidden");
   }, 3000);
 }
 
-// クリック
+// クリック処理
 clicker.addEventListener("click", () => {
   count += clickPower;
   total += clickPower;
@@ -89,7 +89,7 @@ clicker.addEventListener("click", () => {
   render();
 });
 
-// ショップ
+// ショップアイテム
 const shopItems = [
   { type: "auto", name: "24歳です", effect: 1, cost: 100 },
   { type: "auto", name: "学生です", effect: 5, cost: 500 },
@@ -115,7 +115,7 @@ tabs.forEach(tab => {
   });
 });
 
-// ショップ表示
+// ショップ描画
 function renderShop() {
   shopList.innerHTML = "";
   let filteredItems = [...shopItems];
@@ -131,11 +131,15 @@ function renderShop() {
     li.innerHTML = `
       <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name} 
       ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}` } [${item.cost}回]</span>
-      <button id="buy-${i}" ${count < item.cost ? "disabled" : ""}>購入</button>
+      <button class="buy-btn" data-name="${item.name}" ${count < item.cost ? "disabled" : ""}>購入</button>
     `;
     shopList.appendChild(li);
+  });
 
-    document.getElementById(`buy-${i}`).addEventListener("click", () => {
+  // ボタンイベント再付与
+  document.querySelectorAll(".buy-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const item = shopItems.find(i => i.name === btn.dataset.name);
       playPurchaseSound();
       buyItem(item);
     });
@@ -161,13 +165,8 @@ function buyItem(item) {
   render();
 }
 
-// 自動加算 & CPS
+// 自動加算
 setInterval(() => {
-  const now = Date.now();
-  const elapsed = (now - lastUpdateTime) / 1000;
-  lastUpdateTime = now;
-  cps = count / (elapsed > 0 ? elapsed : 1);
-
   if (autoPower > 0) {
     count += autoPower;
     total += autoPower;
