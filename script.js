@@ -1,135 +1,274 @@
+/* =========================
+   Game State
+========================= */
 let count = 0;
-let totalCount = 0;
-let maxCount = 0;
+let best = 0;
+let total = 0;
 let cps = 0;
 let clickPower = 1;
 let autoPower = 0;
-let boostActive = false;
-let boostTimeout = null;
+let lastClickTime = Date.now();
 
-const countEl = document.getElementById("count");
-const totalEl = document.getElementById("totalCount");
-const maxEl = document.getElementById("maxCount");
-const cpsEl = document.getElementById("cps");
-const clickBtn = document.getElementById("clickButton");
-const clickSound = document.getElementById("clickSound");
-const buySound = document.getElementById("buySound");
-const muteCheck = document.getElementById("mute");
-const shopList = document.getElementById("shopItems");
-const badgesContainer = document.getElementById("badgesContainer");
+let selectedCategory = "all";
+let boostActive = false; // 30s中は再購入不可
 
-const shopItems = [
-  { name: "オート｜24歳です", type: "auto", effect: 1, cost: 100 },
-  { name: "オート｜学生です", type: "auto", effect: 5, cost: 500 },
-  { name: "オート｜じゃあオナニー", type: "auto", effect: 20, cost: 2000 },
-  { name: "オート｜...とかっていうのは？", type: "auto", effect: 100, cost: 10000 },
-  { name: "オート｜やりますねぇ！", type: "auto", effect: 500, cost: 50000 },
+/* =========================
+   Elements
+========================= */
+const el = (id) => document.getElementById(id);
+const countEl = el("count");
+const bestEl = el("best");
+const totalEl = el("total");
+const cpsEl = el("cps");
+const clicker = el("clicker");
+const shopList = el("shop-list");
+const tabs = document.querySelectorAll(".tab");
+const badgeList = el("badge-list");
+const toastContainer = el("toast-container");
 
-  { name: "精力剤｜アイスティー", type: "power", effect: 1, cost: 50 },
-  { name: "精力剤｜暴れんなよ", type: "power", effect: 3, cost: 300 },
-  { name: "精力剤｜お前のことが好きだったんだよ", type: "power", effect: 10, cost: 2000 },
-  { name: "精力剤｜イキスギィ！イク！イクイクイクイク…アッ……ァ...", type: "power", effect: 50, cost: 15000 },
+const muteEl = el("mute");
+const volumeEl = el("volume");
 
-  { name: "ブースト｜ンアッー！", type: "boost", effect: 2, cost: 1000 }
-];
+const clickSE = el("se-click");
+const buySE = el("se-buy");
 
-const badges = [
-  { condition: 10, text: "10回達成！" },
-  { condition: 100, text: "100回達成！" },
-  { condition: 1000, text: "1000回達成！" },
-  { condition: 10000, text: "伝説のやじゅれんだ！" }
-];
+/* 音量コントロール（全体） */
+function applyVolume() {
+  const vol = muteEl.checked ? 0 : parseFloat(volumeEl.value || "1");
+  [clickSE, buySE].forEach(a => { a.volume = vol; a.muted = vol === 0; });
+}
+muteEl.addEventListener("change", applyVolume);
+volumeEl.addEventListener("input", applyVolume);
+applyVolume();
 
-function updateStats() {
-  countEl.textContent = count;
-  totalEl.textContent = totalCount;
-  maxEl.textContent = maxCount;
-  cpsEl.textContent = cps.toFixed(2);
+/* =========================
+   Audio helpers
+========================= */
+function playClick() {
+  if (muteEl.checked) return;
+  try { clickSE.currentTime = 0; clickSE.play(); } catch(_) {}
+}
+function playBuy() {
+  if (muteEl.checked) return;
+  try { buySE.currentTime = 0; buySE.play(); } catch(_) {}
 }
 
-function addClick(amount) {
-  if (boostActive) amount *= 2;
-  count += amount;
-  totalCount += amount;
-  if (count > maxCount) maxCount = count;
-  updateStats();
-  checkBadges();
-}
+/* =========================
+   Clicker
+========================= */
+clicker.addEventListener("click", () => {
+  const now = Date.now();
+  const diff = (now - lastClickTime) / 1000;
+  if (diff > 0) cps = 1 / diff;
+  lastClickTime = now;
 
-clickBtn.addEventListener("click", () => {
-  addClick(clickPower);
-  if (!muteCheck.checked) {
-    clickSound.currentTime = 0;
-    clickSound.play();
-  }
+  count += clickPower;
+  total += clickPower;
+  if (count > best) best = count;
+
+  playClick();
+  unlockBadgesIfAny(total); // クリック達成は合計ベースで判定（連打回数）
+  render();
 });
 
-function renderShop() {
-  shopList.innerHTML = "";
-  shopItems.forEach((item, index) => {
-    const li = document.createElement("li");
-    li.innerHTML = `
-      <span>${item.name} ※${item.type==="auto"?"秒間":"1クリック"}+${item.effect} [${item.cost}回]</span>
-      <button id="buy-${index}">購入</button>
-    `;
-    shopList.appendChild(li);
+/* Enterキーでの増加は禁止 */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") e.preventDefault();
+});
 
-    const btn = document.getElementById(`buy-${index}`);
-    btn.addEventListener("click", () => buyItem(index));
+/* =========================
+   Shop
+========================= */
+const shopItems = [
+  // オート
+  { id: 1,  type: "auto",  name: "24歳です", effect: 1,   cost: 100 },
+  { id: 2,  type: "auto",  name: "学生です", effect: 5,   cost: 500 },
+  { id: 3,  type: "auto",  name: "じゃあオナニー", effect: 20,  cost: 2000 },
+  { id: 4,  type: "auto",  name: "...とかっていうのは？", effect: 100, cost: 10000 },
+  { id: 5,  type: "auto",  name: "やりますねぇ！", effect: 500, cost: 50000 },
+  // 精力剤
+  { id: 6,  type: "click", name: "アイスティー", effect: 1,  cost: 50 },
+  { id: 7,  type: "click", name: "暴れんなよ", effect: 3,  cost: 300 },
+  { id: 8,  type: "click", name: "お前のことが好きだったんだよ", effect: 10, cost: 2000 },
+  { id: 9,  type: "click", name: "イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect: 50, cost: 15000 },
+  // ブースト
+  { id: 10, type: "boost", name: "ンアッー！", effect: 2,  cost: 1000 }, // 30s x2
+];
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    selectedCategory = tab.dataset.category;
+    renderShop(); // 選択タブ保持
   });
-}
+});
 
-function buyItem(index) {
-  const item = shopItems[index];
-  if (count >= item.cost) {
-    count -= item.cost;
-    if (item.type === "auto") autoPower += item.effect;
-    if (item.type === "power") clickPower += item.effect;
-    if (item.type === "boost" && !boostActive) activateBoost(item.effect);
-    if (!muteCheck.checked) {
-      buySound.currentTime = 0;
-      buySound.play();
-    }
-    updateStats();
+function renderShop(){
+  shopList.innerHTML = "";
+  let items = [...shopItems];
+
+  if (selectedCategory === "auto") {
+    items = items.filter(i => i.type === "auto");
+  } else if (selectedCategory === "click") {
+    items = items.filter(i => i.type === "click");
+  } else if (selectedCategory === "boost") {
+    items = items.filter(i => i.type === "boost");
+  } else if (selectedCategory === "low") {
+    items.sort((a,b) => a.cost - b.cost);
+  } else if (selectedCategory === "high") {
+    items.sort((a,b) => b.cost - a.cost);
+  } // "all" は順番そのまま
+
+  for (const item of items){
+    const li = document.createElement("li");
+    li.className = "shop-item";
+
+    const kind = item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト";
+    const kindClass = item.type === "click" ? "click" : (item.type === "boost" ? "boost" : "");
+    const desc =
+      item.type === "auto" ? `※秒間+${item.effect}` :
+      item.type === "click" ? `※1クリック+${item.effect}` :
+      `※30秒 1クリック×${item.effect}`;
+
+    li.innerHTML = `
+      <div class="meta">
+        <span class="kind ${kindClass}">${kind}</span>
+        ${item.name} ${desc} [${item.cost}回]
+      </div>
+      <div>
+        <button class="buy" data-id="${item.id}">購入</button>
+      </div>
+    `;
+
+    const btn = li.querySelector(".buy");
+    const enough = count >= item.cost;
+    let disabled = !enough;
+
+    if (item.type === "boost" && boostActive) disabled = true; // クールタイム(発動中不可)
+
+    btn.disabled = disabled;
+    btn.addEventListener("click", () => {
+      if (btn.disabled) return;
+      buyItem(item.id);
+    });
+
+    shopList.appendChild(li);
   }
 }
 
-function activateBoost(multiplier) {
-  boostActive = true;
-  clearTimeout(boostTimeout);
-  boostTimeout = setTimeout(() => {
-    boostActive = false;
-  }, 30000);
+function buyItem(id){
+  const item = shopItems.find(i => i.id === id);
+  if (!item) return;
+  if (item.type === "boost" && boostActive) return;
+  if (count < item.cost) return;
+
+  count -= item.cost;
+
+  if (item.type === "auto"){
+    autoPower += item.effect;
+  } else if (item.type === "click"){
+    clickPower += item.effect;
+  } else if (item.type === "boost"){
+    boostActive = true;
+    const mul = item.effect; // 2倍
+    clickPower *= mul;
+    setTimeout(() => {
+      clickPower /= mul;
+      boostActive = false;
+      render(); // ボタン復帰
+    }, 30000);
+  }
+
+  playBuy();
+  render(); // ボタンの活性/非活性更新
 }
 
-function checkBadges() {
-  badges.forEach((badge, i) => {
-    if (totalCount >= badge.condition) {
-      const badgeEl = document.getElementById(`badge-${i}`);
-      badgeEl.textContent = badge.text;
-      badgeEl.classList.add("unlocked");
+/* 自動加算（毎秒） */
+setInterval(() => {
+  if (autoPower > 0){
+    count += autoPower;
+    total += autoPower;
+    if (count > best) best = count;
+    unlockBadgesIfAny(total);
+    render();
+  }
+}, 1000);
+
+/* =========================
+   Badges
+========================= */
+const BADGES = [
+  { id:1,   need:1,           name:"千里の道も野獣から" },
+  { id:19,  need:19,          name:"王道をイク" },
+  { id:45,  need:45,          name:"試行思考(シコシコ)" },
+  { id:364, need:364,         name:"見ろよ見ろよ" },
+  { id:810, need:810,         name:"中々やりますねぇ" },
+  { id:1919,need:1919,        name:"⚠️あなたはイキスギました！⚠️" },
+  { id:4545,need:4545,        name:"生粋とイキスギのオナリスト" },
+  { id:114514,need:114514,    name:"Okay, come on.(いいよこいよ)" },
+  { id:364364,need:364364,    name:"ホラ、見ろよ見ろよ、ホラ" },
+  { id:1145141919810, need:1145141919810, name:"遊んでくれてありがとう❗" },
+];
+const unlockedBadgeIds = new Set();
+
+function renderBadges(){
+  badgeList.innerHTML = "";
+  BADGES.forEach(b => {
+    const li = document.createElement("li");
+    const unlocked = unlockedBadgeIds.has(b.id);
+    li.className = "badge " + (unlocked ? "unlocked" : "locked");
+    li.innerHTML = `
+      <span class="label">${unlocked ? b.name : "？？？"}</span>
+      <span class="cond">${unlocked ? "入手済み" : `解禁条件: ${b.need.toLocaleString()}クリック`}</span>
+    `;
+    li.addEventListener("click", () => {
+      if (unlocked) {
+        alert(`${b.name}\n入手条件: ${b.need.toLocaleString()} クリック`);
+      } else {
+        alert(`？？？\n解禁条件: ${b.need.toLocaleString()} クリック`);
+      }
+    });
+    badgeList.appendChild(li);
+  });
+}
+
+function unlockBadgesIfAny(currentTotal){
+  BADGES.forEach(b => {
+    if (currentTotal >= b.need && !unlockedBadgeIds.has(b.id)){
+      unlockedBadgeIds.add(b.id);
+      makeToast(`バッジを獲得: ${b.name}`);
+      renderBadges();
     }
   });
 }
 
-function renderBadges() {
-  badgesContainer.innerHTML = "";
-  badges.forEach((badge, i) => {
-    const div = document.createElement("div");
-    div.id = `badge-${i}`;
-    div.className = "badge";
-    div.textContent = "???";
-    badgesContainer.appendChild(div);
-  });
+/* =========================
+   Toast
+========================= */
+function makeToast(text){
+  const div = document.createElement("div");
+  div.className = "toast";
+  div.textContent = text;
+  toastContainer.appendChild(div);
+  setTimeout(() => {
+    div.style.opacity = "0";
+    div.style.transform = "translateY(8px)";
+    setTimeout(() => div.remove(), 250);
+  }, 2600);
 }
 
-setInterval(() => {
-  count += autoPower;
-  cps = autoPower;
-  updateStats();
-  checkBadges();
-}, 1000);
+/* =========================
+   Render
+========================= */
+function render(){
+  countEl.textContent = count.toLocaleString();
+  bestEl.textContent  = best.toLocaleString();
+  totalEl.textContent = total.toLocaleString();
+  cpsEl.textContent   = cps.toFixed(2);
+  renderShop();       // 選んだタブを維持
+}
 
-renderShop();
+/* 初期化 */
 renderBadges();
-updateStats();
+render();
