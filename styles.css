@@ -1,1 +1,148 @@
+body {
+  font-family: "Noto Sans JP", sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.logo {
+  max-width: 600px;
+  height: auto;
+  display: block;
+  margin: 30px auto;
+}
+
+.layout {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 20px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.game {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  flex: 1;
+  max-width: 400px;
+  text-align: center;
+}
+
+#clicker {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin: 20px 0;
+}
+#clicker img {
+  width: 200px;
+  border-radius: 50%;
+  transition: transform 0.1s ease;
+}
+#clicker:active img {
+  transform: scale(0.9);
+}
+
+.round-button {
+  background: #ff7675;
+  border-radius: 50%;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.3s;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.round-button:hover {
+  background: #ff5252;
+}
+.round-button img {
+  width: 180px;
+  border-radius: 50%;
+  transition: transform 0.1s ease;
+}
+
+.shop {
+  flex: 1;
+  max-width: 600px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.shop-header {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  border: none;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+.tab:hover {
+  background: #45a049;
+}
+
+.shop ul {
+  list-style: none;
+  padding: 0;
+}
+.shop li {
+  margin: 10px 0;
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shop button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #4caf50;
+  color: white;
+  cursor: pointer;
+}
+.shop button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+footer {
+  margin-top: 20px;
+}
+footer a {
+  font-size: 1.2rem;
+  color: #4caf50;
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}
 
