@@ -4,11 +4,8 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
   flex-direction: column;
-  text-align: center;
+  min-height: 100vh;
 }
 
 /* ロゴ */
@@ -25,14 +22,13 @@ body {
   justify-content: center;
   align-items: flex-start;
   gap: 30px;
-  flex-direction: column;
   padding: 20px;
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
-/* ゲーム本体 */
+/* ゲーム */
 .game {
   background: #fff;
   padding: 20px;
@@ -40,6 +36,7 @@ body {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   flex: 1;
   max-width: 400px;
+  text-align: center;
 }
 
 #clicker {
@@ -50,14 +47,14 @@ body {
 }
 #clicker img {
   width: 200px;
-  border-radius: 12px;
+  border-radius: 50%;
   transition: transform 0.1s ease;
 }
 #clicker:active img {
   transform: scale(0.9);
 }
 
-/* 丸ボタン */
+/* 丸型ボタン */
 .round-button {
   background: #ff7675;
   border-radius: 50%;
@@ -65,15 +62,10 @@ body {
   cursor: pointer;
   transition: transform 0.1s ease, background 0.3s;
   display: inline-block;
-  margin-bottom: 20px;
 }
+
 .round-button:hover {
   background: #ff5252;
-}
-.round-button img {
-  width: 180px;
-  border-radius: 50%;
-  transition: transform 0.1s ease;
 }
 
 /* ショップ */
@@ -85,21 +77,23 @@ body {
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: left;
-  margin-top: 20px;
 }
+
 .shop-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
 }
+
 .tabs {
   display: flex;
-  justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
 }
+
 .tab {
-  padding: 10px 20px;
+  padding: 8px 16px;
   border: none;
   background: #4caf50;
   color: white;
@@ -107,12 +101,9 @@ body {
   border-radius: 5px;
   transition: background 0.3s;
 }
-.tab:hover {
-  background: #45a049;
-}
-.tab.active {
-  background: #2e7d32;
-}
+.tab:hover { background: #45a049; }
+.tab.active { background: #2e7d32; }
+
 .shop ul {
   list-style: none;
   padding: 0;
@@ -139,26 +130,74 @@ body {
   cursor: not-allowed;
 }
 
-/* スマホ対応 */
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-    align-items: center;
-  }
-  .shop {
-    max-width: 100%;
-  }
+/* バッチボタン */
+.badge-btn {
+  background: #ff9800;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+}
+.badge-btn:hover { background: #e68900; }
+
+/* バッチパネル */
+.badge-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 400px;
+  max-width: 90%;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+.badge-panel.active { transform: translate(-50%, -50%) scale(1); }
+
+.badge-panel h2 { margin-top: 0; }
+.badge-panel ul { list-style: none; padding: 0; }
+.badge-panel li {
+  margin: 8px 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #f0f0f0;
+}
+.badge-panel li.unlocked {
+  background: #ffe082;
+  font-weight: bold;
 }
 
-/* フッター */
-footer {
-  margin-top: 20px;
+.close-btn {
+  margin-top: 15px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #ff5252;
+  color: white;
+  cursor: pointer;
 }
-footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
-  text-decoration: none;
+.close-btn:hover { background: #d32f2f; }
+
+/* 通知 */
+.badge-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff9800;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.4s, transform 0.4s;
+  z-index: 2000;
 }
-footer a:hover {
-  text-decoration: underline;
+.badge-toast.show {
+  opacity: 1;
+  transform: translateY(0);
 }
