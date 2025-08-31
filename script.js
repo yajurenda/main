@@ -15,6 +15,7 @@ const clicker = document.getElementById("clicker");
 const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
+const badgeList = document.getElementById("badge-list");
 
 const clickSound = new Audio("click1.mp3");
 const purchaseSound = new Audio("buy_sound.mp3");
@@ -30,7 +31,7 @@ function playPurchaseSound() {
   purchaseSound.play();
 }
 
-// クリック処理
+// ✅ クリック
 clicker.addEventListener("click", () => {
   const now = Date.now();
   const diff = (now - lastClickTime) / 1000;
@@ -42,10 +43,11 @@ clicker.addEventListener("click", () => {
   if (count > best) best = count;
 
   playClickSound();
+  checkBadges();
   render();
 });
 
-// ✅ Enterキーでの無限クリック禁止
+// ✅ エンターキー禁止
 document.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
@@ -80,23 +82,17 @@ function renderShop(category = "all") {
   shopList.innerHTML = "";
   let filteredItems = shopItems;
 
-  if (category === "auto") {
-    filteredItems = shopItems.filter(item => item.type === "auto");
-  } else if (category === "click") {
-    filteredItems = shopItems.filter(item => item.type === "click");
-  } else if (category === "boost") {
-    filteredItems = shopItems.filter(item => item.type === "boost");
-  } else if (category === "low") {
-    filteredItems = [...shopItems].sort((a, b) => a.cost - b.cost);
-  } else if (category === "high") {
-    filteredItems = [...shopItems].sort((a, b) => b.cost - a.cost);
-  }
+  if (category === "auto") filteredItems = shopItems.filter(i => i.type === "auto");
+  else if (category === "click") filteredItems = shopItems.filter(i => i.type === "click");
+  else if (category === "boost") filteredItems = shopItems.filter(i => i.type === "boost");
+  else if (category === "low") filteredItems = [...shopItems].sort((a, b) => a.cost - b.cost);
+  else if (category === "high") filteredItems = [...shopItems].sort((a, b) => b.cost - a.cost);
 
   filteredItems.forEach((item, i) => {
     const li = document.createElement("li");
     li.innerHTML = `
       <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name} 
-      ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}`} [${item.cost}回]</span>
+      ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}` } [${item.cost}回]</span>
       <button id="buy-${i}" ${count < item.cost ? "disabled" : ""}>購入</button>
     `;
     shopList.appendChild(li);
@@ -113,21 +109,31 @@ function buyItem(index) {
   if (count < item.cost) return;
 
   count -= item.cost;
-  if (item.type === "auto") {
-    autoPower += item.effect;
-  } else if (item.type === "click") {
-    clickPower += item.effect;
-  } else if (item.type === "boost") {
-    if (!boostActive) {
-      boostActive = true;
-      clickPower *= item.effect;
-      setTimeout(() => {
-        clickPower /= item.effect;
-        boostActive = false;
-      }, 30000);
-    }
+  if (item.type === "auto") autoPower += item.effect;
+  else if (item.type === "click") clickPower += item.effect;
+  else if (item.type === "boost" && !boostActive) {
+    boostActive = true;
+    clickPower *= item.effect;
+    setTimeout(() => {
+      clickPower /= item.effect;
+      boostActive = false;
+    }, 30000);
   }
+  checkBadges();
   render();
+}
+
+// ✅ バッジシステム
+function checkBadges() {
+  const badgeElems = badgeList.querySelectorAll(".badge");
+  if (total >= 100) badgeElems[0].classList.replace("locked", "unlocked");
+  if (total >= 500) badgeElems[1].classList.replace("locked", "unlocked");
+  if (total >= 2000) badgeElems[2].classList.replace("locked", "unlocked");
+  if (total >= 10000) badgeElems[3].classList.replace("locked", "unlocked");
+  if (total >= 20000) badgeElems[4].classList.replace("locked", "unlocked");
+  if (total >= 50000) badgeElems[5].classList.replace("locked", "unlocked");
+  if (total >= 100000) badgeElems[6].classList.replace("locked", "unlocked");
+  if (total >= 200000) badgeElems[7].classList.replace("locked", "unlocked");
 }
 
 setInterval(() => {
@@ -135,6 +141,7 @@ setInterval(() => {
     count += autoPower;
     total += autoPower;
     if (count > best) best = count;
+    checkBadges();
     render();
   }
 }, 1000);
@@ -144,7 +151,7 @@ function render() {
   bestEl.textContent = best;
   totalEl.textContent = total;
   cpsEl.textContent = cps.toFixed(2);
-  renderShop();
+  renderShop(document.querySelector(".tab.active").dataset.category);
 }
 
 render();
