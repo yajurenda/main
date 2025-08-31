@@ -201,3 +201,13 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+.badge-panel li.locked {
+  background: #ddd;
+  color: #777;
+  font-style: italic;
+}
+.badge-panel li.unlocked {
+  background: #ffe082;
+  font-weight: bold;
+}
