@@ -219,3 +219,11 @@ function renderBadges() {
     badgeList.appendChild(div);
   });
 }
+
+// Enterキーで無限連打を防止
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault(); // フォーム送信対策
+    return; // ✅ クリック処理を無効化
+  }
+});
