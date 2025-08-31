@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="styles.css"> <!-- 外部CSSリンク -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
@@ -31,7 +31,7 @@
     <!-- ショップ -->
     <aside class="shop">
       <div class="shop-header">
-        <label><input id="mute" type="checkbox"> ミュート</label> <!-- ミュート設定 -->
+        <label><input id="mute" type="checkbox"> ミュート</label>
       </div>
       <h2>ショップ</h2>
       <div class="tabs">
@@ -41,16 +41,24 @@
         <button class="tab" data-category="low">安い順</button>
         <button class="tab" data-category="high">高い順</button>
       </div>
-      <ul id="shop-list"></ul> <!-- 商品リスト -->
+      <ul id="shop-list"></ul>
     </aside>
 
-    <!-- Aboutページへのリンク -->
-    <footer>
-      <a href="about.html">About</a> | 
-      <a href="form.html">Form</a> <!-- フォームページへのリンク -->
-    </footer>
+    <!-- バッジ一覧 -->
+    <aside class="badges">
+      <h2>獲得バッジ</h2>
+      <ul id="badge-list"></ul>
+    </aside>
   </main>
 
-  <script src="script.js"></script> <!-- JSリンク -->
+  <footer>
+    <a href="about.html">About</a> | 
+    <a href="form.html">Form</a>
+  </footer>
+
+  <!-- バッジ通知（右下固定） -->
+  <div id="badge-notification" class="badge-notification hidden"></div>
+
+  <script src="script.js"></script>
 </body>
 </html>
