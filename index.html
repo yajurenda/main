@@ -2,39 +2,31 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>やじゅれんだ！</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="やじゅれんだロゴ" class="logo">
-  </header>
-
   <main class="layout">
     <!-- ゲーム本体 -->
-    <section class="game">
+    <section class="game panel">
       <h1>やじゅれんだ！</h1>
-      <div class="stats">
-        <div id="count">0回</div>
-        <div>最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
-        <div>CPS: <span id="cps">0.00</span></div>
-      </div>
-
+      <p id="count">0回</p>
+      <p>最高: <span id="best">0</span> / 合計: <span id="total">0</span></p>
+      <p>CPS: <span id="cps">0.00</span></p>
       <button id="clicker" class="round-button">
-        <img src="click.png" alt="クリック" />
+        <img src="yaju.jpg" alt="クリック">
       </button>
-
-      <p class="tip">※ 初回はクリック後に音が有効になります。</p>
+      <p class="note">※ 初回クリック後に音が有効になります。</p>
     </section>
 
     <!-- ショップ -->
-    <aside class="shop">
+    <aside class="shop panel">
       <div class="shop-header">
-        <label><input id="mute" type="checkbox"> ミュート</label>
+        <label><input type="checkbox" id="mute"> ミュート</label>
       </div>
       <h2>ショップ</h2>
       <div class="tabs">
+        <button class="tab active" data-category="all">すべて</button>
         <button class="tab" data-category="auto">オート</button>
         <button class="tab" data-category="click">精力剤</button>
         <button class="tab" data-category="boost">ブースト</button>
@@ -44,10 +36,16 @@
       <ul id="shop-list"></ul>
     </aside>
 
-    <!-- バッジ一覧 -->
-    <aside class="badges">
+    <!-- バッジ -->
+    <aside class="badges panel">
       <h2>獲得バッジ</h2>
-      <ul id="badge-list"></ul>
+      <ul id="badge-list">
+        <li class="badge">？？？</li>
+        <li class="badge">？？？</li>
+        <li class="badge">？？？</li>
+        <li class="badge">？？？</li>
+        <li class="badge">？？？</li>
+      </ul>
     </aside>
   </main>
 
@@ -56,27 +54,6 @@
     <a href="form.html">Form</a>
   </footer>
 
-  <!-- バッジ通知（右下固定） -->
-  <div id="badge-notification" class="badge-notification hidden"></div>
-
   <script src="script.js"></script>
 </body>
 </html>
-
-<main class="layout">
-  <!-- ゲーム本体 -->
-  <section class="game panel">
-    ...
-  </section>
-
-  <!-- ショップ -->
-  <aside class="shop panel">
-    ...
-  </aside>
-
-  <!-- バッジ一覧 -->
-  <aside class="badges panel">
-    <h2>バッジ一覧</h2>
-    <div id="badge-list"></div>
-  </aside>
-</main>
