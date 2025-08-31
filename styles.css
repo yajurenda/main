@@ -42,3 +42,44 @@
   opacity: 0;
   pointer-events: none;
 }
+
+/* バッジ一覧 */
+.badge {
+  display: inline-block;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 8px;
+  background: #ddd;
+  color: #555;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.badge:hover {
+  transform: scale(1.1);
+}
+.badge.unlocked {
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  background-size: 400% 400%;
+  color: white;
+  animation: rainbow 3s linear infinite;
+}
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* 通知 */
+#notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  display: none;
+  z-index: 1000;
+  font-weight: bold;
+}
