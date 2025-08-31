@@ -1,254 +1,152 @@
-body {
-  font-family: "Noto Sans JP", sans-serif;
-  background: #f5f7fa;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  flex-direction: column;
-  text-align: center;
+let count = 0;
+let best = 0;
+let total = 0;
+let cps = 0;
+let clickPower = 1;
+let autoPower = 0;
+let lastClickTime = Date.now();
+let boostActive = false;
+
+const countEl = document.getElementById("count");
+const bestEl = document.getElementById("best");
+const totalEl = document.getElementById("total");
+const cpsEl = document.getElementById("cps");
+const clicker = document.getElementById("clicker");
+const muteEl = document.getElementById("mute");
+const shopList = document.getElementById("shop-list");
+const tabs = document.querySelectorAll(".tab");
+
+const clickSound = new Audio("click1.mp3");
+const purchaseSound = new Audio("buy_sound.mp3");
+
+function playClickSound() {
+  if (muteEl.checked) return;
+  clickSound.currentTime = 0;
+  clickSound.play();
+}
+function playPurchaseSound() {
+  if (muteEl.checked) return;
+  purchaseSound.currentTime = 0;
+  purchaseSound.play();
 }
 
-/* ロゴ */
-.logo {
-  max-width: 600px;
-  height: auto;
-  display: block;
-  margin: 30px auto;
-}
-
-/* ゲーム＆ショップレイアウト */
-.layout {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 30px;
-  flex-direction: column;  /* ゲームとショップが縦に並ぶ */
-  padding: 20px;
-  width: 100%;
-  max-width: 900px;  /* 幅を制限 */
-  margin: 0 auto;  /* 中央揃え */
-}
-
-/* ゲーム本体 */
-.game {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  flex: 1;
-  max-width: 400px;
-}
-
-#clicker {
-  border: none;
-  background: none;
-  cursor: pointer;
-  margin: 20px 0;
-}
-
-#clicker img {
-  width: 200px;
-  border-radius: 12px;
-  transition: transform 0.1s ease;
-}
-
-#clicker:active img {
-  transform: scale(0.9);
-}
-
-/* 丸型ボタン */
-.round-button {
-  background: #ff7675;
-  border-radius: 50%;
-  padding: 20px;
-  cursor: pointer;
-  transition: transform 0.1s ease, background 0.3s;
-  display: inline-block;
-  margin-bottom: 20px; /* ボタンと次の要素の間に余白 */
-}
-
-.round-button:hover {
-  background: #ff5252;
-}
-
-.round-button img {
-  width: 180px;
-  border-radius: 50%;
-  transition: transform 0.1s ease;
-}
-
-/* ショップ */
-.shop {
-  flex: 1;
-  max-width: 600px;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: left;
-  margin-top: 20px;
-}
-
-.shop-header {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.tabs {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tab {
-  padding: 10px 20px;
-  border: none;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s;
-}
-
-.tab:hover {
-  background: #45a049;
-}
-
-.shop ul {
-  list-style: none;
-  padding: 0;
-}
-
-.shop li {
-  margin: 10px 0;
-  padding: 10px;
-  background: #f0f0f0;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.shop button {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 6px;
-  background: #4caf50;
-  color: white;
-  cursor: pointer;
-}
-
-.shop button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-/* ミュート設定の位置 */
-.shop-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.shop-header label {
-  font-size: 16px;
-}
-
-/* スマホ対応 */
-@media (max-width: 900px) {
-  .layout {
-    flex-direction: column;
-    align-items: center;
+// ✅ CPS計算を追加
+clicker.addEventListener("click", () => {
+  const now = Date.now();
+  const diff = (now - lastClickTime) / 1000; // 秒
+  if (diff > 0) {
+    cps = 1 / diff; // 1秒あたりのクリック数
   }
-  .shop {
-    max-width: 100%;
+  lastClickTime = now;
+
+  count += clickPower;
+  total += clickPower;
+  if (count > best) best = count;
+
+  playClickSound();
+  render();
+});
+
+// エンターキー無効化
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
   }
+});
+
+const shopItems = [
+  { type: "auto", name: "24歳です", effect: 1, cost: 100 },
+  { type: "auto", name: "学生です", effect: 5, cost: 500 },
+  { type: "auto", name: "じゃあオナニー", effect: 20, cost: 2000 },
+  { type: "auto", name: "...とかっていうのは？", effect: 100, cost: 10000 },
+  { type: "auto", name: "やりますねぇ！", effect: 500, cost: 50000 },
+
+  { type: "click", name: "アイスティー", effect: 1, cost: 50 },
+  { type: "click", name: "暴れんなよ", effect: 3, cost: 300 },
+  { type: "click", name: "お前のことが好きだったんだよ", effect: 10, cost: 2000 },
+  { type: "click", name: "イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect: 50, cost: 15000 },
+
+  { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
+];
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    const category = tab.getAttribute("data-category");
+    renderShop(category);
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+  });
+});
+
+function renderShop(category = "all") {
+  shopList.innerHTML = "";
+  let filteredItems = shopItems;
+
+  if (category === "auto") {
+    filteredItems = shopItems.filter(item => item.type === "auto");
+  } else if (category === "click") {
+    filteredItems = shopItems.filter(item => item.type === "click");
+  } else if (category === "boost") {
+    filteredItems = shopItems.filter(item => item.type === "boost");
+  } else if (category === "low") {
+    filteredItems = [...shopItems].sort((a, b) => a.cost - b.cost);
+  } else if (category === "high") {
+    filteredItems = [...shopItems].sort((a, b) => b.cost - a.cost);
+  }
+
+  filteredItems.forEach((item, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name} 
+      ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}` } [${item.cost}回]</span>
+      <button id="buy-${i}" ${count < item.cost ? "disabled" : ""}>購入</button>
+    `;
+    shopList.appendChild(li);
+
+    document.getElementById(`buy-${i}`).addEventListener("click", () => {
+      playPurchaseSound();
+      buyItem(i);
+    });
+  });
 }
 
-/* Aboutページ */
-.about {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 20px auto;
-  text-align: center;
+function buyItem(index) {
+  const item = shopItems[index];
+  if (count < item.cost) return;
+
+  count -= item.cost;
+  if (item.type === "auto") {
+    autoPower += item.effect;
+  } else if (item.type === "click") {
+    clickPower += item.effect;
+  } else if (item.type === "boost") {
+    if (!boostActive) {
+      boostActive = true;
+      clickPower *= item.effect;
+      setTimeout(() => {
+        clickPower /= item.effect;
+        boostActive = false;
+      }, 30000);
+    }
+  }
+  render();
 }
 
-.about h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+setInterval(() => {
+  if (autoPower > 0) {
+    count += autoPower;
+    total += autoPower;
+    if (count > best) best = count;
+    render();
+  }
+}, 1000);
+
+function render() {
+  countEl.textContent = `${count}回`;
+  bestEl.textContent = best;
+  totalEl.textContent = total;
+  cpsEl.textContent = cps.toFixed(2); // ✅ CPSを表示
+  renderShop();
 }
 
-.about .content {
-  font-size: 1.2rem;
-  white-space: pre-wrap; /* 改行を適切に表示 */
-  line-height: 1.6;
-}
-
-footer {
-  margin-top: 20px;
-}
-
-footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
-
-/* フォームページ */
-.form {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 20px auto;
-  text-align: center;
-}
-
-.form h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.form-button {
-  padding: 15px 30px;
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.form-button:hover {
-  background: #45a049;
-}
-
-/* フッター */
-footer {
-  margin-top: 20px;
-}
-
-footer a {
-  font-size: 1.2rem;
-  color: #4caf50;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
+render();
