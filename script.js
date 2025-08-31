@@ -6,6 +6,7 @@ let clickPower = 1;
 let autoPower = 0;
 let lastClickTime = Date.now();
 let boostActive = false;
+let currentTab = "auto"; // ✅ 購入後もタブ保持
 
 const countEl = document.getElementById("count");
 const bestEl = document.getElementById("best");
@@ -15,27 +16,30 @@ const clicker = document.getElementById("clicker");
 const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
+const badgeList = document.getElementById("badge-list");
+const notificationEl = document.getElementById("notification");
 
 const clickSound = new Audio("click1.mp3");
 const purchaseSound = new Audio("buy_sound.mp3");
 
+// ✅ 音再生関数
 function playClickSound() {
   if (muteEl.checked) return;
   clickSound.currentTime = 0;
-  clickSound.play();
+  clickSound.play().catch(() => {});
 }
 function playPurchaseSound() {
   if (muteEl.checked) return;
   purchaseSound.currentTime = 0;
-  purchaseSound.play();
+  purchaseSound.play().catch(() => {});
 }
 
-// ✅ CPS計算を追加
+// ✅ クリック処理
 clicker.addEventListener("click", () => {
   const now = Date.now();
-  const diff = (now - lastClickTime) / 1000; // 秒
+  const diff = (now - lastClickTime) / 1000;
   if (diff > 0) {
-    cps = 1 / diff; // 1秒あたりのクリック数
+    cps = 1 / diff;
   }
   lastClickTime = now;
 
@@ -44,6 +48,7 @@ clicker.addEventListener("click", () => {
   if (count > best) best = count;
 
   playClickSound();
+  checkBadges();
   render();
 });
 
@@ -54,6 +59,7 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+// ✅ ショップデータ
 const shopItems = [
   { type: "auto", name: "24歳です", effect: 1, cost: 100 },
   { type: "auto", name: "学生です", effect: 5, cost: 500 },
@@ -69,28 +75,40 @@ const shopItems = [
   { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
 ];
 
+// ✅ バッジデータ
+const badges = [
+  { id: 1, name: "はじめの一歩", condition: () => total >= 1 },
+  { id: 2, name: "百の壁", condition: () => total >= 100 },
+  { id: 3, name: "一万回突破", condition: () => total >= 10000 },
+  { id: 4, name: "オート購入者", condition: () => autoPower > 0 },
+  { id: 5, name: "精力剤購入者", condition: () => clickPower > 1 },
+];
+let unlockedBadges = new Set();
+
+// ✅ タブ切り替え
 tabs.forEach(tab => {
   tab.addEventListener("click", () => {
-    const category = tab.getAttribute("data-category");
-    renderShop(category);
+    currentTab = tab.getAttribute("data-category");
     tabs.forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
+    renderShop();
   });
 });
 
-function renderShop(category = "all") {
+// ✅ ショップ表示
+function renderShop() {
   shopList.innerHTML = "";
   let filteredItems = shopItems;
 
-  if (category === "auto") {
+  if (currentTab === "auto") {
     filteredItems = shopItems.filter(item => item.type === "auto");
-  } else if (category === "click") {
+  } else if (currentTab === "click") {
     filteredItems = shopItems.filter(item => item.type === "click");
-  } else if (category === "boost") {
+  } else if (currentTab === "boost") {
     filteredItems = shopItems.filter(item => item.type === "boost");
-  } else if (category === "low") {
+  } else if (currentTab === "low") {
     filteredItems = [...shopItems].sort((a, b) => a.cost - b.cost);
-  } else if (category === "high") {
+  } else if (currentTab === "high") {
     filteredItems = [...shopItems].sort((a, b) => b.cost - a.cost);
   }
 
@@ -98,7 +116,7 @@ function renderShop(category = "all") {
     const li = document.createElement("li");
     li.innerHTML = `
       <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name} 
-      ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}` } [${item.cost}回]</span>
+      ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}`} [${item.cost}回]</span>
       <button id="buy-${i}" ${count < item.cost ? "disabled" : ""}>購入</button>
     `;
     shopList.appendChild(li);
@@ -110,6 +128,7 @@ function renderShop(category = "all") {
   });
 }
 
+// ✅ アイテム購入
 function buyItem(index) {
   const item = shopItems[index];
   if (count < item.cost) return;
@@ -129,24 +148,72 @@ function buyItem(index) {
       }, 30000);
     }
   }
+  checkBadges();
   render();
 }
 
+// ✅ 自動加算
 setInterval(() => {
   if (autoPower > 0) {
     count += autoPower;
     total += autoPower;
     if (count > best) best = count;
+    checkBadges();
     render();
   }
 }, 1000);
 
+// ✅ バッジ表示
+function renderBadges() {
+  badgeList.innerHTML = "";
+  badges.forEach(badge => {
+    const div = document.createElement("div");
+    div.className = "badge";
+    if (unlockedBadges.has(badge.id)) {
+      div.classList.add("unlocked");
+      div.textContent = badge.name;
+      div.title = badge.name;
+    } else {
+      div.textContent = "???";
+      div.title = "未獲得";
+    }
+    div.addEventListener("click", () => {
+      if (unlockedBadges.has(badge.id)) {
+        alert(`${badge.name}：${badge.condition.toString()}`);
+      }
+    });
+    badgeList.appendChild(div);
+  });
+}
+
+// ✅ バッジチェック
+function checkBadges() {
+  badges.forEach(badge => {
+    if (!unlockedBadges.has(badge.id) && badge.condition()) {
+      unlockedBadges.add(badge.id);
+      showNotification(`バッジ獲得！「${badge.name}」`);
+    }
+  });
+  renderBadges();
+}
+
+// ✅ 通知
+function showNotification(text) {
+  notificationEl.textContent = text;
+  notificationEl.style.display = "block";
+  setTimeout(() => {
+    notificationEl.style.display = "none";
+  }, 3000);
+}
+
+// ✅ 画面更新
 function render() {
   countEl.textContent = `${count}回`;
   bestEl.textContent = best;
   totalEl.textContent = total;
-  cpsEl.textContent = cps.toFixed(2); // ✅ CPSを表示
+  cpsEl.textContent = cps.toFixed(2);
   renderShop();
+  renderBadges();
 }
 
 render();
