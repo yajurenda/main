@@ -245,3 +245,60 @@ setInterval(saveGame, 30000);
 
 // ===== ページ読み込み時に復元 =====
 window.onload = loadGame;
+
+// ===== セーブデータ削除処理 =====
+const resetBtn = document.getElementById("reset-btn");
+const resetConfirm = document.getElementById("reset-confirm");
+
+let resetStage = 0;
+
+resetBtn.addEventListener("click", () => {
+  resetStage = 1;
+  resetConfirm.classList.remove("hidden");
+  resetConfirm.innerHTML = `
+    <p>データを削除します。本当にやりますか？</p>
+    <button id="reset-yes">やります</button>
+    <button id="reset-no">いいえ</button>
+  `;
+
+  document.getElementById("reset-yes").addEventListener("click", () => {
+    resetStage = 2;
+    resetConfirm.innerHTML = `
+      <p>本当にやりますか？？</p>
+      <button id="reset-no2">いいえ</button>
+      <button id="reset-yes2">やりますね</button>
+    `;
+
+    document.getElementById("reset-no2").addEventListener("click", () => {
+      resetConfirm.classList.add("hidden");
+      resetStage = 0;
+    });
+
+    document.getElementById("reset-yes2").addEventListener("click", () => {
+      resetStage = 3;
+      resetConfirm.innerHTML = `
+        <p>下に「野獣先輩」と入力してください</p>
+        <input type="text" id="reset-input" placeholder="野獣先輩">
+        <button id="reset-final">削除</button>
+      `;
+
+      document.getElementById("reset-final").addEventListener("click", () => {
+        const input = document.getElementById("reset-input").value;
+        if (input === "野獣先輩") {
+          localStorage.removeItem("yajurenSave");
+          resetConfirm.innerHTML = `<p style="color:red;font-weight:bold;">データは削除されました</p>`;
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+        } else {
+          alert("入力が違います！");
+        }
+      });
+    });
+  });
+
+  document.getElementById("reset-no").addEventListener("click", () => {
+    resetConfirm.classList.add("hidden");
+    resetStage = 0;
+  });
+});
