@@ -278,3 +278,26 @@ footer a:hover {
   background: #4caf50;
   color: white;
 }
+
+/* 保存ボタン */
+.save-button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+
+.save-button:hover {
+  background: #45a049;
+}
+
+.save-status {
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: #4caf50;
+}
