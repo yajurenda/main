@@ -25,6 +25,12 @@
         <img src="click.png" alt="クリック" />
       </button>
 
+      <!-- 保存ボタン -->
+      <div id="save-container">
+        <button id="save-btn" class="save-button">保存する</button>
+        <span id="save-status" class="save-status"></span>
+      </div>
+
       <p class="tip">※ 初回はクリック後に音が有効になります。</p>
     </section>
 
@@ -44,26 +50,11 @@
       <ul id="shop-list"></ul>
     </aside>
 
-    <!-- バッジ一覧 -->
-    <aside class="badges">
-      <h2>獲得バッジ</h2>
-      <ul id="badge-list"></ul>
-    </aside>
+    <footer>
+      <a href="about.html">About</a> | 
+      <a href="form.html">Form</a>
+    </footer>
   </main>
-
-<!-- セーブデータ削除ボタン -->
-<div id="reset-container">
-  <button id="reset-btn" class="reset-button">セーブデータを消す</button>
-  <div id="reset-confirm" class="reset-step hidden"></div>
-</div>
-  
-  <footer>
-    <a href="about.html">About</a> | 
-    <a href="form.html">Form</a>
-  </footer>
-
-  <!-- バッジ通知（右下固定） -->
-  <div id="badge-notification" class="badge-notification hidden"></div>
 
   <script src="script.js"></script>
 </body>
