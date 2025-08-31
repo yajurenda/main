@@ -204,6 +204,55 @@ function updateBadgePanel() {
   });
 }
 
+// ====== 保存処理 ======
+function saveGame() {
+  const data = {
+    count,
+    best,
+    total,
+    cps,
+    clickPower,
+    autoPower,
+    shopItems,
+    badges: earnedBadges || []
+  };
+  localStorage.setItem("yajuuSave", JSON.stringify(data));
+}
+
+function loadGame() {
+  const data = JSON.parse(localStorage.getItem("yajuuSave"));
+  if (!data) return;
+
+  count = data.count || 0;
+  best = data.best || 0;
+  total = data.total || 0;
+  cps = data.cps || 0;
+  clickPower = data.clickPower || 1;
+  autoPower = data.autoPower || 0;
+  if (data.shopItems) shopItems = data.shopItems;
+  if (data.badges) earnedBadges = data.badges;
+
+  render();
+}
+
+// ====== 保存ボタン ======
+const saveBtn = document.getElementById("save-btn");
+const saveStatus = document.getElementById("save-status");
+
+saveBtn.addEventListener("click", () => {
+  saveGame();
+  saveStatus.textContent = "保存しました";
+  setTimeout(() => {
+    saveStatus.textContent = "";
+  }, 2000);
+});
+
+// ====== 自動保存（30秒ごと） ======
+setInterval(saveGame, 30000);
+
+// 起動時にロード
+loadGame();
+
 // ===== 保存機能 =====
 function saveGame() {
   const saveData = {
