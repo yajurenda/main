@@ -4,9 +4,8 @@ let total = 0;
 let cps = 0;
 let clickPower = 1;
 let autoPower = 0;
-let lastUpdateTime = Date.now();
+let lastClickTime = Date.now();
 let boostActive = false;
-let currentCategory = "all";
 
 const countEl = document.getElementById("count");
 const bestEl = document.getElementById("best");
@@ -16,8 +15,6 @@ const clicker = document.getElementById("clicker");
 const muteEl = document.getElementById("mute");
 const shopList = document.getElementById("shop-list");
 const tabs = document.querySelectorAll(".tab");
-const badgeList = document.getElementById("badge-list");
-const badgeNotification = document.getElementById("badge-notification");
 
 // 音声
 const clickSound = new Audio("click1.mp3");
@@ -28,69 +25,15 @@ function playClickSound() {
   clickSound.currentTime = 0;
   clickSound.play();
 }
+
 function playPurchaseSound() {
   if (muteEl.checked) return;
   purchaseSound.currentTime = 0;
   purchaseSound.play();
 }
 
-// バッジ
-const badges = [
-  { name: "千里の道も野獣から", clicks: 1, unlocked: false },
-  { name: "王道をイク", clicks: 19, unlocked: false },
-  { name: "試行思考(シコシコ)", clicks: 45, unlocked: false },
-  { name: "見ろよ見ろよ", clicks: 364, unlocked: false },
-  { name: "中々やりますねぇ", clicks: 810, unlocked: false },
-  { name: "⚠️あなたはイキスギました！⚠️", clicks: 1919, unlocked: false },
-  { name: "生粋とイキスギのオナリスト", clicks: 4545, unlocked: false },
-  { name: "Okay, come on.(いいよこいよ)", clicks: 114514, unlocked: false },
-  { name: "ホラ、見ろよ見ろよ、ホラ", clicks: 364364, unlocked: false },
-  { name: "遊んでくれてありがとう❗", clicks: 1145141919810, unlocked: false }
-];
-
-// バッジUI
-function updateBadgePanel() {
-  badgeList.innerHTML = "";
-  badges.forEach(b => {
-    const li = document.createElement("li");
-    li.textContent = b.unlocked ? b.name : "？？？";
-    if (b.unlocked) li.classList.add("unlocked");
-    badgeList.appendChild(li);
-  });
-}
-
-// バッジ獲得チェック
-function checkBadges() {
-  badges.forEach(b => {
-    if (!b.unlocked && total >= b.clicks) {
-      b.unlocked = true;
-      showBadgeNotification(b.name);
-    }
-  });
-  updateBadgePanel();
-}
-
-// バッジ通知（右下に出す）
-function showBadgeNotification(name) {
-  badgeNotification.textContent = `バッジ獲得: ${name}`;
-  badgeNotification.classList.remove("hidden");
-  setTimeout(() => {
-    badgeNotification.classList.add("hidden");
-  }, 3000);
-}
-
-// クリック処理
-clicker.addEventListener("click", () => {
-  count += clickPower;
-  total += clickPower;
-  if (count > best) best = count;
-  playClickSound();
-  checkBadges();
-  render();
-});
-
 // ショップアイテム
-const shopItems = [
+let shopItems = [
   { type: "auto", name: "24歳です", effect: 1, cost: 100 },
   { type: "auto", name: "学生です", effect: 5, cost: 500 },
   { type: "auto", name: "じゃあオナニー", effect: 20, cost: 2000 },
@@ -100,70 +43,87 @@ const shopItems = [
   { type: "click", name: "アイスティー", effect: 1, cost: 50 },
   { type: "click", name: "暴れんなよ", effect: 3, cost: 300 },
   { type: "click", name: "お前のことが好きだったんだよ", effect: 10, cost: 2000 },
-  { type: "click", name: "イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect: 50, cost: 15000 },
+  { type: "click", name: "イキスギィ！", effect: 50, cost: 15000 },
 
   { type: "boost", name: "ンアッー！", effect: 2, cost: 1000 },
 ];
+
+let currentCategory = "all";
 
 // タブ切替
 tabs.forEach(tab => {
   tab.addEventListener("click", () => {
     currentCategory = tab.getAttribute("data-category");
-    renderShop();
+    renderShop(currentCategory);
     tabs.forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
   });
 });
 
-// ショップ描画
-function renderShop() {
+// ショップ表示
+function renderShop(category = "all") {
   shopList.innerHTML = "";
-  let filteredItems = [...shopItems];
+  let filteredItems = shopItems;
 
-  if (currentCategory === "auto") filteredItems = shopItems.filter(i => i.type === "auto");
-  else if (currentCategory === "click") filteredItems = shopItems.filter(i => i.type === "click");
-  else if (currentCategory === "boost") filteredItems = shopItems.filter(i => i.type === "boost");
-  else if (currentCategory === "low") filteredItems.sort((a, b) => a.cost - b.cost);
-  else if (currentCategory === "high") filteredItems.sort((a, b) => b.cost - a.cost);
+  if (category === "auto") {
+    filteredItems = shopItems.filter(i => i.type === "auto");
+  } else if (category === "click") {
+    filteredItems = shopItems.filter(i => i.type === "click");
+  } else if (category === "boost") {
+    filteredItems = shopItems.filter(i => i.type === "boost");
+  } else if (category === "low") {
+    filteredItems = [...shopItems].sort((a, b) => a.cost - b.cost);
+  } else if (category === "high") {
+    filteredItems = [...shopItems].sort((a, b) => b.cost - a.cost);
+  }
 
   filteredItems.forEach((item, i) => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name} 
-      ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}` } [${item.cost}回]</span>
-      <button class="buy-btn" data-name="${item.name}" ${count < item.cost ? "disabled" : ""}>購入</button>
+      <span>${item.type === "auto" ? "オート" : item.type === "click" ? "精力剤" : "ブースト"}｜${item.name}
+      ${item.type === "auto" ? `※秒間+${item.effect}` : item.type === "click" ? `※1クリック+${item.effect}` : `※30秒 クリック×${item.effect}`} [${item.cost}回]</span>
+      <button id="buy-${i}" ${count < item.cost ? "disabled" : ""}>購入</button>
     `;
     shopList.appendChild(li);
-  });
 
-  // ボタンイベント再付与
-  document.querySelectorAll(".buy-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const item = shopItems.find(i => i.name === btn.dataset.name);
+    document.getElementById(`buy-${i}`).addEventListener("click", () => {
       playPurchaseSound();
-      buyItem(item);
+      buyItem(i);
     });
   });
 }
 
-// 購入処理
-function buyItem(item) {
+// 購入
+function buyItem(index) {
+  const item = shopItems[index];
   if (count < item.cost) return;
-  count -= item.cost;
 
-  if (item.type === "auto") autoPower += item.effect;
-  else if (item.type === "click") clickPower += item.effect;
-  else if (item.type === "boost" && !boostActive) {
-    boostActive = true;
-    clickPower *= item.effect;
-    setTimeout(() => {
-      clickPower /= item.effect;
-      boostActive = false;
-    }, 30000);
+  count -= item.cost;
+  if (item.type === "auto") {
+    autoPower += item.effect;
+  } else if (item.type === "click") {
+    clickPower += item.effect;
+  } else if (item.type === "boost") {
+    if (!boostActive) {
+      boostActive = true;
+      clickPower *= item.effect;
+      setTimeout(() => {
+        clickPower /= item.effect;
+        boostActive = false;
+      }, 30000);
+    }
   }
-  checkBadges();
   render();
 }
+
+// クリック
+clicker.addEventListener("click", () => {
+  count += clickPower;
+  total += clickPower;
+  if (count > best) best = count;
+  playClickSound();
+  render();
+});
 
 // 自動加算
 setInterval(() => {
@@ -171,9 +131,16 @@ setInterval(() => {
     count += autoPower;
     total += autoPower;
     if (count > best) best = count;
-    checkBadges();
     render();
   }
+}, 1000);
+
+// CPS計算
+setInterval(() => {
+  const now = Date.now();
+  const elapsed = (now - lastClickTime) / 1000;
+  cps = (total / elapsed).toFixed(2);
+  cpsEl.textContent = cps;
 }, 1000);
 
 // 描画
@@ -181,173 +148,7 @@ function render() {
   countEl.textContent = `${count}回`;
   bestEl.textContent = best;
   totalEl.textContent = total;
-  cpsEl.textContent = (autoPower + clickPower).toFixed(2);
-  renderShop();
+  renderShop(currentCategory);
 }
 
 render();
-updateBadgePanel();
-
-// updateBadgePanel の修正版
-function updateBadgePanel() {
-  badgeList.innerHTML = "";
-  badges.forEach(b => {
-    const li = document.createElement("li");
-    li.textContent = b.unlocked ? b.name : "？？？";
-    if (b.unlocked) {
-      li.classList.add("unlocked");
-      li.addEventListener("click", () => {
-        showBadgeNotification(`${b.name}：${b.clicks}回で獲得`);
-      });
-    }
-    badgeList.appendChild(li);
-  });
-}
-
-// ====== 保存処理 ======
-function saveGame() {
-  const data = {
-    count,
-    best,
-    total,
-    cps,
-    clickPower,
-    autoPower,
-    shopItems,
-    badges: earnedBadges || []
-  };
-  localStorage.setItem("yajuuSave", JSON.stringify(data));
-}
-
-function loadGame() {
-  const data = JSON.parse(localStorage.getItem("yajuuSave"));
-  if (!data) return;
-
-  count = data.count || 0;
-  best = data.best || 0;
-  total = data.total || 0;
-  cps = data.cps || 0;
-  clickPower = data.clickPower || 1;
-  autoPower = data.autoPower || 0;
-  if (data.shopItems) shopItems = data.shopItems;
-  if (data.badges) earnedBadges = data.badges;
-
-  render();
-}
-
-// ====== 保存ボタン ======
-const saveBtn = document.getElementById("save-btn");
-const saveStatus = document.getElementById("save-status");
-
-saveBtn.addEventListener("click", () => {
-  saveGame();
-  saveStatus.textContent = "保存しました";
-  setTimeout(() => {
-    saveStatus.textContent = "";
-  }, 2000);
-});
-
-// ====== 自動保存（30秒ごと） ======
-setInterval(saveGame, 30000);
-
-// 起動時にロード
-loadGame();
-
-// ===== 保存機能 =====
-function saveGame() {
-  const saveData = {
-    count: count,
-    best: best,
-    total: total,
-    autoPower: autoPower,
-    clickPower: clickPower,
-    badges: badges,
-    shopItems: shopItems // ショップの購入状況ごと保存
-  };
-  localStorage.setItem("yajurenSave", JSON.stringify(saveData));
-}
-
-// ===== 読み込み機能 =====
-function loadGame() {
-  const data = localStorage.getItem("yajurenSave");
-  if (data) {
-    const saveData = JSON.parse(data);
-
-    count = saveData.count || 0;
-    best = saveData.best || 0;
-    total = saveData.total || 0;
-    autoPower = saveData.autoPower || 0;
-    clickPower = saveData.clickPower || 1;
-    badges = saveData.badges || badges;
-
-    // ショップ復元（保存されてるものがあれば）
-    if (saveData.shopItems) {
-      shopItems = saveData.shopItems;
-    }
-  }
-  render();
-  renderBadges();
-}
-
-// ===== 自動保存（30秒ごと） =====
-setInterval(saveGame, 30000);
-
-// ===== ページ読み込み時に復元 =====
-window.onload = loadGame;
-
-// ===== セーブデータ削除処理 =====
-const resetBtn = document.getElementById("reset-btn");
-const resetConfirm = document.getElementById("reset-confirm");
-
-let resetStage = 0;
-
-resetBtn.addEventListener("click", () => {
-  resetStage = 1;
-  resetConfirm.classList.remove("hidden");
-  resetConfirm.innerHTML = `
-    <p>データを削除します。本当にやりますか？</p>
-    <button id="reset-yes">やります</button>
-    <button id="reset-no">いいえ</button>
-  `;
-
-  document.getElementById("reset-yes").addEventListener("click", () => {
-    resetStage = 2;
-    resetConfirm.innerHTML = `
-      <p>本当にやりますか？？</p>
-      <button id="reset-no2">いいえ</button>
-      <button id="reset-yes2">やりますね</button>
-    `;
-
-    document.getElementById("reset-no2").addEventListener("click", () => {
-      resetConfirm.classList.add("hidden");
-      resetStage = 0;
-    });
-
-    document.getElementById("reset-yes2").addEventListener("click", () => {
-      resetStage = 3;
-      resetConfirm.innerHTML = `
-        <p>下に「野獣先輩」と入力してください</p>
-        <input type="text" id="reset-input" placeholder="野獣先輩">
-        <button id="reset-final">削除</button>
-      `;
-
-      document.getElementById("reset-final").addEventListener("click", () => {
-        const input = document.getElementById("reset-input").value;
-        if (input === "野獣先輩") {
-          localStorage.removeItem("yajurenSave");
-          resetConfirm.innerHTML = `<p style="color:red;font-weight:bold;">データは削除されました</p>`;
-          setTimeout(() => {
-            location.reload();
-          }, 2000);
-        } else {
-          alert("入力が違います！");
-        }
-      });
-    });
-  });
-
-  document.getElementById("reset-no").addEventListener("click", () => {
-    resetConfirm.classList.add("hidden");
-    resetStage = 0;
-  });
-});
