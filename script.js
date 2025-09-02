@@ -272,3 +272,41 @@ function render(){
 /* 初期化 */
 renderBadges();
 render();
+
+// 既存のバッジ処理の中に追加
+function unlockBadge(badge) {
+  if (badge.unlocked) return;
+  badge.unlocked = true;
+  showToast(`バッジ解除！ ${badge.name}`);
+
+  // 特殊処理: エンディングバッジ
+  if (badge.clicks === 1145141919810) {
+    showEndingOption();
+  }
+}
+
+function showEndingOption() {
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>🎉 クリアおめでとう！ 🎉</h2>
+      <p>エンディングを再生しますか？</p>
+      <button id="end-sound">音ありで見る</button>
+      <button id="end-nosound">音なしで見る</button>
+      <button id="end-close">閉じる</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  document.getElementById("end-sound").onclick = () => playEnding(false);
+  document.getElementById("end-nosound").onclick = () => playEnding(true);
+  document.getElementById("end-close").onclick = () => modal.remove();
+}
+
+function playEnding(muted) {
+  const modal = document.querySelector(".modal");
+  modal.innerHTML = `
+    <video id="ending-video" src="end.mp4" ${muted ? "muted" : ""} controls autoplay></video>
+  `;
+}
