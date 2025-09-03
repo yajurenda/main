@@ -335,4 +335,7 @@ function downloadSave() {
   }
 }
 
-
+document.getElementById("save-btn").addEventListener("click", downloadSave);
+document.getElementById("load-file").addEventListener("change", (e) => {
+  uploadSave(e.target.files[0]);
+});
