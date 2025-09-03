@@ -321,8 +321,8 @@ function getSaveData() {
     clickPower,
     autoPower,
     boostActive,
-    badges: badges.map(b => b.unlocked),   // バッジの解除状態
-    shopItems: shopItems.map(i => ({ ...i })) // 各商品（購入状況やコストも保存）
+    badges: badges.map(b => b.unlocked),
+    shopItems: shopItems.map(i => ({ ...i }))
   };
   return data;
 }
@@ -330,27 +330,38 @@ function getSaveData() {
 // 🔽 簡易暗号化（XOR + Base64）
 function encryptData(data) {
   const json = JSON.stringify(data);
-  const key = 1919; // 暗号キー
+  const key = 1919;
   const encrypted = Array.from(json).map(c => String.fromCharCode(c.charCodeAt(0) ^ key)).join("");
-  return btoa(encrypted);
+  return btoa(unescape(encodeURIComponent(encrypted))); // ← 文字化け防止
 }
 
 function decryptData(encoded) {
   const key = 1919;
-  const decrypted = atob(encoded).split("").map(c => String.fromCharCode(c.charCodeAt(0) ^ key)).join("");
+  const decrypted = decodeURIComponent(escape(atob(encoded)))
+    .split("")
+    .map(c => String.fromCharCode(c.charCodeAt(0) ^ key))
+    .join("");
   return JSON.parse(decrypted);
 }
 
 // 🔽 保存（ダウンロード）
 function downloadSave() {
-  const encrypted = encryptData(getSaveData());
-  const blob = new Blob([encrypted], { type: "application/octet-stream" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "yajurenda_save.yjrnd"; // 独自拡張子
-  a.click();
-  URL.revokeObjectURL(url);
+  try {
+    const encrypted = encryptData(getSaveData());
+    const blob = new Blob([encrypted], { type: "application/octet-stream" });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "yajurenda_save.yjrnd"; // 独自拡張子
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a); // ← Safari でも安定するよう修正
+    URL.revokeObjectURL(a.href);
+
+    alert("✅ セーブデータをダウンロードしました！");
+  } catch (e) {
+    alert("⚠️ セーブに失敗しました: " + e.message);
+  }
 }
 
 // 🔽 読み込み
@@ -362,30 +373,10 @@ function uploadSave(file) {
       loadSaveData(data);
       render();
       alert("✅ セーブデータを読み込みました！");
-    } catch {
+    } catch (err) {
       alert("⚠️ セーブデータが壊れています。");
     }
   };
   reader.readAsText(file);
 }
 
-// 🔽 保存データをゲームに反映
-function loadSaveData(data) {
-  count = data.count;
-  best = data.best;
-  total = data.total;
-  cps = data.cps;
-  clickPower = data.clickPower;
-  autoPower = data.autoPower;
-  boostActive = data.boostActive;
-
-  // バッジを復元
-  if (data.badges) {
-    badges.forEach((b, i) => b.unlocked = data.badges[i]);
-  }
-
-  // ショップを復元
-  if (data.shopItems) {
-    shopItems = data.shopItems.map(i => ({ ...i }));
-  }
-}
