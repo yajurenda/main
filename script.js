@@ -311,72 +311,28 @@ function playEnding(muted) {
   `;
 }
 
-// 🔽 データをまとめる
-function getSaveData() {
-  const data = {
-    count,
-    best,
-    total,
-    cps,
-    clickPower,
-    autoPower,
-    boostActive,
-    badges: badges.map(b => b.unlocked),
-    shopItems: shopItems.map(i => ({ ...i }))
-  };
-  return data;
-}
-
-// 🔽 簡易暗号化（XOR + Base64）
-function encryptData(data) {
-  const json = JSON.stringify(data);
-  const key = 1919;
-  const encrypted = Array.from(json).map(c => String.fromCharCode(c.charCodeAt(0) ^ key)).join("");
-  return btoa(unescape(encodeURIComponent(encrypted))); // ← 文字化け防止
-}
-
-function decryptData(encoded) {
-  const key = 1919;
-  const decrypted = decodeURIComponent(escape(atob(encoded)))
-    .split("")
-    .map(c => String.fromCharCode(c.charCodeAt(0) ^ key))
-    .join("");
-  return JSON.parse(decrypted);
-}
-
-// 🔽 保存（ダウンロード）
 function downloadSave() {
   try {
     const encrypted = encryptData(getSaveData());
     const blob = new Blob([encrypted], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
+    a.href = url;
     a.download = "yajurenda_save.yjrnd"; // 独自拡張子
     document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a); // ← Safari でも安定するよう修正
-    URL.revokeObjectURL(a.href);
 
-    alert("✅ セーブデータをダウンロードしました！");
+    // 💡 setTimeoutで遅延 → ほぼ100%動作
+    setTimeout(() => {
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert("✅ セーブデータをダウンロードしました！");
+    }, 100);
+
   } catch (e) {
     alert("⚠️ セーブに失敗しました: " + e.message);
   }
 }
 
-// 🔽 読み込み
-function uploadSave(file) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const data = decryptData(reader.result);
-      loadSaveData(data);
-      render();
-      alert("✅ セーブデータを読み込みました！");
-    } catch (err) {
-      alert("⚠️ セーブデータが壊れています。");
-    }
-  };
-  reader.readAsText(file);
-}
 
