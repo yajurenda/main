@@ -339,3 +339,109 @@ document.getElementById("save-btn").addEventListener("click", downloadSave);
 document.getElementById("load-file").addEventListener("change", (e) => {
   uploadSave(e.target.files[0]);
 });
+
+// ===============================
+// セーブデータ管理
+// ===============================
+
+// 現在の状態をまとめて保存用にする
+function getSaveData() {
+  return JSON.stringify({
+    count,
+    best,
+    total,
+    cps,
+    clickPower,
+    autoPower,
+    boostActive,
+    badges: unlockedBadges || [], // ←バッジ配列を想定
+    shop: shopItems.map(item => ({ name: item.name, cost: item.cost }))
+  });
+}
+
+// 保存データを適用する
+function loadSaveData(json) {
+  try {
+    const data = JSON.parse(json);
+    count = data.count || 0;
+    best = data.best || 0;
+    total = data.total || 0;
+    cps = data.cps || 0;
+    clickPower = data.clickPower || 1;
+    autoPower = data.autoPower || 0;
+    boostActive = data.boostActive || false;
+    unlockedBadges = data.badges || [];
+
+    // ショップ情報も復元
+    if (data.shop) {
+      data.shop.forEach((savedItem, i) => {
+        if (shopItems[i]) shopItems[i].cost = savedItem.cost;
+      });
+    }
+
+    render();
+    alert("✅ セーブデータを読み込みました！");
+  } catch (e) {
+    alert("⚠️ セーブの読み込みに失敗しました: " + e.message);
+  }
+}
+
+// ===============================
+// 簡易暗号化・復号化
+// ===============================
+
+// 文字列を Base64 に変換
+function encryptData(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+// Base64 を復元
+function decryptData(str) {
+  return decodeURIComponent(escape(atob(str)));
+}
+
+// ===============================
+// 保存・読み込み
+// ===============================
+
+// 保存（ダウンロード）
+function downloadSave() {
+  try {
+    const encrypted = encryptData(getSaveData());
+    const blob = new Blob([encrypted], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "yajurenda_save.yjrnd";
+    document.body.appendChild(a);
+
+    setTimeout(() => {
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert("✅ セーブデータをダウンロードしました！");
+    }, 100);
+  } catch (e) {
+    alert("⚠️ セーブに失敗しました: " + e.message);
+  }
+}
+
+// 読み込み（アップロード）
+function uploadSave(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const decrypted = decryptData(reader.result);
+      loadSaveData(decrypted);
+    } catch (e) {
+      alert("⚠️ 読み込みに失敗しました: " + e.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+document.getElementById("save-btn").addEventListener("click", downloadSave);
+document.getElementById("load-file").addEventListener("change", (e) => {
+  uploadSave(e.target.files[0]);
+});
