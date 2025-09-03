@@ -1,200 +1,149 @@
-/* ========== Base ========== */
+/* ===== Base ===== */
 :root{
   --bg:#f5f7fa;
-  --card:#ffffff;
-  --shadow:0 8px 18px rgba(0,0,0,.08);
-  --ink:#222;
-  --muted:#666;
+  --card:#fff;
+  --text:#1f2937;
+  --muted:#6b7280;
   --accent:#4caf50;
-  --accent-2:#2196f3;
-  --danger:#e53935;
+  --accent-2:#2e7d32;
   --chip:#eef2f7;
+  --chip-t:#333;
+  --shadow:0 8px 20px rgba(0,0,0,.08);
+  --radius:16px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html,body{height:100%}
 body{
-  font-family:"Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-  color:var(--ink);
+  margin:0;
   background:var(--bg);
+  color:var(--text);
+  font-family:"Noto Sans JP",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  line-height:1.6;
 }
 
-/* ========== Header ========== */
+/* ===== Header ===== */
 .site-header{
-  max-width:1100px;
-  margin:24px auto 8px;
-  padding:0 16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
+  display:flex; align-items:center; gap:16px;
+  padding:16px 20px 0;
 }
-.logo{height:64px; width:auto; display:block}
+.logo{height:44px; width:auto; display:block}
 .volume{
-  display:flex; align-items:center; gap:14px;
-  background:var(--card); padding:10px 14px; border-radius:10px; box-shadow:var(--shadow);
+  margin-left:auto;
+  display:flex; align-items:center; gap:12px;
+  background:var(--card); padding:8px 12px; border-radius:12px; box-shadow:var(--shadow);
 }
-.volume .mute{user-select:none}
+.mute{display:flex; align-items:center; gap:6px}
+#volume{width:220px}
 
-/* ========== Grid ========== */
+/* ===== Layout ===== */
 .grid{
-  max-width:1100px;
-  margin:12px auto 40px;
-  padding:0 16px;
-  display:grid;
-  grid-template-columns: 1.1fr 1.2fr 0.9fr;
-  gap:18px;
+  max-width:1200px; margin:16px auto 28px; padding:0 16px;
+  display:grid; gap:20px; grid-template-columns:1fr 1fr 1fr;
 }
-@media (max-width: 980px){
-  .grid{grid-template-columns:1fr; }
-}
-
-/* ========== Card ========== */
 .card{
   background:var(--card);
-  border-radius:14px;
+  border-radius:var(--radius);
   box-shadow:var(--shadow);
-  padding:18px;
+  padding:20px;
 }
-.card h2{margin:0 0 10px}
 
-/* ========== Game ========== */
-.game .title{margin:2px 0 8px}
-.stats{margin-bottom:10px}
-.stats .count{font-size:36px; font-weight:700}
+/* ===== Game ===== */
+.title{margin:0 0 10px; font-size:26px}
+.stats .count{font-size:44px; font-weight:800}
 .stats .sub{color:var(--muted); font-size:14px}
-.note{color:var(--muted); font-size:12px; margin:10px 0 0}
-
-.round-button{
-  display:inline-grid;
-  place-items:center;
-  border:none; background:#ffd1d1;
-  border-radius:50%;
-  padding:16px;
-  transition:transform .08s ease;
-  cursor:pointer;
-}
+.round-button{border:0; background:transparent; padding:0; margin:16px 0 6px; cursor:pointer}
 .round-button img{
-  width:220px; height:220px; object-fit:cover; border-radius:50%;
-  display:block; transition:transform .08s ease, filter .2s;
-  box-shadow:0 6px 14px rgba(0,0,0,.15);
+  width:260px; height:260px; object-fit:cover;
+  border-radius:50%;
+  border:10px solid #ffdfe2;
+  box-shadow:0 10px 24px rgba(0,0,0,.12);
+  transition:transform .08s ease, filter .2s ease;
 }
-.round-button:active img{ transform:scale(.92) }
+.round-button:active img{transform:scale(.92); filter:brightness(.98)}
+.note{color:var(--muted); font-size:12px; margin:8px 0 0}
 
-/* ========== Shop ========== */
-.tabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px}
+/* ===== Shop ===== */
+.shop h2,.badges h2{margin:0 0 12px}
+.tabs{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px}
 .tab{
-  padding:8px 12px; border-radius:20px; border:1px solid #dde3ea;
-  background:var(--chip); cursor:pointer; color:#2b2f36;
+  border:0; background:var(--chip); color:var(--chip-t);
+  padding:8px 12px; border-radius:999px; cursor:pointer; font-weight:700;
 }
-.tab.active{ background:var(--accent); color:#fff; border-color:transparent }
-
+.tab.active{background:var(--accent); color:#fff}
 .shop-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
 .shop-item{
-  background:#f7f9fc; border-radius:12px; padding:10px 12px;
-  display:flex; justify-content:space-between; align-items:center; gap:10px;
-  border:1px solid #e9eff6;
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  background:#f7f9fc; border-radius:12px; padding:12px 12px;
 }
 .shop-item .meta{font-size:14px}
-.shop-item .kind{
-  display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px; margin-right:6px;
-  background:#e8f5e9; color:#2e7d32;
+.kind{
+  display:inline-block; font-size:12px; font-weight:800;
+  padding:2px 8px; border-radius:6px; margin-right:6px; background:#e9eef7;
 }
-.shop-item .kind.click{ background:#e3f2fd; color:#1565c0 }
-.shop-item .kind.boost{ background:#fff3e0; color:#e65100 }
-
+.kind.click{background:#ffe9cc}
+.kind.boost{background:#ffe2e5}
 .buy{
-  border:none; padding:8px 12px; border-radius:10px; cursor:pointer;
-  background:var(--accent); color:#fff; font-weight:600;
+  border:0; padding:8px 12px; border-radius:8px; cursor:pointer;
+  background:var(--accent); color:#fff; font-weight:700;
 }
-.buy:disabled{ background:#c9d2dd; cursor:not-allowed; color:#fff }
+.buy:disabled{background:#cbd5e1; cursor:not-allowed}
 
-/* ========== Badges ========== */
+/* ===== Badges ===== */
 .badge-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
 .badge{
-  background:#f7f9fc; border:1px solid #e9eff6; border-radius:10px; padding:10px 12px;
-  display:flex; justify-content:space-between; align-items:center; cursor:pointer;
+  display:flex; justify-content:space-between; align-items:center;
+  background:#f7f9fc; padding:10px 12px; border-radius:12px; cursor:pointer;
 }
-.badge .label{font-weight:600}
-.badge.locked .label{letter-spacing:.2px; color:#9aa6b2}
-.badge .cond{font-size:12px; color:#8a97a6}
-
-/* 虹色（解除済み） */
+.badge.locked .label{color:#98a2b3}
+.badge .cond{color:#94a3b8; font-size:12px}
+/* 解放 → 虹色 */
 .badge.unlocked .label{
-  background:linear-gradient(90deg, #ff5252, #ff9800, #ffeb3b, #4caf50, #03a9f4, #3f51b5, #9c27b0);
+  font-weight:800;
+  background:linear-gradient(90deg,#ff3e7f,#ffb800,#38ef7d,#1da1f2,#9b6bff);
   -webkit-background-clip:text; background-clip:text; color:transparent;
-  animation:hueroll 6s linear infinite;
+  animation:hue 6s linear infinite;
 }
-@keyframes hueroll{ to{ filter:hue-rotate(360deg); } }
+@keyframes hue{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
 
-/* ========== Footer ========== */
-.site-footer{
-  max-width:1100px; margin:0 auto 40px; padding:0 16px; text-align:center; color:var(--muted);
-}
-.site-footer a{color:var(--accent-2); text-decoration:none}
+/* ===== Footer + Save ===== */
+.site-footer{max-width:1200px; margin:12px auto 40px; text-align:center; color:#475569}
+.site-footer a{color:#1e88e5; text-decoration:none}
 .site-footer a:hover{text-decoration:underline}
 
-/* ========== Toast ========== */
+.save-controls{
+  max-width:1200px; margin:0 auto 36px; padding:0 16px;
+  display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
+}
+.save-controls button,.save-controls .upload-btn{
+  background:var(--accent); color:#fff; border:0; border-radius:10px; padding:12px 16px; font-weight:800; cursor:pointer;
+}
+.save-controls .upload-btn{display:inline-flex; align-items:center; gap:6px}
+
+/* ===== Toast ===== */
 .toast-container{
   position:fixed; right:18px; bottom:18px; display:flex; flex-direction:column; gap:10px; z-index:1000;
 }
 .toast{
-  background:#222; color:#fff; padding:10px 14px; border-radius:10px; box-shadow:var(--shadow);
-  opacity:0; transform:translateY(8px); animation:toast-in .25s forwards;
-  max-width:280px; font-size:14px;
-}
-@keyframes toast-in{ to{opacity:1; transform:none} }
-
-.modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-}
-.modal button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-}
-.modal video {
-  max-width: 90%;
-  max-height: 80%;
-  border-radius: 10px;
+  background:#111827; color:#fff; padding:10px 14px; border-radius:10px; box-shadow:var(--shadow);
+  transition:opacity .25s ease, transform .25s ease;
 }
 
-.save-controls {
-  margin-top: 20px;
-  text-align: center;
+/* ===== Modal (ending) ===== */
+.modal-root{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1200 }
+.modal-root.show{ display:flex }
+.modal-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.5) }
+.modal{
+  position:relative; z-index:1; background:#fff; border-radius:16px; box-shadow:var(--shadow);
+  width:min(720px,92vw); padding:18px;
 }
+.modal h2{ margin:0 0 8px }
+.modal .row{ display:flex; gap:10px; margin-top:8px }
+.modal .row .btn{ flex:1; border:0; border-radius:10px; padding:12px 16px; font-weight:800; cursor:pointer; color:#fff; background:var(--accent) }
+.modal video{ width:100%; border-radius:12px; background:#000 }
 
-.save-controls button,
-.save-controls label {
-  background: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  margin: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  display: inline-block;
-  transition: background 0.3s;
-}
-
-.save-controls button:hover,
-.save-controls label:hover {
-  background: #45a049;
-}
-
-.upload-btn {
-  cursor: pointer;
+/* ===== Responsive ===== */
+@media (max-width:1024px){ .grid{grid-template-columns:1fr 1fr} }
+@media (max-width:720px){
+  .grid{grid-template-columns:1fr}
+  .round-button img{width:220px;height:220px}
 }
