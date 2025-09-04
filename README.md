@@ -1,9 +1,9 @@
+[info]
+
 play▶ https://yajurenda.github.io/main/
+form▶ https://docs.google.com/forms/d/e/1FAIpQLSfnWas1z1lJTwI8GuFyKv3NWMo5wgYj58A-oN1r2vrisUpZ1w/viewform?pli=1
+mail▶ yajurendainfo@gmail.com
 
-野獣先輩の連打ゲームです。
-mail:yajurendainfo@gmail.com
+[about]
 
-info
-
-2025年9月4日
-長押しでの購入モードに対応
+野獣先輩のシンプルな連打ゲーム。
