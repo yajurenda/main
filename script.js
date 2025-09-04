@@ -290,3 +290,34 @@ function uploadSave(file){
 /* HTMLのinline呼び出しに対応 */
 window.downloadSave = downloadSave;
 window.uploadSave = uploadSave;
+
+const holdToBuyEl = document.getElementById("hold-to-buy");
+let holdTimer = null;
+
+function attachBuyEvent(btn, itemId) {
+  // デフォルト動作はクリック
+  btn.onclick = () => {
+    if (holdToBuyEl.checked) return; // 長押しモード時はクリック無効
+    buyItem(itemId);
+  };
+
+  // 長押しモード
+  btn.onmousedown = () => {
+    if (!holdToBuyEl.checked) return;
+    holdTimer = setTimeout(() => {
+      buyItem(itemId);
+      holdTimer = null;
+    }, 500); // 0.5秒押し続けたら購入
+  };
+
+  btn.onmouseup = btn.onmouseleave = () => {
+    if (holdTimer) {
+      clearTimeout(holdTimer);
+      holdTimer = null;
+    }
+  };
+}
+
+const btn = li.querySelector(".buy");
+btn.disabled = disabled;
+attachBuyEvent(btn, item.id); // ←ここでイベント登録
