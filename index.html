@@ -1,108 +1,75 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>やじゅれんだ</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header -->
   <header class="site-header">
-    <img src="logo.png" alt="やじゅれんだ ロゴ" class="logo"/>
-    <nav class="header-actions">
-      <a class="btn ghost" href="about.html">About</a>
-      <a class="btn ghost" href="form.html">Form</a>
-      <a class="btn ghost" href="https://bento.me/tdkrkuj" target="_blank" rel="noopener">Author</a>
-      <button id="theme-toggle" class="btn ghost" aria-label="テーマ切替">🌞/🌙</button>
-    </nav>
+    <img src="logo.png" alt="やじゅれんだ" class="logo">
     <div class="volume">
-      <label class="mute"><input id="mute" type="checkbox"> ミュート</label>
-      <input id="volume" type="range" min="0" max="1" step="0.01" value="1" aria-label="音量"/>
+      <label class="mute"><input type="checkbox" id="mute"> ミュート</label>
+      <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
     </div>
+    <button id="theme-toggle" class="mode-btn">🌗 モード切替</button>
+    <button id="longpress-toggle" class="mode-btn">⏱️ 長押し購入モード</button>
+    <a href="https://bento.me/tdkrkuj" target="_blank" rel="noopener noreferrer" class="mode-btn">📖 Author</a>
   </header>
 
-  <!-- 3カラム -->
   <main class="grid">
-    <!-- ゲーム本体 -->
+    <!-- ゲーム -->
     <section class="card game">
-      <h1 class="title">やじゅれんだ！</h1>
+      <h1 class="title">やじゅれんだ</h1>
       <div class="stats">
-        <div class="count"><span id="count">0</span>回</div>
-        <div class="sub">最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
-        <div class="sub">CPS: <span id="cps">0.00</span></div>
+        <div><span class="count" id="count">0</span></div>
+        <div class="sub">ベスト: <span id="best">0</span>｜合計: <span id="total">0</span>｜CPS: <span id="cps">0.00</span></div>
       </div>
-
-      <button id="clicker" class="round-button" aria-label="連打">
-        <img src="click.png" alt="クリック"/>
+      <button class="round-button" id="clicker">
+        <img src="icon.png" alt="click">
       </button>
-
-      <p class="note">※ 初回クリック後に音が有効になります。</p>
+      <p class="note">クリックで増やせ！</p>
     </section>
 
     <!-- ショップ -->
     <section class="card shop">
       <h2>ショップ</h2>
-
       <div class="tabs">
         <button class="tab active" data-category="all">すべて</button>
         <button class="tab" data-category="auto">オート</button>
         <button class="tab" data-category="click">精力剤</button>
         <button class="tab" data-category="boost">ブースト</button>
-        <button class="tab" data-category="low">安い順</button>
-        <button class="tab" data-category="high">高い順</button>
       </div>
-
-      <div class="shop-tools">
-        <label class="switch">
-          <input id="hold-to-buy" type="checkbox">
-          <span>長押しで購入モード</span>
-        </label>
-      </div>
-
       <ul id="shop-list" class="shop-list"></ul>
     </section>
 
     <!-- バッジ -->
-    <aside class="card badges">
-      <h2>獲得バッジ</h2>
+    <section class="card badges">
+      <h2>バッジ</h2>
       <ul id="badge-list" class="badge-list"></ul>
-
-      <div class="divider"></div>
-
-      <!-- エンディング操作（最終バッジ解禁後に利用可能） -->
-      <div class="ending-panel">
-        <h3>エンディング</h3>
-        <p class="small muted" id="ending-hint">最終バッジを獲得すると解放されます。</p>
-        <button id="ending-open" class="btn" disabled>エンディングを見る</button>
-      </div>
-    </aside>
+    </section>
   </main>
 
-  <!-- 保存UI -->
-  <section class="save-controls">
-    <button id="save-btn" class="btn">💾 セーブをダウンロード</button>
-    <label class="upload-btn btn ghost">
-      📂 セーブを読み込む
-      <input id="load-file" type="file" accept=".yjrnd" hidden>
+  <!-- セーブ/ロード -->
+  <div class="save-controls">
+    <button onclick="downloadSave()">💾 セーブ</button>
+    <label class="upload-btn">📂 セーブ読み込み
+      <input type="file" accept=".yjrnd" hidden onchange="uploadSave(this.files[0])">
     </label>
-  </section>
+  </div>
 
   <footer class="site-footer">
-    <span>© やじゅれんだ</span>
+    <p>
+      <a href="https://example.com/about" target="_blank" rel="noopener noreferrer">About</a> ｜ 
+      <a href="https://example.com/from" target="_blank" rel="noopener noreferrer">From</a>
+    </p>
+    <p>Copyright ©2025 やじゅれんだ All Rights Reserved.</p>
   </footer>
 
-  <!-- トースト通知 -->
-  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
-
-  <!-- モーダル（動的に中身を入れる） -->
-  <div class="modal-root" id="modal-root"></div>
-
-  <!-- Audio -->
-  <audio id="se-click" src="click1.mp3" preload="auto"></audio>
-  <audio id="se-buy"   src="buy_sound.mp3" preload="auto"></audio>
-
+  <div id="toast-container" class="toast-container"></div>
+  <audio id="se-click" src="click.mp3"></audio>
+  <audio id="se-buy" src="buy.mp3"></audio>
   <script src="script.js"></script>
 </body>
 </html>
