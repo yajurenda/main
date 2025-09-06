@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>やじゅれんだ</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+  <!-- Header -->
   <header class="site-header">
-    <img src="logo.png" alt="やじゅれんだ" class="logo">
+    <img src="logo.png" alt="やじゅれんだ ロゴ" class="logo"/>
     <div class="volume">
-      <label class="mute"><input type="checkbox" id="mute"> ミュート</label>
-      <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
+      <label class="mute"><input id="mute" type="checkbox"> ミュート</label>
+      <input id="volume" type="range" min="0" max="1" step="0.01" value="1" aria-label="音量"/>
     </div>
-    <button id="theme-toggle" class="mode-btn">🌗 モード切替</button>
-    <button id="longpress-toggle" class="mode-btn">⏱️ 長押し購入モード</button>
-    <a href="https://bento.me/tdkrkuj" target="_blank" rel="noopener noreferrer" class="mode-btn">📖 Author</a>
   </header>
 
+  <!-- 3カラム -->
   <main class="grid">
-    <!-- ゲーム -->
+    <!-- ゲーム本体 -->
     <section class="card game">
-      <h1 class="title">やじゅれんだ</h1>
+      <h1 class="title">やじゅれんだ！</h1>
       <div class="stats">
-        <div><span class="count" id="count">0</span></div>
-        <div class="sub">ベスト: <span id="best">0</span>｜合計: <span id="total">0</span>｜CPS: <span id="cps">0.00</span></div>
+        <div class="count"><span id="count">0</span>回</div>
+        <div class="sub">最高: <span id="best">0</span> / 合計: <span id="total">0</span></div>
+        <div class="sub">CPS: <span id="cps">0.00</span></div>
       </div>
-      <button class="round-button" id="clicker">
-        <img src="icon.png" alt="click">
+
+      <button id="clicker" class="round-button" aria-label="連打">
+        <img src="click.png" alt="クリック"/>
       </button>
-      <p class="note">クリックで増やせ！</p>
+
+      <p class="note">※ 初回クリック後に音が有効になります。</p>
     </section>
 
     <!-- ショップ -->
@@ -45,31 +47,41 @@
     </section>
 
     <!-- バッジ -->
-    <section class="card badges">
-      <h2>バッジ</h2>
+    <aside class="card badges">
+      <h2>獲得バッジ</h2>
       <ul id="badge-list" class="badge-list"></ul>
-    </section>
+    </aside>
   </main>
 
-  <!-- セーブ/ロード -->
-  <div class="save-controls">
-    <button onclick="downloadSave()">💾 セーブ</button>
-    <label class="upload-btn">📂 セーブ読み込み
-      <input type="file" accept=".yjrnd" hidden onchange="uploadSave(this.files[0])">
-    </label>
-  </div>
+  <!-- 操作系 -->
+  <section class="controls">
+    <button id="theme-toggle">🌗 ライト/ダーク切替</button>
+    <button id="longpress-toggle">🖱️ 長押し購入モード</button>
+    <a href="about.html" target="_blank" class="ctrl-link">About</a>
+    <a href="form.html" target="_blank" class="ctrl-link">Form</a>
+    <a href="https://bento.me/tdkrkuj" target="_blank" class="ctrl-link">Author</a>
+  </section>
 
   <footer class="site-footer">
-    <p>
-      <a href="https://example.com/about" target="_blank" rel="noopener noreferrer">About</a> ｜ 
-      <a href="https://example.com/from" target="_blank" rel="noopener noreferrer">From</a>
-    </p>
     <p>Copyright ©2025 やじゅれんだ All Rights Reserved.</p>
   </footer>
 
-  <div id="toast-container" class="toast-container"></div>
-  <audio id="se-click" src="click.mp3"></audio>
-  <audio id="se-buy" src="buy.mp3"></audio>
+  <!-- トースト通知 -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Audio -->
+  <audio id="se-click" src="click1.mp3" preload="auto"></audio>
+  <audio id="se-buy"   src="buy_sound.mp3" preload="auto"></audio>
+
+  <!-- Save Controls -->
+  <div class="save-controls">
+    <button onclick="downloadSave()">💾 セーブをダウンロード</button>
+    <label class="upload-btn">
+      📂 セーブを読み込む
+      <input type="file" accept=".yjrnd" onchange="uploadSave(this.files[0])" hidden>
+    </label>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
