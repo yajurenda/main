@@ -4,6 +4,7 @@ let clickPower = 1, autoPower = 0;
 let lastClickTime = Date.now();
 let selectedCategory = "all";
 let boostActive = false;
+let holdBuyMode = false; // ★ 長押し購入モード
 
 /* ========== Elements ========== */
 const $ = (id) => document.getElementById(id);
@@ -66,7 +67,8 @@ const shopItems = [
   { id:8,  type:"click", name:"お前のことが好きだったんだよ", effect:10,  cost:2000 },
   { id:9,  type:"click", name:"イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect:50, cost:15000 },
 
-  { id:10, type:"boost", name:"ンアッー！", effect:2,   cost:1000 }, // 30s ×2
+  { id:10, type:"boost", name:"ンアッー！", effect:2,   cost:1000 },
+  { id:11, type:"boost", name:"アン！アン！アン！アン！アン！アン！アン！アン！アン！アッーンン！！", effect:3, cost:2000 },
 ];
 
 tabs.forEach(tab=>{
@@ -106,7 +108,20 @@ function renderShop(){
 
     const btn = li.querySelector(".buy");
     btn.disabled = count < item.cost || (item.type==="boost" && boostActive);
-    btn.addEventListener("click", ()=>buyItem(item.id));
+
+    // 通常購入 or 長押し購入
+    let holdInterval;
+    btn.addEventListener("mousedown", ()=>{
+      if(!holdBuyMode) return;
+      holdInterval = setInterval(()=>buyItem(item.id), 150);
+    });
+    btn.addEventListener("mouseup", ()=>{ if(holdInterval) clearInterval(holdInterval); });
+    btn.addEventListener("mouseleave", ()=>{ if(holdInterval) clearInterval(holdInterval); });
+
+    if(!holdBuyMode){
+      btn.addEventListener("click", ()=>buyItem(item.id));
+    }
+
     shopList.appendChild(li);
   });
 }
@@ -194,7 +209,7 @@ function makeToast(text){
   setTimeout(()=>{ div.style.opacity="0"; div.style.transform="translateY(8px)"; setTimeout(()=>div.remove(),250); },2600);
 }
 
-/* ========== Ending (last badge) ========== */
+/* ========== Ending ========== */
 function showEndingOption(){
   modalRoot.innerHTML = `
     <div class="modal-backdrop"></div>
@@ -241,7 +256,7 @@ function render(){
 renderBadges();
 render();
 
-/* ========== Save / Load (manual, Base64 .yjrnd) ========== */
+/* ========== Save / Load ========== */
 function getSaveData(){
   return JSON.stringify({
     count, best, total, cps, clickPower, autoPower, boostActive,
@@ -286,3 +301,35 @@ function uploadSave(file){
   };
   reader.readAsText(file);
 }
+
+/* ========== Footer Extra Buttons ========== */
+// ダークモード切替
+const footer = document.querySelector(".site-footer");
+const themeBtn = document.createElement("button");
+themeBtn.textContent = "🌙/☀️";
+themeBtn.style.marginLeft = "12px";
+themeBtn.onclick = ()=>{
+  document.body.classList.toggle("dark");
+};
+footer.appendChild(themeBtn);
+
+// 長押し購入モード切替
+const holdBtn = document.createElement("button");
+holdBtn.textContent = "長押し購入モード:OFF";
+holdBtn.style.marginLeft = "12px";
+holdBtn.onclick = ()=>{
+  holdBuyMode = !holdBuyMode;
+  holdBtn.textContent = `長押し購入モード:${holdBuyMode?"ON":"OFF"}`;
+  render();
+};
+footer.appendChild(holdBtn);
+
+// エンディング再視聴（バッジ獲得済みなら有効）
+const endingBtn = document.createElement("button");
+endingBtn.textContent = "🎬 エンディング";
+endingBtn.style.marginLeft = "12px";
+endingBtn.onclick = ()=>{
+  if(unlockedBadgeIds.has(1145141919810)) showEndingOption();
+  else makeToast("⚠️ 条件未達成です");
+};
+footer.appendChild(endingBtn);
