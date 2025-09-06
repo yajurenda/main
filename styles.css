@@ -1,4 +1,4 @@
-/* ===== Base ===== */
+/* ===== Theme Vars ===== */
 :root{
   --bg:#f5f7fa;
   --card:#fff;
@@ -11,6 +11,18 @@
   --shadow:0 8px 20px rgba(0,0,0,.08);
   --radius:16px;
 }
+:root[data-theme="dark"]{
+  --bg:#0f172a;
+  --card:#121826;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --accent:#22c55e;
+  --accent-2:#16a34a;
+  --chip:#1f2937;
+  --chip-t:#e5e7eb;
+  --shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -27,13 +39,24 @@ body{
   padding:16px 20px 0;
 }
 .logo{height:44px; width:auto; display:block}
+.header-actions{margin-left:auto; display:flex; gap:8px; align-items:center}
+.btn{
+  border:0; border-radius:10px; padding:10px 14px; font-weight:800; cursor:pointer;
+  background:var(--accent); color:#fff;
+}
+.btn:disabled{opacity:.6; cursor:not-allowed}
+.btn.ghost{
+  background:transparent; color:var(--text); border:1px solid rgba(0,0,0,.08);
+}
+:root[data-theme="dark"] .btn.ghost{ border-color: rgba(255,255,255,.15); }
+
 .volume{
-  margin-left:auto;
+  margin-left:12px;
   display:flex; align-items:center; gap:12px;
   background:var(--card); padding:8px 12px; border-radius:12px; box-shadow:var(--shadow);
 }
 .mute{display:flex; align-items:center; gap:6px}
-#volume{width:220px}
+#volume{width:180px}
 
 /* ===== Layout ===== */
 .grid{
@@ -70,11 +93,15 @@ body{
   padding:8px 12px; border-radius:999px; cursor:pointer; font-weight:700;
 }
 .tab.active{background:var(--accent); color:#fff}
+.shop-tools{display:flex; justify-content:flex-end; margin-bottom:8px}
+.switch{display:flex; align-items:center; gap:8px; color:var(--muted); font-weight:700}
+
 .shop-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
 .shop-item{
   display:flex; justify-content:space-between; align-items:center; gap:12px;
   background:#f7f9fc; border-radius:12px; padding:12px 12px;
 }
+:root[data-theme="dark"] .shop-item{ background:#0b1220 }
 .shop-item .meta{font-size:14px}
 .kind{
   display:inline-block; font-size:12px; font-weight:800;
@@ -87,6 +114,7 @@ body{
   background:var(--accent); color:#fff; font-weight:700;
 }
 .buy:disabled{background:#cbd5e1; cursor:not-allowed}
+:root[data-theme="dark"] .buy:disabled{background:#334155}
 
 /* ===== Badges ===== */
 .badge-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
@@ -94,9 +122,9 @@ body{
   display:flex; justify-content:space-between; align-items:center;
   background:#f7f9fc; padding:10px 12px; border-radius:12px; cursor:pointer;
 }
+:root[data-theme="dark"] .badge{ background:#0b1220 }
 .badge.locked .label{color:#98a2b3}
 .badge .cond{color:#94a3b8; font-size:12px}
-/* 解放 → 虹色 */
 .badge.unlocked .label{
   font-weight:800;
   background:linear-gradient(90deg,#ff3e7f,#ffb800,#38ef7d,#1da1f2,#9b6bff);
@@ -105,19 +133,22 @@ body{
 }
 @keyframes hue{0%{filter:hue-rotate(0)}100%{filter:hue-rotate(360deg)}}
 
+.divider{height:1px; background:rgba(0,0,0,.06); margin:12px 0}
+:root[data-theme="dark"] .divider{ background: rgba(255,255,255,.08) }
+
+.ending-panel h3{margin:6px 0 2px}
+.small{font-size:12px}
+.muted{color:var(--muted)}
+
 /* ===== Footer + Save ===== */
 .site-footer{max-width:1200px; margin:12px auto 40px; text-align:center; color:#475569}
-.site-footer a{color:#1e88e5; text-decoration:none}
-.site-footer a:hover{text-decoration:underline}
+:root[data-theme="dark"] .site-footer{ color:#94a3b8 }
 
 .save-controls{
   max-width:1200px; margin:0 auto 36px; padding:0 16px;
   display:flex; gap:12px; justify-content:center; flex-wrap:wrap;
 }
-.save-controls button,.save-controls .upload-btn{
-  background:var(--accent); color:#fff; border:0; border-radius:10px; padding:12px 16px; font-weight:800; cursor:pointer;
-}
-.save-controls .upload-btn{display:inline-flex; align-items:center; gap:6px}
+.upload-btn{display:inline-flex; align-items:center; gap:6px}
 
 /* ===== Toast ===== */
 .toast-container{
@@ -128,18 +159,18 @@ body{
   transition:opacity .25s ease, transform .25s ease;
 }
 
-/* ===== Modal (ending) ===== */
+/* ===== Modal ===== */
 .modal-root{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:1200 }
 .modal-root.show{ display:flex }
 .modal-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.5) }
 .modal{
-  position:relative; z-index:1; background:#fff; border-radius:16px; box-shadow:var(--shadow);
+  position:relative; z-index:1; background:var(--card); color:var(--text);
+  border-radius:16px; box-shadow:var(--shadow);
   width:min(720px,92vw); padding:18px;
 }
 .modal h2{ margin:0 0 8px }
 .modal .row{ display:flex; gap:10px; margin-top:8px }
-.modal .row .btn{ flex:1; border:0; border-radius:10px; padding:12px 16px; font-weight:800; cursor:pointer; color:#fff; background:var(--accent) }
-.modal video{ width:100%; border-radius:12px; background:#000 }
+.modal .row .btn{ flex:1 }
 
 /* ===== Responsive ===== */
 @media (max-width:1024px){ .grid{grid-template-columns:1fr 1fr} }
