@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
@@ -21,14 +22,10 @@
       <label class="mute"><input id="mute" type="checkbox"> ミュート</label>
       <input id="volume" type="range" min="0" max="1" step="0.01" value="1" aria-label="音量"/>
     </div>
-        <section class="card ranking">
-  <h2>ランキング</h2>
-  <ul id="ranking-list" class="ranking-list"></ul>
-  <button id="register-score">ランキングに登録</button>
-</section>
   </header>
 
   <!-- 3カラム -->
+
   <main class="grid">
     <!-- ゲーム本体 -->
     <section class="card game">
@@ -39,53 +36,57 @@
         <div class="sub">CPS: <span id="cps">0.00</span></div>
       </div>
 
-      <button id="clicker" class="round-button" aria-label="連打">
-        <img src="click.png" alt="クリック"/>
-      </button>
+```
+  <button id="clicker" class="round-button" aria-label="連打">
+    <img src="click.png" alt="クリック"/>
+  </button>
 
-      <p class="note">※ 初回クリック後に音が有効になります。</p>
-    </section>
+  <p class="note">※ 初回クリック後に音が有効になります。</p>
+</section>
 
-    <!-- ショップ -->
-    <section class="card shop">
-      <h2>ショップ</h2>
+<!-- ショップ -->
+<section class="card shop">
+  <h2>ショップ</h2>
 
-      <div class="tabs">
-        <button class="tab active" data-category="all">すべて</button>
-        <button class="tab" data-category="auto">オート</button>
-        <button class="tab" data-category="click">精力剤</button>
-        <button class="tab" data-category="boost">ブースト</button>
-        <button class="tab" data-category="low">安い順</button>
-        <button class="tab" data-category="high">高い順</button>
-      </div>
+  <div class="tabs">
+    <button class="tab active" data-category="all">すべて</button>
+    <button class="tab" data-category="auto">オート</button>
+    <button class="tab" data-category="click">精力剤</button>
+    <button class="tab" data-category="boost">ブースト</button>
+    <button class="tab" data-category="low">安い順</button>
+    <button class="tab" data-category="high">高い順</button>
+  </div>
 
-      <div class="shop-tools">
-        <label class="switch">
-          <input id="hold-to-buy" type="checkbox">
-          <span>長押しで購入モード</span>
-        </label>
-      </div>
+  <div class="shop-tools">
+    <label class="switch">
+      <input id="hold-to-buy" type="checkbox">
+      <span>長押しで購入モード</span>
+    </label>
+  </div>
 
-      <ul id="shop-list" class="shop-list"></ul>
-    </section>
+  <ul id="shop-list" class="shop-list"></ul>
+</section>
 
-    <!-- バッジ -->
-    <aside class="card badges">
-      <h2>獲得バッジ</h2>
-      <ul id="badge-list" class="badge-list"></ul>
+<!-- バッジ -->
+<aside class="card badges">
+  <h2>獲得バッジ</h2>
+  <ul id="badge-list" class="badge-list"></ul>
 
-      <div class="divider"></div>
+  <div class="divider"></div>
 
-      <!-- エンディング操作（最終バッジ解禁後に利用可能） -->
-      <div class="ending-panel">
-        <h3>エンディング</h3>
-        <p class="small muted" id="ending-hint">最終バッジを獲得すると解放されます。</p>
-        <button id="ending-open" class="btn" disabled>エンディングを見る</button>
-      </div>
-    </aside>
+  <!-- エンディング操作（最終バッジ解禁後に利用可能） -->
+  <div class="ending-panel">
+    <h3>エンディング</h3>
+    <p class="small muted" id="ending-hint">最終バッジを獲得すると解放されます。</p>
+    <button id="ending-open" class="btn" disabled>エンディングを見る</button>
+  </div>
+</aside>
+```
+
   </main>
 
   <!-- 保存UI -->
+
   <section class="save-controls">
     <button id="save-btn" class="btn">💾 セーブをダウンロード</button>
     <label class="upload-btn btn ghost">
@@ -99,15 +100,18 @@
   </footer>
 
   <!-- トースト通知 -->
+
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
   <!-- モーダル（動的に中身を入れる） -->
+
   <div class="modal-root" id="modal-root"></div>
 
   <!-- Audio -->
-  <audio id="se-click" src="click1.mp3" preload="auto"></audio>
-  <audio id="se-buy"   src="buy_sound.mp3" preload="auto"></audio>
+
+<audio id="se-click" src="click1.mp3" preload="auto"></audio> <audio id="se-buy"   src="buy_sound.mp3" preload="auto"></audio>
 
   <script src="script.js"></script>
+
 </body>
 </html>
