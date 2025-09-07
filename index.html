@@ -4,24 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>やじゅれんだ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
   <!-- Header -->
   <header class="site-header">
     <img src="logo.png" alt="やじゅれんだ ロゴ" class="logo"/>
+
+    <nav class="header-actions">
+      <a class="btn ghost" href="about.html" target="_blank" rel="noopener">About</a>
+      <a class="btn ghost" href="form.html" target="_blank" rel="noopener">Form</a>
+      <a class="btn ghost" href="https://bento.me/tdkrkuj" target="_blank" rel="noopener">Author</a>
+      <button id="theme-toggle" class="btn ghost" aria-label="テーマ切替">🌞/🌙</button>
+    </nav>
+
     <div class="volume">
       <label class="mute"><input id="mute" type="checkbox"> ミュート</label>
       <input id="volume" type="range" min="0" max="1" step="0.01" value="1" aria-label="音量"/>
     </div>
   </header>
-
-  <!-- モード切替 -->
-  <div class="mode-controls">
-    <button id="toggle-theme">🌗 ライト / ダーク</button>
-    <button id="toggle-hold">🖱️ 長押し購入モード: OFF</button>
-    <button id="ending-btn" style="display:none">🎬 エンディングを見る</button>
-  </div>
 
   <!-- 3カラム -->
   <main class="grid">
@@ -54,6 +56,13 @@
         <button class="tab" data-category="high">高い順</button>
       </div>
 
+      <div class="shop-tools">
+        <label class="switch">
+          <input id="hold-to-buy" type="checkbox">
+          <span>長押しで購入モード</span>
+        </label>
+      </div>
+
       <ul id="shop-list" class="shop-list"></ul>
     </section>
 
@@ -61,32 +70,41 @@
     <aside class="card badges">
       <h2>獲得バッジ</h2>
       <ul id="badge-list" class="badge-list"></ul>
+
+      <div class="divider"></div>
+
+      <!-- エンディング操作 -->
+      <div class="ending-panel">
+        <h3>エンディング</h3>
+        <p class="small muted" id="ending-hint">最終バッジを獲得すると解放されます。</p>
+        <button id="ending-open" class="btn" disabled>エンディングを見る</button>
+      </div>
     </aside>
   </main>
 
+  <!-- 保存UI -->
+  <section class="save-controls">
+    <button id="save-btn" class="btn">💾 セーブをダウンロード</button>
+    <label class="upload-btn btn ghost">
+      📂 セーブを読み込む
+      <input id="load-file" type="file" accept=".yjrnd" hidden>
+    </label>
+  </section>
+
   <footer class="site-footer">
-    <a href="about.html" target="_blank">About</a> ・ 
-    <a href="form.html" target="_blank">Form</a> ・ 
-    <a href="https://bento.me/tdkrkuj" target="_blank">Author</a>
-    <div class="copy">Copyright ©2025 やじゅれんだ All Rights Reserved.</div>
+    <span>Copyright ©2025 やじゅれんだ All Rights Reserved.</span>
   </footer>
 
   <!-- トースト通知 -->
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- モーダル -->
+  <div class="modal-root" id="modal-root"></div>
 
   <!-- Audio -->
   <audio id="se-click" src="click1.mp3" preload="auto"></audio>
   <audio id="se-buy"   src="buy_sound.mp3" preload="auto"></audio>
 
   <script src="script.js"></script>
-
-  <div class="save-controls">
-    <button onclick="downloadSave()">💾 セーブをダウンロード</button>
-    <label class="upload-btn">
-      📂 セーブを読み込む
-      <input type="file" accept=".yjrnd" onchange="uploadSave(this.files[0])" hidden>
-    </label>
-  </div>
-
 </body>
 </html>
