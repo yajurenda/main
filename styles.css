@@ -178,3 +178,22 @@ body{
   .grid{grid-template-columns:1fr}
   .round-button img{width:220px;height:220px}
 }
+
+.ranking {
+  margin-top: 20px;
+}
+.ranking-list {
+  list-style: none;
+  padding: 0;
+}
+.ranking-list li {
+  padding: 6px 10px;
+  border-bottom: 1px solid #ddd;
+}
+.ranking-list li span.name {
+  font-weight: bold;
+}
+.ranking-list li span.score {
+  float: right;
+  color: #555;
+}
