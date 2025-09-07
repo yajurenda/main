@@ -442,3 +442,67 @@ function uploadSave(file){
 }
 $("save-btn").addEventListener("click", downloadSave);
 $("load-file").addEventListener("change", (e)=>uploadSave(e.target.files[0]));
+
+/* ========== Firebase 初期化 ========== */
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAhCOl3sbMWO8rRNVTaJuZnOsHEGGZ-Yp0",
+  authDomain: "yajurenda.firebaseapp.com",
+  projectId: "yajurenda",
+  storageBucket: "yajurenda.firebasestorage.app",
+  messagingSenderId: "388530501663",
+  appId: "1:388530501663:web:3eb0c0249f6e58b0a5bd2a",
+  measurementId: "G-6E08HXE8MN"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+/* ========== ランキング表示（リアルタイム） ========== */
+function loadRankingRealtime(){
+  const q = query(collection(db, "scores"), orderBy("total", "desc"), limit(10));
+
+  onSnapshot(q, (snapshot) => {
+    const rankingList = document.getElementById("ranking-list");
+    rankingList.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const li = document.createElement("li");
+      li.innerHTML = `<span class="name">${data.name}</span> <span class="score">${data.total.toLocaleString()}回</span>`;
+      rankingList.appendChild(li);
+    });
+  });
+}
+
+/* ========== 登録処理（1ユーザー1レコード制御） ========== */
+document.getElementById("register-score").addEventListener("click", async ()=>{
+  const name = prompt("ランキングに表示する名前を入力してください:");
+  if(!name) return;
+
+  try {
+    // 名前をそのままドキュメントIDに使う
+    const userRef = doc(db, "scores", name);
+
+    await setDoc(userRef, {
+      name: name,
+      total: total,
+      timestamp: Date.now()
+    });
+
+    alert("ランキングを更新しました！");
+  } catch (e) {
+    alert("エラー: " + e.message);
+  }
+});
+
+/* 初回ロード（リアルタイム監視開始） */
+loadRankingRealtime();
