@@ -4,18 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>やじゅれんだ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+  <!-- Header -->
   <header class="site-header">
     <img src="logo.png" alt="やじゅれんだ ロゴ" class="logo"/>
+    <nav class="header-actions">
+      <a class="btn ghost" href="about.html">About</a>
+      <a class="btn ghost" href="form.html">Form</a>
+      <a class="btn ghost" href="https://bento.me/tdkrkuj" target="_blank" rel="noopener">Author</a>
+      <button id="theme-toggle" class="btn ghost" aria-label="テーマ切替">🌞/🌙</button>
+    </nav>
     <div class="volume">
       <label class="mute"><input id="mute" type="checkbox"> ミュート</label>
       <input id="volume" type="range" min="0" max="1" step="0.01" value="1" aria-label="音量"/>
     </div>
   </header>
 
+  <!-- 3カラム -->
   <main class="grid">
+    <!-- ゲーム本体 -->
     <section class="card game">
       <h1 class="title">やじゅれんだ！</h1>
       <div class="stats">
@@ -31,8 +41,10 @@
       <p class="note">※ 初回クリック後に音が有効になります。</p>
     </section>
 
+    <!-- ショップ -->
     <section class="card shop">
       <h2>ショップ</h2>
+
       <div class="tabs">
         <button class="tab active" data-category="all">すべて</button>
         <button class="tab" data-category="auto">オート</button>
@@ -52,12 +64,14 @@
       <ul id="shop-list" class="shop-list"></ul>
     </section>
 
+    <!-- バッジ -->
     <aside class="card badges">
       <h2>獲得バッジ</h2>
       <ul id="badge-list" class="badge-list"></ul>
 
       <div class="divider"></div>
 
+      <!-- エンディング操作（最終バッジ解禁後に利用可能） -->
       <div class="ending-panel">
         <h3>エンディング</h3>
         <p class="small muted" id="ending-hint">最終バッジを獲得すると解放されます。</p>
@@ -66,27 +80,24 @@
     </aside>
   </main>
 
-  <section class="controls">
-    <button id="theme-toggle" class="btn ghost">🌗 ライト/ダーク切替</button>
-    <a href="about.html" target="_blank" rel="noopener" class="btn ghost">About</a>
-    <a href="form.html" target="_blank" rel="noopener" class="btn ghost">Form</a>
-    <a href="https://bento.me/tdkrkuj" target="_blank" rel="noopener" class="btn ghost">Author</a>
-  </section>
-
-  <div class="save-controls">
+  <!-- 保存UI -->
+  <section class="save-controls">
     <button id="save-btn" class="btn">💾 セーブをダウンロード</button>
     <label class="upload-btn btn ghost">
       📂 セーブを読み込む
       <input id="load-file" type="file" accept=".yjrnd" hidden>
     </label>
-  </div>
+  </section>
 
   <footer class="site-footer">
-    <p>Copyright ©2025 やじゅれんだ All Rights Reserved.</p>
+    <span>© やじゅれんだ</span>
   </footer>
 
+  <!-- トースト通知 -->
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
-  <div id="modal-root" class="modal-root"></div>
+
+  <!-- モーダル（動的に中身を入れる） -->
+  <div class="modal-root" id="modal-root"></div>
 
   <!-- Audio -->
   <audio id="se-click" src="click1.mp3" preload="auto"></audio>
