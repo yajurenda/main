@@ -113,10 +113,10 @@ const shopItems = [
   { id:16, type:"click", name:"おかのした", effect:1000, cost:500000 },
 
   // ブースト（既存）
-  { id:10, type:"boost", name:"ンアッー！", mult:2, durationSec:30, cooldownSec:30, cost:1000, note:"クールタイムあり" },
+  { id:10, type:"boost", name:"ンアッー！", mult:2, durationSec:30, cooldownSec:30, cost:1000, note:"" },
   // 追加ブースト
-  { id:17, type:"boost", name:"俺もやったんだからさ", mult:5, durationSec:30, cooldownSec:60, cost:5000, note:"ネットミームの暴力" },
-  { id:18, type:"boost", name:"おまたせ", mult:10, durationSec:60, cooldownSec:120, cost:20000, note:"覚悟の証、CT長め" },
+  { id:17, type:"boost", name:"俺もやったんだからさ", mult:5, durationSec:30, cooldownSec:60, cost:5000, note:"" },
+  { id:18, type:"boost", name:"おまたせ", mult:10, durationSec:60, cooldownSec:120, cost:20000, note:"" },
   { id:19, type:"boost", name:"溜まってんなあおい", mult:20, durationSec:15, cooldownSec:45, cost:100000, note:"" },
 ];
 
