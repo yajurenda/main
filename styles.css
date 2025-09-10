@@ -23,6 +23,7 @@
   --shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
+/* 全体 */
 * {
   box-sizing: border-box;
 }
@@ -37,7 +38,7 @@ body {
   line-height: 1.6;
 }
 
-/ ===== Header ===== /
+/* ===== Header ===== */
 .site-header {
   display: flex;
   align-items: center;
@@ -96,7 +97,7 @@ body {
   width: 180px;
 }
 
-/ ===== Layout ===== /
+/* ===== Layout ===== */
 .grid {
   max-width: 1200px;
   margin: 16px auto 28px;
@@ -112,7 +113,7 @@ body {
   padding: 20px;
 }
 
-/ ===== Game ===== /
+/* ===== Game ===== */
 .title {
   margin: 0 0 10px;
   font-size: 26px;
@@ -151,7 +152,7 @@ body {
   margin: 8px 0 0;
 }
 
-/ ===== Shop ===== /
+/* ===== Shop ===== */
 .shop h2, .badges h2 {
   margin: 0 0 12px;
 }
@@ -242,7 +243,7 @@ body {
   background: #334155;
 }
 
-/ ===== Badges ===== /
+/* ===== Badges ===== */
 .badge-list {
   list-style: none;
   padding: 0;
@@ -306,7 +307,7 @@ body {
   color: var(--muted);
 }
 
-/ ===== Footer + Save ===== /
+/* ===== Footer + Save ===== */
 .site-footer {
   max-width: 1200px;
   margin: 12px auto 40px;
@@ -332,7 +333,7 @@ body {
   gap: 6px;
 }
 
-/ ===== Toast ===== /
+/* ===== Toast ===== */
 .toast-container {
   position: fixed;
   right: 18px;
@@ -351,7 +352,7 @@ body {
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-/ ===== Modal ===== /
+/* ===== Modal ===== */
 .modal-root {
   position: fixed;
   inset: 0;
@@ -390,7 +391,7 @@ body {
   flex: 1;
 }
 
-/ ===== Responsive ===== /
+/* ===== Responsive ===== */
 @media (max-width: 1024px) {
   .grid {
     grid-template-columns: 1fr 1fr;
