@@ -10,7 +10,7 @@ let boostCooldownUntil = 0;
 
 /* 長押し購入モード */
 let holdToBuyEnabled = false;
-const holdTimers = new Map(); // btn -> intervalId
+const holdTimers = new Map();
 
 /* ========== Elements ========== */
 const $ = (id) => document.getElementById(id);
@@ -36,29 +36,28 @@ volumeEl.addEventListener("input", applyVolume);
 applyVolume();
 
 const playClick = () => { try{ clickSE.currentTime = 0; clickSE.play(); }catch{} };
-const playBuy   = () => { try{ buySE.currentTime   = 0; buySE.play(); }catch{} };
+const playBuy = () => { try{ buySE.currentTime = 0; buySE.play(); }catch{} };
 
 /* ========== Theme (Light/Dark) ========== */
 (function initTheme(){
-  const saved = localStorage.getItem("yjr_theme");
+  const saved = localStorage.getItem("yjrtheme");
   if(saved) document.documentElement.setAttribute("data-theme", saved);
   themeToggle.addEventListener("click", ()=>{
     const cur = document.documentElement.getAttribute("data-theme") || "light";
     const next = cur === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("yjr_theme", next);
+    localStorage.setItem("yjrtheme", next);
   });
 })();
 
 /* ========== Hold-to-Buy ========== */
 (function initHoldToBuy(){
-  const saved = localStorage.getItem("yjr_hold_to_buy");
+  const saved = localStorage.getItem("yjrholdtobuy");
   holdToBuyEnabled = saved === "1";
   holdToBuyCheckbox.checked = holdToBuyEnabled;
   holdToBuyCheckbox.addEventListener("change", ()=>{
     holdToBuyEnabled = holdToBuyCheckbox.checked;
-    localStorage.setItem("yjr_hold_to_buy", holdToBuyEnabled ? "1" : "0");
-    // 解除時は全インターバル停止
+    localStorage.setItem("yjrholdtobuy", holdToBuyEnabled ? "1" : "0");
     stopAllHoldIntervals();
   });
 })();
@@ -85,39 +84,34 @@ clicker.addEventListener("click", () => {
   render();
 });
 
-/* Enterでの加算は禁止 */
 document.addEventListener("keydown", (e) => { if (e.key === "Enter") e.preventDefault(); });
 
 /* ========== Shop ========== */
-/* 既存 + 追加商品 + ブースト強化 */
 const shopItems = [
-  // オート（既存）
-  { id:1,  type:"auto",  name:"24歳です", effect:1,   cost:100 },
-  { id:2,  type:"auto",  name:"学生です", effect:5,   cost:500 },
-  { id:3,  type:"auto",  name:"じゃあオナニー", effect:20,  cost:2000 },
-  { id:4,  type:"auto",  name:"...とかっていうのは？", effect:100, cost:10000 },
-  { id:5,  type:"auto",  name:"やりますねぇ！", effect:500, cost:50000 },
-  // 追加オート
-  { id:11, type:"auto",  name:"ｱｰｲｷｿ", effect:250, cost:25000 },
-  { id:12, type:"auto",  name:"あーソレいいよ", effect:1000, cost:100000 },
-  { id:13, type:"auto",  name:"頭にきますよ!!", effect:5000, cost:500000 },
+  // オート
+  { id:1, type:"auto", name:"24歳です", effect:1, cost:100 },
+  { id:2, type:"auto", name:"学生です", effect:5, cost:500 },
+  { id:3, type:"auto", name:"じゃあオナニー", effect:20, cost:2000 },
+  { id:4, type:"auto", name:"...とかっていうのは？", effect:100, cost:10000 },
+  { id:5, type:"auto", name:"やりますねぇ！", effect:500, cost:50000 },
+  { id:11, type:"auto", name:"ｱｰｲｷｿ", effect:250, cost:25000 },
+  { id:12, type:"auto", name:"あーソレいいよ", effect:1000, cost:100000 },
+  { id:13, type:"auto", name:"頭にきますよ!!", effect:5000, cost:500000 },
 
-  // 精力剤（既存）
-  { id:6,  type:"click", name:"アイスティー", effect:1,   cost:50 },
-  { id:7,  type:"click", name:"暴れんなよ", effect:3,   cost:300 },
-  { id:8,  type:"click", name:"お前のことが好きだったんだよ", effect:10,  cost:2000 },
-  { id:9,  type:"click", name:"イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect:50, cost:15000 },
-  // 追加精力剤
+  // 精力剤
+  { id:6, type:"click", name:"アイスティー", effect:1, cost:50 },
+  { id:7, type:"click", name:"暴れんなよ", effect:3, cost:300 },
+  { id:8, type:"click", name:"お前のことが好きだったんだよ", effect:10, cost:2000 },
+  { id:9, type:"click", name:"イキスギィ！イク！...", effect:50, cost:15000 },
   { id:14, type:"click", name:"ありますあります", effect:100, cost:30000 },
   { id:15, type:"click", name:"いいよこいよ", effect:300, cost:100000 },
   { id:16, type:"click", name:"おかのした", effect:1000, cost:500000 },
 
-  // ブースト（既存）
-  { id:10, type:"boost", name:"ンアッー！", mult:2, durationSec:30, cooldownSec:30, cost:1000, note:"" },
-  // 追加ブースト
-  { id:17, type:"boost", name:"俺もやったんだからさ", mult:5, durationSec:30, cooldownSec:60, cost:5000, note:"" },
-  { id:18, type:"boost", name:"おまたせ", mult:10, durationSec:60, cooldownSec:120, cost:20000, note:"" },
-  { id:19, type:"boost", name:"溜まってんなあおい", mult:20, durationSec:15, cooldownSec:45, cost:100000, note:"" },
+  // ブースト
+  { id:10, type:"boost", name:"ンアッー！", mult:2, durationSec:30, cooldownSec:30, cost:1000 },
+  { id:17, type:"boost", name:"俺もやったんだからさ", mult:5, durationSec:30, cooldownSec:60, cost:5000 },
+  { id:18, type:"boost", name:"おまたせ", mult:10, durationSec:60, cooldownSec:120, cost:20000 },
+  { id:19, type:"boost", name:"溜まってんなあおい", mult:20, durationSec:15, cooldownSec:45, cost:100000 },
 ];
 
 tabs.forEach(tab=>{
@@ -148,10 +142,7 @@ function renderShop(){
     let desc = "";
     if(item.type==="auto") desc = `※秒間+${item.effect}`;
     else if(item.type==="click") desc = `※1クリック+${item.effect}`;
-    else {
-      desc = `※${item.durationSec || 30}秒 1クリック×${item.mult}`;
-      if(item.note) desc += `（${item.note}）`;
-    }
+    else desc = `※${item.durationSec}秒 1クリック×${item.mult}`;
 
     li.innerHTML = `
       <div class="meta">
@@ -162,22 +153,16 @@ function renderShop(){
     `;
 
     const btn = li.querySelector(".buy");
-
     const inCooldown = now < boostCooldownUntil;
-    const disabled = (count < item.cost) ||
-      (item.type==="boost" && (boostRunning || inCooldown));
-
+    const disabled = (count < item.cost) || (item.type==="boost" && (boostRunning || inCooldown));
     btn.disabled = disabled;
 
-    // クリック購入（単発）
-    btn.addEventListener("click", (e)=>{
-      if(holdToBuyEnabled) return; // 長押しモード中は単発クリック無効化（暴発防止）
+    btn.addEventListener("click", ()=>{
+      if(holdToBuyEnabled) return;
       buyItem(item.id);
     });
-
-    // 長押し購入（ONの時のみ、押してる間だけ連続）
-    btn.addEventListener("mousedown", (e)=>startHoldBuy(e, btn, item.id));
-    btn.addEventListener("touchstart",(e)=>startHoldBuy(e, btn, item.id), {passive:true});
+    btn.addEventListener("mousedown", ()=>startHoldBuy(btn, item.id));
+    btn.addEventListener("touchstart",()=>startHoldBuy(btn, item.id), {passive:true});
     ["mouseup","mouseleave","touchend","touchcancel"].forEach(ev=>{
       btn.addEventListener(ev, ()=>stopHoldBuy(btn));
     });
@@ -186,13 +171,9 @@ function renderShop(){
   });
 }
 
-function startHoldBuy(ev, btn, id){
-  if(!holdToBuyEnabled) return;
-  if(btn.disabled) return;
-
-  // 1回目はすぐ実行
+function startHoldBuy(btn, id){
+  if(!holdToBuyEnabled || btn.disabled) return;
   buyItem(id);
-  // 以降は間隔で連射
   if(holdTimers.has(btn)) return;
   const intervalId = setInterval(()=>{
     const item = shopItems.find(i=>i.id===id);
@@ -204,7 +185,7 @@ function startHoldBuy(ev, btn, id){
       return;
     }
     buyItem(id);
-  }, 100); // 連打速度（必要なら調整）
+  }, 100);
   holdTimers.set(btn, intervalId);
 }
 function stopHoldBuy(btn){
@@ -215,14 +196,11 @@ function stopHoldBuy(btn){
 function buyItem(id){
   const item = shopItems.find(i=>i.id===id);
   if(!item) return;
-
   if(item.type==="boost"){
     const now = Date.now();
     if(boostRunning || now < boostCooldownUntil) return;
   }
-
   if(count < item.cost) return;
-
   count -= item.cost;
 
   if(item.type==="auto"){
@@ -230,7 +208,6 @@ function buyItem(id){
   } else if(item.type==="click"){
     clickPower += item.effect;
   } else if(item.type==="boost"){
-    // 実行
     applyBoost(item);
   }
 
@@ -240,21 +217,19 @@ function buyItem(id){
 
 function applyBoost(boost){
   boostRunning = true;
-  const mult = boost.mult || 2;
-  const duration = (boost.durationSec || 30) * 1000;
-  const cooldown = (boost.cooldownSec || 30) * 1000;
+  const mult = boost.mult;
+  const duration = boost.durationSec * 1000;
+  const cooldown = boost.cooldownSec * 1000;
 
   clickPower *= mult;
-
   setTimeout(()=>{
     clickPower /= mult;
     boostRunning = false;
-    boostCooldownUntil = Date.now() + cooldown; // CT開始
+    boostCooldownUntil = Date.now() + cooldown;
     render();
   }, duration);
 }
 
-/* 自動加算 */
 setInterval(()=>{
   if(autoPower>0){
     count += autoPower;
@@ -267,18 +242,24 @@ setInterval(()=>{
 
 /* ========== Badges ========== */
 const BADGES = [
-  { id:1, need:1, name:"千里の道も野獣から" },
-  { id:19, need:19, name:"王道をイク" },
-  { id:45, need:45, name:"試行思考(シコシコ)" },
-  { id:364, need:364, name:"見ろよ見ろよ" },
-  { id:810, need:810, name:"中々やりますねぇ" },
-  { id:1919, need:1919, name:"⚠️あなたはイキスギました！⚠️" },
-  { id:4545, need:4545, name:"生粋とイキスギのオナリスト" },
-  { id:114514, need:114514, name:"Okay, come on.(いいよこいよ)" },
-  { id:364364, need:364364, name:"ホラ、見ろよ見ろよ、ホラ" },
-  { id:1145141919810, need:1145141919810, name:"遊んでくれてありがとう❗" },
+  { id:"1", need:1, name:"千里の道も野獣から" },
+  { id:"19", need:19, name:"王道をイク" },
+  { id:"45", need:45, name:"試行思考(シコシコ)" },
+  { id:"364", need:364, name:"見ろよ見ろよ" },
+  { id:"810", need:810, name:"中々やりますねぇ" },
+  { id:"1919", need:1919, name:"⚠️あなたはイキスギました！⚠️" },
+  { id:"4545", need:4545, name:"生粋とイキスギのオナリスト" },
+  { id:"114514", need:114514, name:"Okay, come on.(いいよこいよ)" },
+  { id:"364364", need:364364, name:"ホラ、見ろよ見ろよ、ホラ" },
+  { id:"1145141919810", need:1145141919810, name:"遊んでくれてありがとう❗" },
+  { id:"1145141919810100081", need:1145141919810100081n, name:"新たな道" },
+  { id:"1145141919810364364", need:1145141919810364364n, name:"野獣先輩" },
+  { id:"1919191919191919191", need:1919191919191919191n, name:"イキマスター" },
+  { id:"4545454545454545454", need:4545454545454545454n, name:"シコマスター" },
+  { id:"8101000811919114514", need:8101000811919114514n, name:"ヌゥン！ヘッ！ヘッ！ア゛ア゛...(大迫真)" },
+  { id:"810100081191911451445451919690721", need:810100081191911451445451919690721n, name:"やじゅれんだ" },
 ];
-const LAST_BADGE_ID = 1145141919810;
+const LASTBADGEID = "810100081191911451445451919690721";
 const unlockedBadgeIds = new Set();
 
 function renderBadges(){
@@ -291,28 +272,20 @@ function renderBadges(){
       <span class="label">${unlocked ? b.name : "？？？"}</span>
       <span class="cond">${unlocked ? "入手済み" : `解禁条件: ${b.need.toLocaleString()}クリック`}</span>
     `;
-    li.addEventListener("click", ()=>{
-      alert(`${unlocked ? b.name : "？？？"}\n${unlocked ? "入手済み" : `解禁条件: ${b.need.toLocaleString()} クリック`}`);
-    });
     badgeList.appendChild(li);
   });
 
-  // エンディング解禁UI
-  const unlockedLast = unlockedBadgeIds.has(LAST_BADGE_ID);
+  const unlockedLast = unlockedBadgeIds.has(LASTBADGEID);
   endingOpenBtn.disabled = !unlockedLast;
   endingHint.textContent = unlockedLast ? "解禁済み：いつでも視聴できます。" : "最終バッジを獲得すると解放されます。";
 }
 
 function unlockBadgesIfAny(currentTotal){
   BADGES.forEach(b=>{
-    if(currentTotal>=b.need && !unlockedBadgeIds.has(b.id)){
+    if(BigInt(currentTotal) >= BigInt(b.need) && !unlockedBadgeIds.has(b.id)){
       unlockedBadgeIds.add(b.id);
       makeToast(`バッジを獲得: ${b.name}`);
       renderBadges();
-      if(b.id===LAST_BADGE_ID){
-        // 初回解禁時に選択モーダルを出す
-        showEndingOption();
-      }
     }
   });
 }
@@ -330,28 +303,23 @@ function makeToast(text){
   },2600);
 }
 
-/* ========== Ending (いつでも視聴) ========== */
+/* ========== Ending ========== */
 endingOpenBtn.addEventListener("click", ()=>{
   if(endingOpenBtn.disabled) return;
-  showEndingOption();
+  playEndingOption();
 });
-
-function showEndingOption(){
+function playEndingOption(){
   modalRoot.innerHTML = `
     <div class="modal-backdrop"></div>
     <div class="modal">
-      <h2>🎉 クリアおめでとう！ 🎉</h2>
-      <p>エンディングを再生しますか？</p>
+      <h2>🎉 クリアおめでとう 🎉</h2>
       <div class="row">
-        <button class="btn" id="end-sound">音ありで見る</button>
-        <button class="btn" id="end-nosound">音なしで見る</button>
+        <button class="btn" id="end-sound">音あり</button>
+        <button class="btn" id="end-nosound">音なし</button>
       </div>
-      <div class="row">
-        <button class="btn ghost" id="end-close">閉じる</button>
-      </div>
+      <div class="row"><button class="btn ghost" id="end-close">閉じる</button></div>
     </div>`;
   modalRoot.classList.add("show");
-  modalRoot.querySelector(".modal-backdrop").onclick = closeModal;
   $("end-close").onclick = closeModal;
   $("end-sound").onclick = ()=>playEnding(false);
   $("end-nosound").onclick = ()=>playEnding(true);
@@ -361,84 +329,62 @@ function playEnding(muted){
   modalRoot.innerHTML = `
     <div class="modal-backdrop"></div>
     <div class="modal">
-      <video id="ending-video" src="end.mp4" ${muted ? "muted" : ""} controls autoplay style="width:100%;border-radius:12px;background:#000"></video>
-      <div class="row" style="margin-top:10px">
-        <button class="btn ghost" id="end-close2">閉じる</button>
-      </div>
+      <video src="end.mp4" ${muted?"muted":""} controls autoplay style="width:100%;border-radius:12px;background:#000"></video>
+      <div class="row"><button class="btn ghost" id="end-close2">閉じる</button></div>
     </div>`;
   modalRoot.classList.add("show");
-  modalRoot.querySelector(".modal-backdrop").onclick = closeModal;
   $("end-close2").onclick = closeModal;
 }
 
 /* ========== Render ========== */
 function render(){
   countEl.textContent = count.toLocaleString();
-  bestEl.textContent  = best.toLocaleString();
+  bestEl.textContent = best.toLocaleString();
   totalEl.textContent = total.toLocaleString();
-  cpsEl.textContent   = cps.toFixed(2);
+  cpsEl.textContent = cps.toFixed(2);
   renderShop();
 }
 renderBadges();
 render();
 
-/* ========== Save / Load (manual, Base64 .yjrnd) ========== */
+/* ========== Save / Load ========== */
 function getSaveData(){
   return JSON.stringify({
     count, best, total, cps, clickPower, autoPower,
-    boostRunning, boostCooldownUntil,
+    boostCooldownUntil,
     badges:[...unlockedBadgeIds],
     selectedCategory,
     holdToBuyEnabled,
-    theme: document.documentElement.getAttribute("data-theme") || "light",
-    // ショップのコストが変化する仕様がないので、IDだけ保存
-    shopIds: shopItems.map(i=>i.id)
+    theme: document.documentElement.getAttribute("data-theme") || "light"
   });
 }
 function loadSaveData(json){
-  const d = JSON.parse(json||"{}");
-  count = d.count ?? 0; best = d.best ?? 0; total = d.total ?? 0; cps = d.cps ?? 0;
-  clickPower = d.clickPower ?? 1; autoPower = d.autoPower ?? 0;
-  boostRunning = false; // 復帰時は安全にOFF
-  boostCooldownUntil = d.boostCooldownUntil ?? 0;
-  unlockedBadgeIds.clear();
-  (d.badges||[]).forEach(id=>unlockedBadgeIds.add(id));
-  selectedCategory = d.selectedCategory || "all";
-  holdToBuyEnabled = !!d.holdToBuyEnabled;
-  holdToBuyCheckbox.checked = holdToBuyEnabled;
-
-  const th = d.theme || "light";
-  document.documentElement.setAttribute("data-theme", th);
-  localStorage.setItem("yjr_theme", th);
-  localStorage.setItem("yjr_hold_to_buy", holdToBuyEnabled ? "1":"0");
-
-  tabs.forEach(t=>{
-    t.classList.toggle("active", t.dataset.category===selectedCategory);
-  });
-
-  renderBadges(); render();
-}
-const encryptData = (s)=>btoa(unescape(encodeURIComponent(s)));
-const decryptData = (s)=>decodeURIComponent(escape(atob(s)));
-
-function downloadSave(){
   try{
-    const enc = encryptData(getSaveData());
-    const blob = new Blob([enc], {type:"application/octet-stream"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "yajurenda_save.yjrnd";
-    document.body.appendChild(a);
-    setTimeout(()=>{ a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); makeToast("✅ セーブをダウンロードしました"); }, 30);
-  }catch(e){ alert("⚠️ セーブに失敗しました: "+e.message); }
+    const d = JSON.parse(json || "{}");
+    count = d.count ?? 0; best = d.best ?? 0; total = d.total ?? 0; cps = d.cps ?? 0;
+    clickPower = d.clickPower ?? 1; autoPower = d.autoPower ?? 0;
+    boostCooldownUntil = d.boostCooldownUntil ?? 0;
+    (d.badges||[]).forEach(id=>unlockedBadgeIds.add(id));
+    selectedCategory = d.selectedCategory || "all";
+    holdToBuyEnabled = d.holdToBuyEnabled || false;
+    holdToBuyCheckbox.checked = holdToBuyEnabled;
+    if(d.theme) document.documentElement.setAttribute("data-theme", d.theme);
+    render(); renderBadges();
+  }catch(e){ console.error(e); }
 }
-function uploadSave(file){
+
+$("save-btn").addEventListener("click", ()=>{
+  const data = getSaveData();
+  const blob = new Blob([data], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "yjr-save.json";
+  a.click();
+});
+$("load-btn").addEventListener("change", (e)=>{
+  const file = e.target.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = ()=>{
-    try{ const decrypted = decryptData(reader.result); loadSaveData(decrypted); makeToast("✅ セーブを読み込みました"); }
-    catch(e){ alert("⚠️ 読み込みに失敗しました: "+e.message); }
-  };
+  reader.onload = ()=>{ loadSaveData(reader.result); };
   reader.readAsText(file);
-}
-$("save-btn").addEventListener("click", downloadSave);
-$("load-file").addEventListener("change", (e)=>uploadSave(e.target.files[0]));
+});
