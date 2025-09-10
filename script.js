@@ -73,16 +73,18 @@ function stopAllHoldIntervals() {
 clicker.addEventListener("click", () => {
   const now = Date.now();
   const diff = (now - lastClickTime) / 1000;
+  // CPSの計算にBigIntを使用しない（簡易化）
   if (diff > 0) cps = 1 / diff;
   lastClickTime = now;
 
-  count += clickPower;
-  total += clickPower;
+  // count, total, best にBigIntを使用
+  count = BigInt(count) + BigInt(clickPower);
+  total = BigInt(total) + BigInt(clickPower);
   if (count > best) best = count;
 
   playClick();
-  unlockBadgesIfAny(BigInt(total)); // BigIntに対応
-  render();
+  unlockBadgesIfAny(total);
+  render(); // クリックごとにレンダリングを呼び出す
 });
 
 / Enterでの加算は禁止 /
@@ -155,7 +157,8 @@ ${item.name} ${desc} [${item.cost.toLocaleString()}回]
 
     const btn = li.querySelector(".buy");
     const inCooldown = now < boostCooldownUntil;
-    const disabled = (count < item.cost) || (item.type === "boost" && (boostRunning || inCooldown));
+    // costの比較もBigIntにする
+    const disabled = (BigInt(count) < BigInt(item.cost)) || (item.type === "boost" && (boostRunning || inCooldown));
     btn.disabled = disabled;
 
     btn.addEventListener("click", (e) => {
@@ -182,7 +185,8 @@ function startHoldBuy(ev, btn, id) {
     if (!item) return;
     const now = Date.now();
     const inCooldown = now < boostCooldownUntil;
-    if ((item.type === "boost" && (boostRunning || inCooldown)) || count < item.cost) {
+    // costの比較もBigIntにする
+    if ((item.type === "boost" && (boostRunning || inCooldown)) || BigInt(count) < BigInt(item.cost)) {
       stopHoldBuy(btn);
       return;
     }
@@ -205,9 +209,10 @@ function buyItem(id) {
     const now = Date.now();
     if (boostRunning || now < boostCooldownUntil) return;
   }
-  if (count < item.cost) return;
+  // costの比較もBigIntにする
+  if (BigInt(count) < BigInt(item.cost)) return;
 
-  count -= item.cost;
+  count = BigInt(count) - BigInt(item.cost);
 
   if (item.type === "auto") {
     autoPower += item.effect;
@@ -239,8 +244,8 @@ function applyBoost(boost) {
 / 自動加算 /
 setInterval(() => {
   if (autoPower > 0) {
-    count += autoPower;
-    total += autoPower;
+    count = BigInt(count) + BigInt(autoPower);
+    total = BigInt(total) + BigInt(autoPower);
     if (count > best) best = count;
     unlockBadgesIfAny(total);
     render();
@@ -263,7 +268,7 @@ const BADGES = [
   { id: 1145141919810364364n, need: 1145141919810364364n, name: "野獣先輩" },
   { id: 1919191919191919191n, need: 1919191919191919191n, name: "イキマスター" },
   { id: 4545454545454545454n, need: 4545454545454545454n, name: "シコマスター" },
-  { id: 8101000811919114514n, need: 8101000811919114514n, name: "ヌゥン！ヘッ！ヘッ！ア゛ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛ア゛↑ア゛↑ア゛↑ア゛↑ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛！！！！ウ゛ア゛ア゛ア゛ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛ァ゛ァ゛ァ！！！！！フ ウ゛ウ゛ウ゛ゥ゛ゥ゛ゥ゛ン！！！！フ ウ゛ゥ゛ゥ゛ゥン！！！！(大迫真)" },
+  { id: 8101000811919114514n, need: 8101000811919114514n, name: "ヌゥン！ヘッ！ヘッ！\nア゛ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛\nア゛↑ア゛↑ア゛↑ア゛↑ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛！！！！\nウ゛ア゛ア゛ア゛ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛ァ゛ァ゛ァ！！！！！\nフ ウ゛ウ゛ウ゛ゥ゛ゥ゛ゥ゛ン！！！！\nフ ウ゛ゥ゛ゥ゛ゥン！！！！(大迫真)" },
   { id: 810100081191911451445451919690721n, need: 810100081191911451445451919690721n, name: "やじゅれんだ" },
 ];
 const LASTBADGEID = 1145141919810n;
@@ -363,6 +368,7 @@ function playEnding(muted) {
 
 / ========== Render ========== /
 function render() {
+  // count, total, best はBigIntなのでtoLocaleString()で表示
   countEl.textContent = count.toLocaleString();
   bestEl.textContent = best.toLocaleString();
   totalEl.textContent = total.toLocaleString();
@@ -373,7 +379,10 @@ function render() {
 / ========== Save / Load (manual, Base64 .yjrnd) ========== /
 function getSaveData() {
   return JSON.stringify({
-    count, best, total, cps, clickPower, autoPower,
+    count: count.toString(), // BigIntを文字列に変換
+    best: best.toString(),
+    total: total.toString(),
+    cps, clickPower, autoPower,
     boostRunning, boostCooldownUntil,
     badges: [...unlockedBadgeIds].map(id => id.toString()),
     selectedCategory,
@@ -385,9 +394,9 @@ function getSaveData() {
 
 function loadSaveData(json) {
   const d = JSON.parse(json || "{}");
-  count = d.count ?? 0;
-  best = d.best ?? 0;
-  total = d.total ?? 0;
+  count = BigInt(d.count ?? 0);
+  best = BigInt(d.best ?? 0);
+  total = BigInt(d.total ?? 0);
   cps = d.cps ?? 0;
   clickPower = d.clickPower ?? 1;
   autoPower = d.autoPower ?? 0;
@@ -452,6 +461,6 @@ function uploadSave(file) {
 $("save-btn").addEventListener("click", downloadSave);
 $("load-file").addEventListener("change", (e) => uploadSave(e.target.files[0]));
 
-// 初期描画
+// 初期描画 (BigInt対応版)
 renderBadges();
 render();
