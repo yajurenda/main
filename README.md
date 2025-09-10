@@ -4,4 +4,4 @@ form▶ https://docs.google.com/forms/d/e/1FAIpQLSfnWas1z1lJTwI8GuFyKv3NWMo5wgYj
 
 mail▶ yajurendainfo@gmail.com
 
-作者:田所工事中 bento.me/tdkrkuj
+作者:田所工事中 https://bento.me/tdkrkuj
