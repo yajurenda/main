@@ -1,4 +1,4 @@
-/ ===== Theme Vars ===== /
+/* ===== Theme Vars ===== */
 :root {
   --bg: #f5f7fa;
   --card: #fff;
@@ -23,7 +23,6 @@
   --shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* 全体 */
 * {
   box-sizing: border-box;
 }
@@ -251,6 +250,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  line-height: 1.2;
 }
 .badge {
   display: flex;
@@ -270,6 +270,7 @@ body {
 .badge .cond {
   color: #94a3b8;
   font-size: 12px;
+  text-align: right;
 }
 .badge.unlocked .label {
   font-weight: 800;
