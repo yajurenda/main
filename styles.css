@@ -23,6 +23,7 @@
   --shadow:0 8px 20px rgba(0,0,0,.4);
 }
 
+/* ===== Base ===== */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -99,19 +100,19 @@ body{
 .shop-list{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px}
 .shop-item{
   display:flex; justify-content:space-between; align-items:center; gap:12px;
-  background:#f7f9fc; border-radius:12px; padding:12px 12px;
+  background:var(--accent); color:#fff; border-radius:12px; padding:12px;
 }
-:root[data-theme="dark"] .shop-item{ background:#0b1220 }
+:root[data-theme="dark"] .shop-item{ background:var(--accent-2) }
 .shop-item .meta{font-size:14px}
 .kind{
   display:inline-block; font-size:12px; font-weight:800;
-  padding:2px 8px; border-radius:6px; margin-right:6px; background:#e9eef7;
+  padding:2px 8px; border-radius:6px; margin-right:6px; background:#e9eef7; color:#333;
 }
 .kind.click{background:#ffe9cc}
 .kind.boost{background:#ffe2e5}
 .buy{
   border:0; padding:8px 12px; border-radius:8px; cursor:pointer;
-  background:var(--accent); color:#fff; font-weight:700;
+  background:#fff; color:var(--accent); font-weight:700;
 }
 .buy:disabled{background:#cbd5e1; cursor:not-allowed}
 :root[data-theme="dark"] .buy:disabled{background:#334155}
@@ -177,27 +178,4 @@ body{
 @media (max-width:720px){
   .grid{grid-template-columns:1fr}
   .round-button img{width:220px;height:220px}
-}
-
-/* ===== Game Count 文字サイズ自動縮小 ===== */
-.stats .count{
-  font-size: clamp(20px, 6vw, 44px); /* 桁が増えても縮小 */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.stats .sub{
-  font-size: clamp(12px, 2vw, 14px);
-}
-
-/* ===== Shop / Badge リストをグリッド化 ===== */
-.shop-list, .badge-list{
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 10px;
-}
-
-.shop-item, .badge{
-  width: 100%;
 }
