@@ -4,15 +4,12 @@ let clickPower = 1, autoPower = 0;
 let lastClickTime = Date.now();
 let selectedCategory = "all";
 
-/* ブースト実行・CT管理 */
 let boostRunning = false;
 let boostCooldownUntil = 0;
 
-/* 長押し購入モード */
 let holdToBuyEnabled = false;
-const holdTimers = new Map(); // btn -> intervalId
+const holdTimers = new Map();
 
-/* バッジ解除管理 */
 const unlockedBadgeIds = new Set();
 
 /* ========== Elements ========== */
@@ -29,7 +26,7 @@ const endingOpenBtn = $("ending-open");
 const endingHint = $("ending-hint");
 const holdToBuyCheckbox = $("hold-to-buy");
 
-/* ========== Audio / Volume ========== */
+/* ========== Audio ========== */
 function applyVolume(){
   const vol = muteEl.checked ? 0 : parseFloat(volumeEl.value || "1");
   [clickSE, buySE].forEach(a => { a.volume = vol; a.muted = vol === 0; });
@@ -38,10 +35,10 @@ muteEl.addEventListener("change", applyVolume);
 volumeEl.addEventListener("input", applyVolume);
 applyVolume();
 
-const playClick = () => { try{ clickSE.currentTime = 0; clickSE.play(); }catch{} };
-const playBuy   = () => { try{ buySE.currentTime   = 0; buySE.play(); }catch{} };
+function playClick(){ try{ clickSE.currentTime=0; clickSE.play(); }catch{} }
+function playBuy(){ try{ buySE.currentTime=0; buySE.play(); }catch{} }
 
-/* ========== Theme (Light/Dark) ========== */
+/* ========== Theme ========== */
 (function initTheme(){
   const saved = localStorage.getItem("yjr_theme");
   if(saved) document.documentElement.setAttribute("data-theme", saved);
@@ -60,60 +57,95 @@ const playBuy   = () => { try{ buySE.currentTime   = 0; buySE.play(); }catch{} }
   holdToBuyCheckbox.checked = holdToBuyEnabled;
   holdToBuyCheckbox.addEventListener("change", ()=>{
     holdToBuyEnabled = holdToBuyCheckbox.checked;
-    localStorage.setItem("yjr_hold_to_buy", holdToBuyEnabled ? "1" : "0");
+    localStorage.setItem("yjr_hold_to_buy", holdToBuyEnabled ? "1":"0");
     stopAllHoldIntervals();
   });
 })();
 function stopAllHoldIntervals(){
-  for(const [btn, id] of holdTimers.entries()){
-    clearInterval(id);
-    holdTimers.delete(btn);
+  for(const [btn,id] of holdTimers.entries()){
+    clearInterval(id); holdTimers.delete(btn);
   }
 }
 
 /* ========== Clicker ========== */
-clicker.addEventListener("click", () => {
+clicker.addEventListener("click", ()=>{
   const now = Date.now();
-  const diff = (now - lastClickTime) / 1000;
-  if (diff > 0) cps = 1 / diff;
+  const diff = (now - lastClickTime)/1000;
+  if(diff>0) cps = 1/diff;
   lastClickTime = now;
 
   count += clickPower;
   total += clickPower;
-  if (count > best) best = count;
+  if(count>best) best = count;
 
   playClick();
   unlockBadgesIfAny(total);
   render();
 });
 
-/* Enterでの加算は禁止 */
-document.addEventListener("keydown", (e) => { if (e.key === "Enter") e.preventDefault(); });
-
 /* ========== Shop ========== */
 const shopItems = [
-  { id:1,  type:"auto",  name:"24歳です", effect:1,   cost:100 },
-  { id:2,  type:"auto",  name:"学生です", effect:5,   cost:500 },
-  { id:3,  type:"auto",  name:"じゃあオナニー", effect:20,  cost:2000 },
-  { id:4,  type:"auto",  name:"...とかっていうのは？", effect:100, cost:10000 },
-  { id:5,  type:"auto",  name:"やりますねぇ！", effect:500, cost:50000 },
-  { id:11, type:"auto",  name:"ｱｰｲｷｿ", effect:250, cost:25000 },
-  { id:12, type:"auto",  name:"あーソレいいよ", effect:1000, cost:100000 },
-  { id:13, type:"auto",  name:"頭にきますよ!!", effect:5000, cost:500000 },
+  { id:1,  type:"auto",  name:"24歳です", effect:1,   cost:100, owned:0 },
+  { id:2,  type:"auto",  name:"学生です", effect:5,   cost:500, owned:0 },
+  { id:3,  type:"auto",  name:"じゃあオナニー", effect:20,  cost:2000, owned:0 },
+  { id:4,  type:"auto",  name:"...とかっていうのは？", effect:100, cost:10000, owned:0 },
+  { id:5,  type:"auto",  name:"やりますねぇ！", effect:500, cost:50000, owned:0 },
+  { id:11, type:"auto",  name:"ｱｰｲｷｿ", effect:250, cost:25000, owned:0 },
+  { id:12, type:"auto",  name:"あーソレいいよ", effect:1000, cost:100000, owned:0 },
+  { id:13, type:"auto",  name:"頭にきますよ!!", effect:5000, cost:500000, owned:0 },
 
-  { id:6,  type:"click", name:"アイスティー", effect:1,   cost:50 },
-  { id:7,  type:"click", name:"暴れんなよ", effect:3,   cost:300 },
-  { id:8,  type:"click", name:"お前のことが好きだったんだよ", effect:10,  cost:2000 },
-  { id:9,  type:"click", name:"イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect:50, cost:15000 },
-  { id:14, type:"click", name:"ありますあります", effect:100, cost:30000 },
-  { id:15, type:"click", name:"いいよこいよ", effect:300, cost:100000 },
-  { id:16, type:"click", name:"おかのした", effect:1000, cost:500000 },
+  { id:6,  type:"click", name:"アイスティー", effect:1,   cost:50, owned:0 },
+  { id:7,  type:"click", name:"暴れんなよ", effect:3,   cost:300, owned:0 },
+  { id:8,  type:"click", name:"お前のことが好きだったんだよ", effect:10,  cost:2000, owned:0 },
+  { id:9,  type:"click", name:"イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect:50, cost:15000, owned:0 },
+  { id:14, type:"click", name:"ありますあります", effect:100, cost:30000, owned:0 },
+  { id:15, type:"click", name:"いいよこいよ", effect:300, cost:100000, owned:0 },
+  { id:16, type:"click", name:"おかのした", effect:1000, cost:500000, owned:0 },
 
-  { id:10, type:"boost", name:"ンアッー！", mult:2, durationSec:30, cooldownSec:30, cost:1000 },
-  { id:17, type:"boost", name:"俺もやったんだからさ", mult:5, durationSec:30, cooldownSec:60, cost:5000 },
-  { id:18, type:"boost", name:"おまたせ", mult:10, durationSec:60, cooldownSec:120, cost:20000 },
-  { id:19, type:"boost", name:"溜まってんなあおい", mult:20, durationSec:15, cooldownSec:45, cost:100000 },
+  { id:10, type:"boost", name:"ンアッー！", mult:2, durationSec:30, cooldownSec:30, cost:1000, owned:0 },
+  { id:17, type:"boost", name:"俺もやったんだからさ", mult:5, durationSec:30, cooldownSec:60, cost:5000, owned:0 },
+  { id:18, type:"boost", name:"おまたせ", mult:10, durationSec:60, cooldownSec:120, cost:20000, owned:0 },
+  { id:19, type:"boost", name:"溜まってんなあおい", mult:20, durationSec:15, cooldownSec:45, cost:100000, owned:0 },
 ];
+
+function buyItem(item){
+  if(count < item.cost) return;
+  count -= item.cost;
+  item.owned++;
+  playBuy();
+
+  if(item.type==="auto") autoPower += item.effect;
+  if(item.type==="click") clickPower += item.effect;
+  if(item.type==="boost") activateBoost(item);
+
+  render();
+}
+
+function renderShop(){
+  shopList.innerHTML="";
+  shopItems.forEach(item=>{
+    if(selectedCategory!=="all" && item.type!==selectedCategory) return;
+    const li = document.createElement("li");
+    li.className="shop-item";
+    li.innerHTML=`
+      <span>${item.name}</span>
+      <span>値段:${item.cost.toLocaleString()}</span>
+      <span>所持:${item.owned}</span>
+      <button class="buy-btn">購入</button>
+    `;
+    const btn = li.querySelector("button");
+    btn.addEventListener("click",()=>buyItem(item));
+    if(holdToBuyEnabled){
+      btn.addEventListener("mousedown",()=>{
+        const id=setInterval(()=>buyItem(item),150);
+        holdTimers.set(btn,id);
+      });
+      btn.addEventListener("mouseup",()=>{ clearInterval(holdTimers.get(btn)); holdTimers.delete(btn); });
+      btn.addEventListener("mouseleave",()=>{ clearInterval(holdTimers.get(btn)); holdTimers.delete(btn); });
+    }
+    shopList.appendChild(li);
+  });
+}
 
 /* ========== Badges ========== */
 const BADGES = [
@@ -134,165 +166,88 @@ const BADGES = [
   { id:"bX5", need:"8101000811919114514", name:"ヌゥン！ヘッ！…(大迫真)" },
   { id:"bX6", need:"81010008119191145144545191969072156858519999999", name:"やじゅれんだ" },
 ];
-
 const LAST_BADGE_ID = "bLast";
 
-/* ✅ BigInt対応版 */
 function unlockBadgesIfAny(currentTotal){
   BADGES.forEach(b=>{
-    if(BigInt(currentTotal) >= BigInt(b.need) && !unlockedBadgeIds.has(b.id)){
+    if(BigInt(currentTotal)>=BigInt(b.need) && !unlockedBadgeIds.has(b.id)){
       unlockedBadgeIds.add(b.id);
       makeToast(`バッジを獲得: ${b.name}`);
       renderBadges();
-      if(b.id===LAST_BADGE_ID){
-        showEndingOption();
-      }
+      if(b.id===LAST_BADGE_ID) showEndingOption();
     }
   });
 }
 
 function renderBadges(){
-  badgeList.innerHTML = "";
+  badgeList.innerHTML="";
   BADGES.forEach(b=>{
-    const li = document.createElement("li");
-    const unlocked = unlockedBadgeIds.has(b.id);
-    li.className = "badge " + (unlocked ? "unlocked" : "locked");
-    li.innerHTML = `
-      <span class="label">${unlocked ? b.name : "？？？"}</span>
-      <span class="cond">${unlocked ? "入手済み" : `解禁条件: ${BigInt(b.need).toLocaleString()}クリック`}</span>
-    `;
-    li.addEventListener("click", ()=>{
-      alert(`${unlocked ? b.name : "？？？"}\n${unlocked ? "入手済み" : `解禁条件: ${BigInt(b.need).toLocaleString()} クリック`}`);
-    });
+    const li=document.createElement("li");
+    const unlocked=unlockedBadgeIds.has(b.id);
+    li.className="badge "+(unlocked?"unlocked":"locked");
+    li.innerHTML=`<span>${unlocked?b.name:"？？？"}</span>`;
     badgeList.appendChild(li);
   });
-
-  const unlockedLast = unlockedBadgeIds.has(LAST_BADGE_ID);
-  endingOpenBtn.disabled = !unlockedLast;
-  endingHint.textContent = unlockedLast ? "解禁済み：いつでも視聴できます。" : "最終バッジを獲得すると解放されます。";
+  const unlockedLast=unlockedBadgeIds.has(LAST_BADGE_ID);
+  endingOpenBtn.disabled=!unlockedLast;
+  endingHint.textContent=unlockedLast?"解禁済み：いつでも視聴できます。":"最終バッジを獲得すると解放されます。";
 }
 
 /* ========== Toast ========== */
 function makeToast(text){
-  const div = document.createElement("div");
-  div.className = "toast";
-  div.textContent = text;
+  const div=document.createElement("div");
+  div.className="toast"; div.textContent=text;
   toastContainer.appendChild(div);
-  setTimeout(()=>{
-    div.style.opacity="0";
-    div.style.transform="translateY(8px)";
-    setTimeout(()=>div.remove(),250);
-  },2600);
+  setTimeout(()=>{ div.style.opacity="0"; setTimeout(()=>div.remove(),250); },2000);
 }
 
-/* ========== Ending (いつでも視聴) ========== */
-endingOpenBtn.addEventListener("click", ()=>{
-  if(endingOpenBtn.disabled) return;
-  showEndingOption();
-});
-
+/* ========== Ending ========== */
+endingOpenBtn.addEventListener("click", ()=>{ if(!endingOpenBtn.disabled) showEndingOption(); });
 function showEndingOption(){
-  modalRoot.innerHTML = `
-    <div class="modal-backdrop"></div>
-    <div class="modal">
-      <h2>🎉 クリアおめでとう！ 🎉</h2>
-      <p>エンディングを再生しますか？</p>
-      <div class="row">
-        <button class="btn" id="end-sound">音ありで見る</button>
-        <button class="btn" id="end-nosound">音なしで見る</button>
-      </div>
-      <div class="row">
-        <button class="btn ghost" id="end-close">閉じる</button>
-      </div>
-    </div>`;
-  modalRoot.classList.add("show");
-  modalRoot.querySelector(".modal-backdrop").onclick = closeModal;
-  $("end-close").onclick = closeModal;
-  $("end-sound").onclick = ()=>playEnding(false);
-  $("end-nosound").onclick = ()=>playEnding(true);
-}
-function closeModal(){ modalRoot.classList.remove("show"); modalRoot.innerHTML=""; }
-function playEnding(muted){
-  modalRoot.innerHTML = `
-    <div class="modal-backdrop"></div>
-    <div class="modal">
-      <video id="ending-video" src="end.mp4" ${muted ? "muted" : ""} controls autoplay style="width:100%;border-radius:12px;background:#000"></video>
-      <div class="row" style="margin-top:10px">
-        <button class="btn ghost" id="end-close2">閉じる</button>
-      </div>
-    </div>`;
-  modalRoot.classList.add("show");
-  modalRoot.querySelector(".modal-backdrop").onclick = closeModal;
-  $("end-close2").onclick = closeModal;
+  modalRoot.innerHTML=`<div class="modal"><video src="end.mp4" controls autoplay style="width:100%"></video></div>`;
 }
 
 /* ========== Render ========== */
 function render(){
-  countEl.textContent = count.toLocaleString();
-  bestEl.textContent  = best.toLocaleString();
-  totalEl.textContent = total.toLocaleString();
-  cpsEl.textContent   = cps.toFixed(2);
+  countEl.textContent=count.toLocaleString();
+  bestEl.textContent=best.toLocaleString();
+  totalEl.textContent=total.toLocaleString();
+  cpsEl.textContent=cps.toFixed(2);
   renderShop();
 }
-renderBadges();
-render();
+renderBadges(); render();
 
-/* ========== Save / Load (manual, Base64 .yjrnd) ========== */
+/* ========== Save / Load ========== */
 function getSaveData(){
   return JSON.stringify({
-    count, best, total, cps, clickPower, autoPower,
-    boostRunning, boostCooldownUntil,
+    count,best,total,cps,clickPower,autoPower,
     badges:[...unlockedBadgeIds],
-    selectedCategory,
-    holdToBuyEnabled,
-    theme: document.documentElement.getAttribute("data-theme") || "light",
-    shopIds: shopItems.map(i=>i.id)
+    shop:shopItems.map(i=>({id:i.id,owned:i.owned})),
   });
 }
 function loadSaveData(json){
-  const d = JSON.parse(json||"{}");
-  count = d.count ?? 0; best = d.best ?? 0; total = d.total ?? 0; cps = d.cps ?? 0;
-  clickPower = d.clickPower ?? 1; autoPower = d.autoPower ?? 0;
-  boostRunning = false;
-  boostCooldownUntil = d.boostCooldownUntil ?? 0;
+  const d=JSON.parse(json||"{}");
+  count=d.count||0; best=d.best||0; total=d.total||0; cps=d.cps||0;
+  clickPower=d.clickPower||1; autoPower=d.autoPower||0;
   unlockedBadgeIds.clear();
   (d.badges||[]).forEach(id=>unlockedBadgeIds.add(id));
-  selectedCategory = d.selectedCategory || "all";
-  holdToBuyEnabled = !!d.holdToBuyEnabled;
-  holdToBuyCheckbox.checked = holdToBuyEnabled;
-
-  const th = d.theme || "light";
-  document.documentElement.setAttribute("data-theme", th);
-  localStorage.setItem("yjr_theme", th);
-  localStorage.setItem("yjr_hold_to_buy", holdToBuyEnabled ? "1":"0");
-
-  tabs.forEach(t=>{
-    t.classList.toggle("active", t.dataset.category===selectedCategory);
-  });
-
+  if(d.shop){ d.shop.forEach(s=>{ const item=shopItems.find(i=>i.id===s.id); if(item) item.owned=s.owned; }); }
   renderBadges(); render();
 }
-const encryptData = (s)=>btoa(unescape(encodeURIComponent(s)));
-const decryptData = (s)=>decodeURIComponent(escape(atob(s)));
-
+function encryptData(s){ return btoa(unescape(encodeURIComponent(s))); }
+function decryptData(s){ return decodeURIComponent(escape(atob(s))); }
 function downloadSave(){
-  try{
-    const enc = encryptData(getSaveData());
-    const blob = new Blob([enc], {type:"application/octet-stream"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = "yajurenda_save.yjrnd";
-    document.body.appendChild(a);
-    setTimeout(()=>{ a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); makeToast("✅ セーブをダウンロードしました"); }, 30);
-  }catch(e){ alert("⚠️ セーブに失敗しました: "+e.message); }
+  const enc=encryptData(getSaveData());
+  const blob=new Blob([enc],{type:"application/octet-stream"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download="yajurenda_save.yjrnd";
+  a.click(); URL.revokeObjectURL(url);
 }
 function uploadSave(file){
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ()=>{
-    try{ const decrypted = decryptData(reader.result); loadSaveData(decrypted); makeToast("✅ セーブを読み込みました"); }
-    catch(e){ alert("⚠️ 読み込みに失敗しました: "+e.message); }
-  };
-  reader.readAsText(file);
+  const r=new FileReader();
+  r.onload=()=>{ try{ const d=decryptData(r.result); loadSaveData(d); }catch(e){ alert("ロード失敗"); } };
+  r.readAsText(file);
 }
 $("save-btn").addEventListener("click", downloadSave);
 $("load-file").addEventListener("change", (e)=>uploadSave(e.target.files[0]));
