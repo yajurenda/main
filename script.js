@@ -265,3 +265,45 @@ tabs.forEach(tab => {
 // 初回レンダリング
 renderBadges();
 render();
+
+/* ========== Ending (いつでも視聴) ========== */
+function showEndingOption(){
+  modalRoot.innerHTML = `
+    <div class="modal-backdrop"></div>
+    <div class="modal">
+      <h2>🎉 クリアおめでとう！ 🎉</h2>
+      <p>エンディングを再生しますか？</p>
+      <div class="row">
+        <button class="btn" id="end-sound">音ありで見る</button>
+        <button class="btn" id="end-nosound">音なしで見る</button>
+      </div>
+      <div class="row">
+        <button class="btn ghost" id="end-close">閉じる</button>
+      </div>
+    </div>`;
+  modalRoot.classList.add("show");
+  modalRoot.querySelector(".modal-backdrop").onclick = closeModal;
+  $("end-close").onclick = closeModal;
+  $("end-sound").onclick = () => playEnding(false); // false = 音あり
+  $("end-nosound").onclick = () => playEnding(true); // true = 音なし
+}
+
+function playEnding(muted){
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  modal.innerHTML = `
+    <video id="ending-video" src="end.mp4" ${muted ? "muted" : ""} controls autoplay style="width:100%;border-radius:12px;background:#000"></video>
+    <div class="row" style="margin-top:10px">
+      <button class="btn ghost" id="end-close2">閉じる</button>
+    </div>
+  `;
+  modalRoot.innerHTML = `<div class="modal-backdrop"></div>`;
+  modalRoot.appendChild(modal);
+  modalRoot.classList.add("show");
+
+  const video = $("ending-video");
+  const closeFunc = () => { video.pause(); closeModal(); };
+
+  modalRoot.querySelector(".modal-backdrop").onclick = closeFunc;
+  $("end-close2").onclick = closeFunc;
+}
