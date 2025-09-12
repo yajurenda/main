@@ -112,8 +112,6 @@ const shopItems = [
   { id:19, type:"boost", name:"溜まってんなあおい", mult:20, durationSec:15, cooldownSec:45, cost:100000 },
 ];
 
-/* ... renderShop, startHoldBuy, stopHoldBuy, buyItem, applyBoost (前回と同じなので省略) */
-
 /* ========== Badges ========== */
 const BADGES = [
   { id:1, need:1, name:"千里の道も野獣から" },
@@ -134,17 +132,18 @@ const BADGES = [
   { id:"bX6", need:"81010008119191145144545191969072156858519999999", name:"やじゅれんだ" },
 ];
 
+const LAST_BADGE_ID = "bLast"; // ←追加
+
 function unlockBadgesIfAny(currentTotal){
   BADGES.forEach(b=>{
     if(BigInt(currentTotal) >= BigInt(b.need) && !unlockedBadgeIds.has(b.id)){
       unlockedBadgeIds.add(b.id);
       makeToast(`バッジを獲得: ${b.name}`);
       renderBadges();
-      if(b.id==="bLast"){ showEndingOption(); }
+      if(b.id===LAST_BADGE_ID){ showEndingOption(); }
     }
   });
 }
-
 
 function renderBadges(){
   badgeList.innerHTML = "";
