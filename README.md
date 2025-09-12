@@ -1,3 +1,6 @@
+明日の自分へ
+バッジのやつ修正しとけよ
+
 play▶ https://yajurenda.github.io/main/
 
 form▶ https://docs.google.com/forms/d/e/1FAIpQLSfnWas1z1lJTwI8GuFyKv3NWMo5wgYj58A-oN1r2vrisUpZ1w/viewform?pli=1
