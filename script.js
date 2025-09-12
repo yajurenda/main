@@ -251,3 +251,17 @@ function uploadSave(file){
 }
 $("save-btn").addEventListener("click", downloadSave);
 $("load-file").addEventListener("change", (e)=>uploadSave(e.target.files[0]));
+
+// タブ切替
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    selectedCategory = tab.dataset.category; // カテゴリ更新
+    renderShop();
+  });
+});
+
+// 初回レンダリング
+renderBadges();
+render();
