@@ -178,3 +178,26 @@ body{
   .grid{grid-template-columns:1fr}
   .round-button img{width:220px;height:220px}
 }
+
+/* ===== Game Count 文字サイズ自動縮小 ===== */
+.stats .count{
+  font-size: clamp(20px, 6vw, 44px); /* 桁が増えても縮小 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stats .sub{
+  font-size: clamp(12px, 2vw, 14px);
+}
+
+/* ===== Shop / Badge リストをグリッド化 ===== */
+.shop-list, .badge-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.shop-item, .badge{
+  width: 100%;
+}
