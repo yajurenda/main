@@ -12,6 +12,9 @@ let boostCooldownUntil = 0;
 let holdToBuyEnabled = false;
 const holdTimers = new Map(); // btn -> intervalId
 
+/* バッジ解除管理 */
+const unlockedBadgeIds = new Set();
+
 /* ========== Elements ========== */
 const $ = (id) => document.getElementById(id);
 const countEl = $("count"), bestEl = $("best"), totalEl = $("total"), cpsEl = $("cps");
@@ -132,15 +135,18 @@ const BADGES = [
   { id:"bX6", need:"81010008119191145144545191969072156858519999999", name:"やじゅれんだ" },
 ];
 
-const LAST_BADGE_ID = "bLast"; // ←追加
+const LAST_BADGE_ID = "bLast";
 
+/* ✅ BigInt対応版 */
 function unlockBadgesIfAny(currentTotal){
   BADGES.forEach(b=>{
     if(BigInt(currentTotal) >= BigInt(b.need) && !unlockedBadgeIds.has(b.id)){
       unlockedBadgeIds.add(b.id);
       makeToast(`バッジを獲得: ${b.name}`);
       renderBadges();
-      if(b.id===LAST_BADGE_ID){ showEndingOption(); }
+      if(b.id===LAST_BADGE_ID){
+        showEndingOption();
+      }
     }
   });
 }
@@ -153,32 +159,17 @@ function renderBadges(){
     li.className = "badge " + (unlocked ? "unlocked" : "locked");
     li.innerHTML = `
       <span class="label">${unlocked ? b.name : "？？？"}</span>
-      <span class="cond">${unlocked ? "入手済み" : `解禁条件: ${b.need.toLocaleString()}クリック`}</span>
+      <span class="cond">${unlocked ? "入手済み" : `解禁条件: ${BigInt(b.need).toLocaleString()}クリック`}</span>
     `;
     li.addEventListener("click", ()=>{
-      alert(`${unlocked ? b.name : "？？？"}\n${unlocked ? "入手済み" : `解禁条件: ${b.need.toLocaleString()} クリック`}`);
+      alert(`${unlocked ? b.name : "？？？"}\n${unlocked ? "入手済み" : `解禁条件: ${BigInt(b.need).toLocaleString()} クリック`}`);
     });
     badgeList.appendChild(li);
   });
 
-  // エンディング解禁UI
   const unlockedLast = unlockedBadgeIds.has(LAST_BADGE_ID);
   endingOpenBtn.disabled = !unlockedLast;
   endingHint.textContent = unlockedLast ? "解禁済み：いつでも視聴できます。" : "最終バッジを獲得すると解放されます。";
-}
-
-function unlockBadgesIfAny(currentTotal){
-  BADGES.forEach(b=>{
-    if(currentTotal>=b.need && !unlockedBadgeIds.has(b.id)){
-      unlockedBadgeIds.add(b.id);
-      makeToast(`バッジを獲得: ${b.name}`);
-      renderBadges();
-      if(b.id===LAST_BADGE_ID){
-        // 初回解禁時に選択モーダルを出す
-        showEndingOption();
-      }
-    }
-  });
 }
 
 /* ========== Toast ========== */
@@ -255,7 +246,6 @@ function getSaveData(){
     selectedCategory,
     holdToBuyEnabled,
     theme: document.documentElement.getAttribute("data-theme") || "light",
-    // ショップのコストが変化する仕様がないので、IDだけ保存
     shopIds: shopItems.map(i=>i.id)
   });
 }
@@ -263,7 +253,7 @@ function loadSaveData(json){
   const d = JSON.parse(json||"{}");
   count = d.count ?? 0; best = d.best ?? 0; total = d.total ?? 0; cps = d.cps ?? 0;
   clickPower = d.clickPower ?? 1; autoPower = d.autoPower ?? 0;
-  boostRunning = false; // 復帰時は安全にOFF
+  boostRunning = false;
   boostCooldownUntil = d.boostCooldownUntil ?? 0;
   unlockedBadgeIds.clear();
   (d.badges||[]).forEach(id=>unlockedBadgeIds.add(id));
