@@ -1,139 +1,248 @@
-/* ==========================
-   style.css — 完全版
-   ========================== */
+/* ========== 全体レイアウト ========== */
+:root {
+  --bg-light: #f8f9fa;
+  --bg-dark: #181a1b;
+  --card-light: #fff;
+  --card-dark: #242526;
+  --text-light: #222;
+  --text-dark: #eee;
+  --accent: #ff4081;
+  --radius: 12px;
+  --transition: 0.25s ease;
+  --rainbow: linear-gradient(
+    270deg,
+    #ff0000,
+    #ff9900,
+    #ffee00,
+    #33cc33,
+    #3399ff,
+    #6633ff,
+    #cc33ff,
+    #ff0099,
+    #ff0000
+  );
+}
 
-/* ベース */
+[data-theme="light"] {
+  --bg: var(--bg-light);
+  --card: var(--card-light);
+  --text: var(--text-light);
+}
+
+[data-theme="dark"] {
+  --bg: var(--bg-dark);
+  --card: var(--card-dark);
+  --text: var(--text-dark);
+}
+
 body {
   margin: 0;
   font-family: "Noto Sans JP", sans-serif;
   background: var(--bg);
-  color: var(--fg);
-  transition: background 0.3s, color 0.3s;
-}
-:root {
-  --bg: #f0f0f0;
-  --fg: #222;
-  --accent: #4caf50;
-}
-[data-theme="dark"] {
-  --bg: #111;
-  --fg: #eee;
-  --accent: #81c784;
+  color: var(--text);
+  transition: background var(--transition), color var(--transition);
 }
 
-/* バッジ */
-#badge-list {
+/* ========== ヘッダー ========== */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--card);
+  border-bottom: 1px solid #ccc;
+}
+.logo {
+  height: 40px;
+}
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+.volume {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ========== 共通UI ========== */
+.btn {
+  background: var(--accent);
+  color: #fff;
+  padding: 0.4rem 0.9rem;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: filter var(--transition);
+}
+.btn:hover { filter: brightness(1.1); }
+.btn.ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--text);
+}
+
+/* ========== グリッドレイアウト ========== */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 300px;
+  gap: 1rem;
+  padding: 1rem;
+}
+.card {
+  background: var(--card);
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+/* ========== クリックボタン ========== */
+.round-button {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem auto;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.round-button img { width: 70%; height: auto; }
+.round-button:active { transform: scale(0.92); }
+
+/* ========== ショップ ========== */
+.shop .tabs {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.tab {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  border: none;
+  border-radius: var(--radius);
+  background: #ddd;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.tab.active { background: var(--accent); color: #fff; }
+.shop-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
-.badge {
-  padding: 6px 10px;
-  margin: 4px 0;
-  border-radius: 6px;
-  cursor: pointer;
-  background: rgba(0,0,0,0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.badge.locked {
-  color: gray;
-}
-.badge.unlocked .label {
-  background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet);
-  background-size: 400%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: rainbow 8s linear infinite;
-}
-@keyframes rainbow {
-  from { background-position: 0% 50%; }
-  to   { background-position: 100% 50%; }
-}
-
-/* ショップ */
 .shop-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 6px 0;
-  padding: 6px 10px;
-  background: rgba(76, 175, 80, 0.15);
-  border-radius: 6px;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #ccc;
 }
-.shop-item .kind {
-  font-size: 0.8em;
-  margin-right: 8px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: var(--accent);
-  color: white;
-}
-button.buy {
-  padding: 4px 8px;
+.shop-item .buy {
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius);
   border: none;
-  border-radius: 4px;
   background: var(--accent);
-  color: white;
+  color: #fff;
   cursor: pointer;
 }
-button.buy:disabled {
-  background: gray;
+.shop-item .buy:disabled {
+  background: #aaa;
   cursor: not-allowed;
 }
 
-/* トースト */
-.toast {
-  position: relative;
-  margin: 4px;
-  padding: 6px 12px;
-  background: var(--accent);
-  color: white;
-  border-radius: 6px;
-  opacity: 1;
-  transition: opacity 0.3s, transform 0.3s;
+/* ========== バッジ ========== */
+.badge-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
-#toast-container {
-  position: fixed;
-  bottom: 12px;
-  right: 12px;
+.badge {
+  padding: 0.5rem;
+  margin: 0.3rem 0;
+  border-radius: var(--radius);
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.badge.locked {
+  background: #5555;
+  color: #888;
+}
+.badge.unlocked {
+  background: var(--rainbow);
+  background-size: 600% 600%;
+  animation: rainbowFlow 8s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+@keyframes rainbowFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
-/* モーダル */
-.modal-backdrop {
+/* ========== エンディング ========== */
+.ending-panel {
+  text-align: center;
+  margin-top: 1rem;
+}
+.ending-panel .btn:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+/* ========== 保存UI ========== */
+.save-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem;
+}
+
+/* ========== トースト ========== */
+.toast-container {
   position: fixed;
-  top:0;left:0;right:0;bottom:0;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  z-index: 9999;
+}
+.toast {
+  background: var(--card);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+/* ========== モーダル ========== */
+.modal-root.show {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
   background: rgba(0,0,0,0.6);
 }
 .modal {
-  position: fixed;
-  top:50%; left:50%;
-  transform: translate(-50%,-50%);
-  background: var(--bg);
-  color: var(--fg);
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 400px;
-}
-.modal .row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-.btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  background: var(--accent);
-  color: white;
-  cursor: pointer;
-}
-.btn.ghost {
-  background: transparent;
-  border: 1px solid var(--accent);
-  color: var(--accent);
+  position: relative;
+  background: var(--card);
+  padding: 1rem;
+  border-radius: var(--radius);
+  z-index: 1;
+  max-width: 500px;
+  width: 90%;
 }
