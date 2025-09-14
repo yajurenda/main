@@ -1,33 +1,30 @@
 /* ===========================
-   script.js — 完全版
-   (やじゅれんだ — スキン対応 + 保存)
+   script.js — 完全版（修正版）
+   ・高/安ソート、着せ替え購入制御
+   ・スキン保存対応
+   ・バッジアニメーション永続化（DOMを再作成しない）
    =========================== */
 
 /* ========== State ========== */
-/* カウント類は BigInt で管理 */
 let count = 0n, best = 0n, total = 0n;
-let cps = 0; // 表示用（数値）
+let cps = 0;
 let clickPower = 1n, autoPower = 0n;
 let lastClickTime = Date.now();
 let selectedCategory = "all";
 
-/* ブースト管理 */
-let boostRunning = false;
-let boostCooldownUntil = 0;
-
-/* 長押し購入 */
+let boostRunning = false, boostCooldownUntil = 0;
 let holdToBuyEnabled = false;
 const holdTimers = new Map();
 
-/* スキン管理 */
+// skins
 let unlockedSkinIds = new Set();
-let currentSkinId = null; // 後で初期化
+let currentSkinId = null;
 
 /* ========== Elements ========== */
 const $ = id => document.getElementById(id);
 const countEl = $("count"), bestEl = $("best"), totalEl = $("total"), cpsEl = $("cps");
 const clicker = $("clicker"), shopList = $("shop-list"), badgeList = $("badge-list");
-let skinListEl = $("skin-list"); // ない場合は後で作る
+let skinListEl = $("skin-list");
 const tabs = document.querySelectorAll(".tab");
 const toastContainer = $("toast-container");
 const muteEl = $("mute"), volumeEl = $("volume");
@@ -40,22 +37,20 @@ const holdToBuyCheckbox = $("hold-to-buy");
 
 /* ========== Utilities ========== */
 function fmt(n){
-  // n: BigInt or number -> formatted string with commas
   const s = (typeof n === "bigint") ? n.toString() : String(n);
   return s.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-function toBig(v){ try{ return typeof v === "bigint" ? v : BigInt(v); }catch(e){ return BigInt(0); } }
 
 /* ========== Audio / Volume ========== */
 function applyVolume(){
   const vol = muteEl && muteEl.checked ? 0 : parseFloat((volumeEl && volumeEl.value) || "1");
-  [clickSE, buySE].forEach(a=>{ if(a){ a.volume = vol; a.muted = vol===0; }});
+  [clickSE, buySE].forEach(a=>{ if(a){ a.volume = vol; a.muted = vol === 0; }});
 }
 if(muteEl) muteEl.addEventListener("change", applyVolume);
 if(volumeEl) volumeEl.addEventListener("input", applyVolume);
 applyVolume();
-const playClick = ()=>{ try{ if(clickSE){ clickSE.currentTime=0; clickSE.play(); } }catch{} };
-const playBuy   = ()=>{ try{ if(buySE){ buySE.currentTime=0; buySE.play(); } }catch{} };
+const playClick = ()=>{ try{ if(clickSE){ clickSE.currentTime = 0; clickSE.play(); } }catch{} };
+const playBuy   = ()=>{ try{ if(buySE){ buySE.currentTime   = 0; buySE.play(); } }catch{} };
 
 /* ========== Theme (Light/Dark) ========== */
 (function initTheme(){
@@ -74,16 +69,14 @@ const playBuy   = ()=>{ try{ if(buySE){ buySE.currentTime=0; buySE.play(); } }ca
 /* ========== Ensure skin-list exists (fallback) ========== */
 (function ensureSkinList(){
   if(!skinListEl){
-    // try to append a skin-selector card under main grid
     const grid = document.querySelector(".grid");
     if(grid){
       const aside = document.createElement("aside");
-      aside.className="card skin-selector";
+      aside.className = "card skin-selector";
       aside.innerHTML = `<h2>スキン切替</h2><ul id="skin-list" class="skin-list"></ul>`;
       grid.appendChild(aside);
       skinListEl = $("skin-list");
     }else{
-      // fallback to body append
       const div = document.createElement("div");
       div.innerHTML = `<ul id="skin-list" class="skin-list"></ul>`;
       document.body.appendChild(div);
@@ -96,8 +89,8 @@ const playBuy   = ()=>{ try{ if(buySE){ buySE.currentTime=0; buySE.play(); } }ca
 if(clicker){
   clicker.addEventListener("click", ()=>{
     const now = Date.now();
-    const diff = (now - lastClickTime)/1000;
-    if(diff>0) cps = 1/diff;
+    const diff = (now - lastClickTime) / 1000;
+    if(diff > 0) cps = 1 / diff;
     lastClickTime = now;
 
     count += clickPower;
@@ -111,33 +104,35 @@ if(clicker){
   });
 }
 
-/* Enter無効化 */
-document.addEventListener("keydown", e=>{ if(e.key==="Enter") e.preventDefault(); });
+/* Enterでの加算は禁止 */
+document.addEventListener("keydown", (e) => { if (e.key === "Enter") e.preventDefault(); });
 
-/* ========== Shop / Items / Skins ========== */
+/* ========== Shop Items & Skins ========== */
 const shopItems = [
   // auto
-  { id:1, type:"auto",  name:"24歳です", effect:1n, cost:100n },
-  { id:2, type:"auto",  name:"学生です", effect:5n, cost:500n },
-  { id:3, type:"auto",  name:"じゃあオナニー", effect:20n, cost:2000n },
-  { id:4, type:"auto",  name:"...とかっていうのは？", effect:100n, cost:10000n },
-  { id:5, type:"auto",  name:"やりますねぇ！", effect:500n, cost:50000n },
-  { id:11,type:"auto",  name:"ｱｰｲｷｿ", effect:250n, cost:25000n },
-  { id:12,type:"auto",  name:"あーソレいいよ", effect:1000n, cost:100000n },
-  { id:13,type:"auto",  name:"頭にきますよ!!", effect:5000n, cost:500000n },
+  { id:1,  type:"auto",  name:"24歳です", effect:1n, cost:100n },
+  { id:2,  type:"auto",  name:"学生です", effect:5n, cost:500n },
+  { id:3,  type:"auto",  name:"じゃあオナニー", effect:20n, cost:2000n },
+  { id:4,  type:"auto",  name:"...とかっていうのは？", effect:100n, cost:10000n },
+  { id:5,  type:"auto",  name:"やりますねぇ！", effect:500n, cost:50000n },
+  { id:11, type:"auto",  name:"ｱｰｲｷｿ", effect:250n, cost:25000n },
+  { id:12, type:"auto",  name:"あーソレいいよ", effect:1000n, cost:100000n },
+  { id:13, type:"auto",  name:"頭にきますよ!!", effect:5000n, cost:500000n },
+
   // click
-  { id:6, type:"click", name:"アイスティー", effect:1n, cost:50n },
-  { id:7, type:"click", name:"暴れんなよ", effect:3n, cost:300n },
-  { id:8, type:"click", name:"お前のことが好きだったんだよ", effect:10n, cost:2000n },
-  { id:9, type:"click", name:"イキスギィ！イク！…", effect:50n, cost:15000n },
-  { id:14,type:"click", name:"ありますあります", effect:100n, cost:30000n },
-  { id:15,type:"click", name:"いいよこいよ", effect:300n, cost:100000n },
-  { id:16,type:"click", name:"おかのした", effect:1000n, cost:500000n },
+  { id:6,  type:"click", name:"アイスティー", effect:1n, cost:50n },
+  { id:7,  type:"click", name:"暴れんなよ", effect:3n, cost:300n },
+  { id:8,  type:"click", name:"お前のことが好きだったんだよ", effect:10n, cost:2000n },
+  { id:9,  type:"click", name:"イキスギィ！イク！イクイクイクイク…アッ……ァ...", effect:50n, cost:15000n },
+  { id:14, type:"click", name:"ありますあります", effect:100n, cost:30000n },
+  { id:15, type:"click", name:"いいよこいよ", effect:300n, cost:100000n },
+  { id:16, type:"click", name:"おかのした", effect:1000n, cost:500000n },
+
   // boost
-  { id:10,type:"boost", name:"ンアッー！", mult:2, durationSec:30, cooldownSec:30, cost:1000n, note:"" },
-  { id:17,type:"boost", name:"俺もやったんだからさ", mult:5, durationSec:30, cooldownSec:60, cost:5000n, note:"" },
-  { id:18,type:"boost", name:"おまたせ", mult:10, durationSec:60, cooldownSec:120, cost:20000n, note:"" },
-  { id:19,type:"boost", name:"溜まってんなあおい", mult:20, durationSec:15, cooldownSec:45, cost:100000n, note:"" },
+  { id:10, type:"boost", name:"ンアッー！", mult:2, durationSec:30, cooldownSec:30, cost:1000n },
+  { id:17, type:"boost", name:"俺もやったんだからさ", mult:5, durationSec:30, cooldownSec:60, cost:5000n },
+  { id:18, type:"boost", name:"おまたせ", mult:10, durationSec:60, cooldownSec:120, cost:20000n },
+  { id:19, type:"boost", name:"溜まってんなあおい", mult:20, durationSec:15, cooldownSec:45, cost:100000n },
 ];
 
 const SKINS = [
@@ -150,89 +145,100 @@ const SKINS = [
   { id:"s7", need:"81010008119191145144545191969072156858519999999", name:"やじゅれんだ", src:"yajurenda.png" },
 ];
 
+/* ========== Tabs wiring ========== */
+tabs.forEach(tab=>{
+  tab.addEventListener("click", ()=>{
+    tabs.forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    selectedCategory = tab.dataset.category;
+    renderShop();
+  });
+});
+
 /* ========== Render Shop (skin対応) ========== */
 function renderShop(){
   if(!shopList) return;
   shopList.innerHTML = "";
-  // build list depending on selectedCategory
+
   if(selectedCategory === "skin"){
-    // show SKINS in shop area (purchase buttons)
     SKINS.forEach(s=>{
+      const unlocked = unlockedSkinIds.has(s.id);
+      const canBuy = total >= BigInt(s.need);
       const li = document.createElement("li");
       li.className = "shop-item";
-      const unlocked = unlockedSkinIds.has(s.id);
       li.innerHTML = `
         <div class="meta">
+          <span class="kind skin">着せ替え</span>
           ${s.name} ${unlocked ? "(入手済み)" : `※${fmt(BigInt(s.need))}回で入手`}
         </div>
         <div>
-          <button class="buy" data-id="${s.id}">${unlocked ? "適用" : "購入"}</button>
+          <button class="buy" data-id="${s.id}" ${unlocked||canBuy ? "" : "disabled"}>${unlocked ? "適用" : "購入"}</button>
         </div>
       `;
       const btn = li.querySelector(".buy");
       btn.addEventListener("click", ()=>{
-        if(!unlocked){
-          // attempt purchase by total (total is BigInt)
-          const need = BigInt(s.need);
-          if(total < need) { makeToast("回数が足りません"); return; }
-          // consume total (spec asked purchase by total; we do not deduct count)
-          // But the user requested "回数で購入できる" — ambiguous whether it's consumed.
-          // We'll NOT deduct total (treat as unlock by reaching total), but if you want to deduct, uncomment next:
-          // total -= need;
-          unlockedSkinIds.add(s.id);
-          makeToast(`スキンを購入しました：${s.name}`);
-          renderSkins();
-        }
-        // apply
+        if(!unlocked && total < BigInt(s.need)){ makeToast("回数が足りません"); return; }
+        // 当仕様では「回数で購入」は消費しない（到達で解禁）。必要ならtotal -= BigInt(s.need);
+        unlockedSkinIds.add(s.id);
         currentSkinId = s.id;
         updateClickerSkin();
-        renderShop(); render();
+        renderSkins();
+        renderShop();
+        makeToast(`スキンを購入：${s.name}`);
       });
       shopList.appendChild(li);
     });
     return;
   }
 
-  // default: other shop items
+  // else normal shop items
   let items = [...shopItems];
-  if(selectedCategory==="auto") items = items.filter(i=>i.type==="auto");
-  else if(selectedCategory==="click") items = items.filter(i=>i.type==="click");
-  else if(selectedCategory==="boost") items = items.filter(i=>i.type==="boost");
-  else if(selectedCategory==="low") items.sort((a,b)=> (a.cost - b.cost));
-  else if(selectedCategory==="high") items.sort((a,b)=> (b.cost - a.cost));
+  if(selectedCategory === "auto") items = items.filter(i=>i.type==="auto");
+  else if(selectedCategory === "click") items = items.filter(i=>i.type==="click");
+  else if(selectedCategory === "boost") items = items.filter(i=>i.type==="boost");
+  else if(selectedCategory === "low") items.sort((a,b)=> a.cost > b.cost ? 1 : -1);
+  else if(selectedCategory === "high") items.sort((a,b)=> a.cost < b.cost ? 1 : -1);
 
   const now = Date.now();
   items.forEach(item=>{
     const li = document.createElement("li");
     li.className = "shop-item";
-    const kind = item.type==="auto"?"オート":item.type==="click"?"精力剤":"ブースト";
-    const kindClass = item.type==="click"?"click":(item.type==="boost"?"boost":"");
+    const kind = item.type==="auto" ? "オート" : item.type==="click" ? "精力剤" : "ブースト";
+    const kindClass = item.type==="click" ? "click" : (item.type==="boost" ? "boost" : "");
     const desc = item.type==="auto" ? `※秒間+${item.effect}` :
                  item.type==="click" ? `※1クリック+${item.effect}` :
                  `※${item.durationSec||30}秒 1クリック×${item.mult}`;
+    const inCooldown = now < boostCooldownUntil;
+    const disabled = total < item.cost || (item.type==="boost" && (boostRunning || inCooldown));
     li.innerHTML = `
       <div class="meta">
         <span class="kind ${kindClass}">${kind}</span>
         ${item.name} ${desc} [${fmt(item.cost)}回]
       </div>
-      <div><button class="buy" data-id="${item.id}">購入</button></div>
+      <div><button class="buy" data-id="${item.id}" ${disabled ? "disabled" : ""}>購入</button></div>
     `;
     const btn = li.querySelector(".buy");
-    const inCooldown = now < boostCooldownUntil;
-    const disabled = (total < item.cost) || (item.type==="boost" && (boostRunning || inCooldown));
-    btn.disabled = disabled;
-    btn.addEventListener("click", e=>{
-      if(holdToBuyEnabled) return;
-      buyItem(item.id);
-    });
-    btn.addEventListener("mousedown", e=>startHoldBuy(e, btn, item.id));
-    btn.addEventListener("touchstart", e=>startHoldBuy(e, btn, item.id), {passive:true});
+    btn.addEventListener("click", ()=>{ if(!holdToBuyEnabled) buyItem(item.id); });
+    btn.addEventListener("mousedown", (e)=>startHoldBuy(e, btn, item.id));
+    btn.addEventListener("touchstart", (e)=>startHoldBuy(e, btn, item.id), {passive:true});
     ["mouseup","mouseleave","touchend","touchcancel"].forEach(ev=>btn.addEventListener(ev, ()=>stopHoldBuy(btn)));
     shopList.appendChild(li);
   });
 }
 
-/* ========== Hold-to-buy helpers ========== */
+/* ========== Hold-to-Buy ========== */
+(function initHoldToBuy(){
+  try{
+    const saved = localStorage.getItem("yjr_hold_to_buy");
+    holdToBuyEnabled = saved === "1";
+    if(holdToBuyCheckbox) holdToBuyCheckbox.checked = holdToBuyEnabled;
+    if(holdToBuyCheckbox) holdToBuyCheckbox.addEventListener("change", ()=>{
+      holdToBuyEnabled = holdToBuyCheckbox.checked;
+      localStorage.setItem("yjr_hold_to_buy", holdToBuyEnabled ? "1" : "0");
+      stopAllHoldTimers();
+    });
+  }catch{}
+})();
 function startHoldBuy(ev, btn, id){
   if(!holdToBuyEnabled || btn.disabled) return;
   buyItem(id);
@@ -241,27 +247,22 @@ function startHoldBuy(ev, btn, id){
     const item = shopItems.find(i=>i.id===id);
     if(!item) return;
     const now = Date.now();
-    const inCooldown = now < boostCooldownUntil;
-    if((item.type==="boost" && (boostRunning||inCooldown)) || total < item.cost){ stopHoldBuy(btn); return; }
+    if((item.type==="boost" && (boostRunning || now < boostCooldownUntil)) || total < item.cost){ stopHoldBuy(btn); return; }
     buyItem(id);
-  },100);
-  holdTimers.set(btn,iid);
+  }, 100);
+  holdTimers.set(btn, iid);
 }
-function stopHoldBuy(btn){ const id=holdTimers.get(btn); if(id){ clearInterval(id); holdTimers.delete(btn); } }
+function stopHoldBuy(btn){ const id = holdTimers.get(btn); if(id){ clearInterval(id); holdTimers.delete(btn); } }
+function stopAllHoldTimers(){ for(const [b,i] of holdTimers.entries()){ clearInterval(i); holdTimers.delete(b); } }
 
-/* ========== buyItem for normal shop items ========== */
+/* ========== buyItem ========== */
 function buyItem(id){
-  const item = shopItems.find(i=>i.id===id);
-  if(!item) return;
-  if(total < item.cost) { makeToast("回数が足りません"); return; }
-  if(item.type==="boost"){
-    const now = Date.now();
-    if(boostRunning || now < boostCooldownUntil) { makeToast("ブーストはまだ使えません"); return; }
-  }
-
-  // here we treat cost as deducted from total (user wanted purchase)
+  const item = shopItems.find(i=>i.id===id); if(!item) return;
+  if(total < item.cost){ makeToast("回数が足りません"); return; }
+  if(item.type==="boost"){ const now = Date.now(); if(boostRunning || now < boostCooldownUntil){ makeToast("ブーストはまだ使えません"); return; } }
+  // deduct cost
   total -= item.cost;
-  if(total < 0) total = 0n;
+  if(total < 0n) total = 0n;
 
   if(item.type==="auto") autoPower += BigInt(item.effect || 0);
   else if(item.type==="click") clickPower += BigInt(item.effect || 0);
@@ -277,6 +278,7 @@ function applyBoost(boost){
   const mult = BigInt(boost.mult || 2);
   const duration = (boost.durationSec || 30) * 1000;
   const cooldown = (boost.cooldownSec || 30) * 1000;
+
   clickPower *= mult;
   setTimeout(()=>{
     clickPower /= mult;
@@ -286,7 +288,7 @@ function applyBoost(boost){
   }, duration);
 }
 
-/* ========== Auto increment (per second) ========== */
+/* ========== Auto increment (1s) ========== */
 setInterval(()=>{
   if(autoPower > 0n){
     count += autoPower;
@@ -296,37 +298,69 @@ setInterval(()=>{
     unlockSkinsIfAny(total);
     render();
   }
-},1000);
+}, 1000);
 
-/* ========== Badges ========== */
+/* ========== Badges (BigInt-safe) ========== */
 const BADGES = [
-  { id:1, need:1, name:"千里の道も野獣から" },
-  { id:19, need:19, name:"王道をイク" },
-  { id:45, need:45, name:"試行思考(シコシコ)" },
-  { id:364, need:364, name:"見ろよ見ろよ" },
-  { id:810, need:810, name:"中々やりますねぇ" },
-  { id:1919, need:1919, name:"⚠️あなたはイキスギました！⚠️" },
-  { id:4545, need:4545, name:"生粋とイキスギのオナリスト" },
-  { id:114514, need:114514, name:"Okay, come on.(いいよこいよ)" },
-  { id:364364, need:364364, name:"ホラ、見ろよ見ろよ、ホラ" },
-  { id:"bLast", need:"1145141919810", name:"遊んでくれてありがとう❗" }
+  { id:1, need:"1", name:"千里の道も野獣から" },
+  { id:19, need:"19", name:"王道をイク" },
+  { id:45, need:"45", name:"試行思考(シコシコ)" },
+  { id:364, need:"364", name:"見ろよ見ろよ" },
+  { id:810, need:"810", name:"中々やりますねぇ" },
+  { id:1919, need:"1919", name:"⚠️あなたはイキスギました！⚠️" },
+  { id:4545, need:"4545", name:"生粋とイキスギのオナリスト" },
+  { id:114514, need:"114514", name:"Okay, come on.(いいよこいよ)" },
+  { id:364364, need:"364364", name:"ホラ、見ろよ見ろよ、ホラ" },
+  // 最終バッジ（IDは文字列で扱う）
+  { id:"bLast", need:"1145141919810", name:"遊んでくれてありがとう❗" },
+
+  // 新規追加（要求された長大な数は文字列で保存）
+  { id:"bX1", need:"1145141919810100081", name:"新たな道" },
+  { id:"bX2", need:"1145141919810364364", name:"野獣先輩" },
+  { id:"bX3", need:"1919191919191919191", name:"イキマスター" },
+  { id:"bX4", need:"4545454545454545454", name:"シコマスター" },
+  { id:"bX5", need:"8101000811919114514", name:"ヌゥン！ヘッ！ヘッ！ ア゛...（大迫真）" },
+  { id:"bX6", need:"81010008119191145144545191969072156858519999999", name:"やじゅれんだ" },
 ];
 const LAST_BADGE_ID = "bLast";
 const unlockedBadgeIds = new Set();
 
+/* renderBadges: DOM 要素を一度作ったら再作成しない -> アニメーションが途切れない */
 function renderBadges(){
   if(!badgeList) return;
-  badgeList.innerHTML = "";
+  // create missing li elements if needed (preserve existing ones)
   BADGES.forEach(b=>{
-    const li = document.createElement("li");
-    const unlocked = unlockedBadgeIds.has(b.id);
-    li.className = "badge " + (unlocked ? "unlocked" : "locked");
-    const needStr = (typeof b.need === "string" || typeof b.need === "bigint") ? fmt(BigInt(b.need)) : fmt(b.need);
-    li.innerHTML = `<span class="label">${unlocked ? b.name : "？？？"}</span>
-      <span class="cond">${unlocked ? "入手済み" : `解禁条件: ${needStr}クリック`}</span>`;
-    li.addEventListener("click", ()=>{ alert(`${unlocked ? b.name : "？？？"}\n${unlocked ? "入手済み" : `解禁条件: ${needStr} クリック`}`); });
-    badgeList.appendChild(li);
+    if(!badgeList.querySelector(`li[data-id="${b.id}"]`)){
+      const li = document.createElement("li");
+      li.setAttribute("data-id", b.id);
+      li.className = "badge locked";
+      // children placeholders
+      const label = document.createElement("span"); label.className = "label"; label.textContent = "？？？";
+      const cond = document.createElement("span"); cond.className = "cond"; cond.textContent = `解禁条件: ${fmt(BigInt(b.need))}クリック`;
+      li.appendChild(label);
+      li.appendChild(cond);
+      li.addEventListener("click", ()=> {
+        const unlocked = unlockedBadgeIds.has(b.id);
+        alert(`${unlocked ? b.name : "？？？"}\n${unlocked ? "入手済み" : `解禁条件: ${fmt(BigInt(b.need))} クリック`}`);
+      });
+      badgeList.appendChild(li);
+    }
   });
+
+  // update content & classes without replacing nodes
+  BADGES.forEach(b=>{
+    const li = badgeList.querySelector(`li[data-id="${b.id}"]`);
+    if(!li) return;
+    const unlocked = unlockedBadgeIds.has(b.id);
+    li.classList.toggle("unlocked", unlocked);
+    li.classList.toggle("locked", !unlocked);
+    const label = li.querySelector(".label");
+    const cond = li.querySelector(".cond");
+    if(label) label.textContent = unlocked ? b.name : "？？？";
+    if(cond) cond.textContent = unlocked ? "入手済み" : `解禁条件: ${fmt(BigInt(b.need))}クリック`;
+  });
+
+  // ending UI
   const unlockedLast = unlockedBadgeIds.has(LAST_BADGE_ID);
   if(endingOpenBtn) endingOpenBtn.disabled = !unlockedLast;
   if(endingHint) endingHint.textContent = unlockedLast ? "解禁済み：いつでも視聴できます。" : "最終バッジを獲得すると解放されます。";
@@ -339,8 +373,9 @@ function unlockBadgesIfAny(currentTotal){
     if(totalBig >= needBig && !unlockedBadgeIds.has(b.id)){
       unlockedBadgeIds.add(b.id);
       makeToast(`バッジを獲得: ${b.name}`);
+      // renderBadges will update without recreating unlocked DOM element
       renderBadges();
-      if(String(b.id)===String(LAST_BADGE_ID)) showEndingOption();
+      if(String(b.id) === String(LAST_BADGE_ID)) showEndingOption();
     }
   });
 }
@@ -358,22 +393,21 @@ function renderSkins(){
       if(unlocked){
         currentSkinId = s.id;
         updateClickerSkin();
+        renderSkins();
       }else{
         makeToast("まずは条件を満たしてください");
       }
     });
-    // indicate selected
     if(s.id === currentSkinId) li.style.fontWeight = "800";
     skinListEl.appendChild(li);
   });
 }
 
 function updateClickerSkin(){
-  const skin = SKINS.find(s=>s.id===currentSkinId);
-  if(skin && clicker){
-    const img = clicker.querySelector("img");
-    if(img) img.src = skin.src;
-  }
+  if(!clicker) return;
+  const img = clicker.querySelector("img");
+  const skin = SKINS.find(s=>s.id === currentSkinId);
+  if(img) img.src = (skin && unlockedSkinIds.has(skin.id)) ? skin.src : "click.png";
 }
 
 function unlockSkinsIfAny(currentTotal){
@@ -395,10 +429,10 @@ function makeToast(text){
   div.className = "toast";
   div.textContent = text;
   toastContainer.appendChild(div);
-  setTimeout(()=>{ div.style.opacity = "0"; div.style.transform = "translateY(8px)"; setTimeout(()=>div.remove(),250); },2600);
+  setTimeout(()=>{ div.style.opacity="0"; div.style.transform="translateY(8px)"; setTimeout(()=>div.remove(),250); }, 2600);
 }
 
-/* ========== Ending modal (audio/no-audio) ========== */
+/* ========== Ending modal (音あり/なし) ========== */
 if(endingOpenBtn) endingOpenBtn.addEventListener("click", ()=>{
   if(endingOpenBtn.disabled) return;
   showEndingOption();
@@ -452,9 +486,9 @@ function render(){
 }
 render(); // initial
 
-/* ========== Save / Load ========== */
+/* ========== Save / Load (Base64 .yjrnd) ========== */
 function getSaveData(){
-  const payload = {
+  return JSON.stringify({
     count: count.toString(),
     best: best.toString(),
     total: total.toString(),
@@ -469,8 +503,7 @@ function getSaveData(){
     selectedCategory,
     holdToBuyEnabled,
     theme: document.documentElement.getAttribute("data-theme") || "light"
-  };
-  return JSON.stringify(payload);
+  });
 }
 function loadSaveData(json){
   try{
@@ -487,7 +520,7 @@ function loadSaveData(json){
     (d.badges || []).forEach(id=>unlockedBadgeIds.add(id));
     unlockedSkinIds.clear();
     (d.skins || []).forEach(id=>unlockedSkinIds.add(id));
-    currentSkinId = d.currentSkinId || (SKINS[0] && SKINS[0].id);
+    currentSkinId = d.currentSkinId || null;
     selectedCategory = d.selectedCategory || "all";
     holdToBuyEnabled = !!d.holdToBuyEnabled;
     if(holdToBuyCheckbox) holdToBuyCheckbox.checked = holdToBuyEnabled;
@@ -495,18 +528,15 @@ function loadSaveData(json){
     document.documentElement.setAttribute("data-theme", th);
     localStorage.setItem("yjr_theme", th);
     localStorage.setItem("yjr_hold_to_buy", holdToBuyEnabled ? "1" : "0");
-    // apply skin image
+    // update UI
+    tabs.forEach(t=> t.classList.toggle("active", t.dataset.category === selectedCategory));
     updateClickerSkin();
-    // update tab active
-    tabs.forEach(t=> t.classList.toggle("active", t.dataset.category===selectedCategory));
     render();
     makeToast("✅ セーブを読み込みました");
   }catch(e){
     alert("ロードに失敗しました: " + e.message);
   }
 }
-
-/* Base64 safe encode/decode for save file */
 function encryptData(s){ return btoa(unescape(encodeURIComponent(s))); }
 function decryptData(s){ return decodeURIComponent(escape(atob(s))); }
 
@@ -521,7 +551,6 @@ function downloadSave(){
     setTimeout(()=>{ a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); makeToast("✅ セーブをダウンロードしました"); }, 30);
   }catch(e){ alert("セーブに失敗しました: " + e.message); }
 }
-
 function uploadSave(file){
   if(!file) return;
   const reader = new FileReader();
@@ -535,29 +564,14 @@ function uploadSave(file){
   };
   reader.readAsText(file);
 }
-
-/* Wire up save/load UI (if present) */
-const saveBtn = $("save-btn"), loadFile = $("load-file");
-if(saveBtn) saveBtn.addEventListener("click", downloadSave);
-if(loadFile) loadFile.addEventListener("change", e=>uploadSave(e.target.files[0]));
-
-/* ========== Tabs wiring (already set above, but ensure) ========== */
-tabs.forEach(tab=>{
-  tab.addEventListener("click", ()=>{
-    tabs.forEach(t=>t.classList.remove("active"));
-    tab.classList.add("active");
-    selectedCategory = tab.dataset.category;
-    renderShop();
-  });
-});
+if($("save-btn")) $("save-btn").addEventListener("click", downloadSave);
+if($("load-file")) $("load-file").addEventListener("change", e=>uploadSave(e.target.files[0]));
 
 /* ========== Initial defaults ========== */
 (function initDefaults(){
-  // pick default skin if none
-  if(!currentSkinId && SKINS.length>0) currentSkinId = SKINS[0].id;
-  // unlock skins based on existing total
+  // default skin: none -> click.png
+  if(!currentSkinId && SKINS.length > 0) currentSkinId = null; // explicit: no skin selected -> default click.png
   unlockSkinsIfAny(total);
-  // render all UI
   renderShop();
   renderBadges();
   renderSkins();
