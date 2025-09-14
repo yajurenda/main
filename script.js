@@ -313,13 +313,14 @@ function renderBadges(){
 }
 
 function unlockBadgesIfAny(currentTotal){
+  const totalBig = BigInt(currentTotal);
   BADGES.forEach(b=>{
-    if(currentTotal>=b.need && !unlockedBadgeIds.has(b.id)){
+    const needBig = BigInt(b.need);
+    if(totalBig >= needBig && !unlockedBadgeIds.has(b.id)){
       unlockedBadgeIds.add(b.id);
       makeToast(`バッジを獲得: ${b.name}`);
       renderBadges();
       if(b.id===LAST_BADGE_ID){
-        // 初回解禁時に選択モーダルを出す
         showEndingOption();
       }
     }
