@@ -12,10 +12,10 @@
   <header class="site-header">
     <img src="logo.png" alt="やじゅれんだ ロゴ" class="logo"/>
     <nav class="header-actions">
-<nav>
-  <a class="btn ghost" href="about.html" target="_blank" rel="noopener noreferrer">About</a>
-  <a class="btn ghost" href="form.html" target="_blank" rel="noopener noreferrer">Form</a>
-</nav>
+      <nav>
+        <a href="about.html" target="_blank" rel="noopener noreferrer" class="btn ghost">About</a>
+        <a href="form.html" target="_blank" rel="noopener noreferrer" class="btn ghost">Form</a>
+      </nav>
       <a class="btn ghost" href="https://bento.me/tdkrkuj" target="_blank" rel="noopener">Author</a>
       <button id="theme-toggle" class="btn ghost" aria-label="テーマ切替">☀️/🌙</button>
     </nav>
@@ -52,6 +52,7 @@
         <button class="tab" data-category="auto">オート</button>
         <button class="tab" data-category="click">精力剤</button>
         <button class="tab" data-category="boost">ブースト</button>
+        <button class="tab" data-category="skin">着せ替え</button>
         <button class="tab" data-category="low">安い順</button>
         <button class="tab" data-category="high">高い順</button>
       </div>
@@ -73,7 +74,6 @@
 
       <div class="divider"></div>
 
-      <!-- エンディング操作（最終バッジ解禁後に利用可能） -->
       <div class="ending-panel">
         <h3>エンディング</h3>
         <p class="small muted" id="ending-hint">最終バッジを獲得すると解放されますねぇ！</p>
@@ -105,6 +105,7 @@
   <audio id="se-click" src="click1.mp3" preload="auto"></audio>
   <audio id="se-buy"   src="buy_sound.mp3" preload="auto"></audio>
 
+  <!-- JS -->
   <script src="script.js"></script>
 </body>
 </html>
