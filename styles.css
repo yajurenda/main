@@ -178,3 +178,33 @@ body{
   .grid{grid-template-columns:1fr}
   .round-button img{width:220px;height:220px}
 }
+
+/* ボタンのホバーアニメーション */
+.btn {
+  transition: all 0.3s ease; /* 色や影の変化を滑らかに */
+}
+
+.btn:hover {
+  transform: translateY(-2px); /* ほんの少し浮かせる */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* 影で浮遊感 */
+  background-color: #f0f0f0; /* 背景色が少し変わる */
+  color: #333; /* 文字色も少し変化 */
+}
+
+/* ghostボタン向けの控えめホバー */
+.btn.ghost:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* トランジションをリンクにも適用 */
+.header-actions a {
+  transition: all 0.3s ease;
+}
+
+.header-actions a:hover {
+  transform: translateY(-1px);
+  color: #ffcc00; /* 控えめだけどアクセントカラー */
+}
