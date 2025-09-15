@@ -579,7 +579,7 @@ function renderSkins() {
   SKINS.forEach(s => {
     const li = document.createElement("li");
     const unlocked = unlockedSkinIds.has(s.id);
-    li.className = "skin-item-list"; // 新しいクラス名に変更
+    li.className = "skin-item-list";
 
     let skinInfoHTML;
     if (unlocked) {
@@ -602,7 +602,7 @@ function renderSkins() {
             <span class="skin-status">解禁条件：${fmt(BigInt(s.need))}回</span>
           </div>
         </div>
-        <button class="btn ghost buy-btn" disabled>購入</button>
+        <button class="btn ghost disabled-btn" disabled>解禁されていません</button>
       `;
     }
 
@@ -610,9 +610,8 @@ function renderSkins() {
 
     // ボタンのイベントリスナーを設定
     const applyBtn = li.querySelector(".apply-btn");
-    const buyBtn = li.querySelector(".buy-btn");
     
-    if (applyBtn) {
+    if (unlocked) {
       if (s.id === currentSkinId) {
         applyBtn.textContent = "適用中";
         applyBtn.disabled = true;
@@ -625,23 +624,6 @@ function renderSkins() {
       });
     }
 
-    if (buyBtn) {
-      if (total >= BigInt(s.need)) {
-        buyBtn.disabled = false;
-        buyBtn.textContent = "購入";
-        buyBtn.addEventListener("click", () => {
-          // 購入ロジックは前回と同様
-          unlockedSkinIds.add(s.id);
-          currentSkinId = s.id;
-          updateClickerSkin();
-          renderSkins();
-          makeToast(`スキンを購入: ${s.name}`);
-        });
-      }
-    }
-
     skinListEl.appendChild(li);
   });
 }
-
-// updateClickerSkin関数は変更なし
