@@ -546,3 +546,105 @@ body {
   transform: scale(1.05);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
+
+/* ===== Skin Selector ===== */
+.skin-selector {
+  padding: 20px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-top: 20px; /* 必要に応じてマージンを追加 */
+}
+
+.skin-selector h2 {
+  margin-bottom: 16px;
+  font-size: 24px;
+}
+
+.skin-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 0;
+  list-style: none;
+  justify-content: center; /* 中央揃えにする場合 */
+}
+
+.skin-item {
+  width: 90px; /* 画像サイズに合わせて調整 */
+  height: 90px; /* 画像サイズに合わせて調整 */
+  background-color: #eee; /* デフォルトの背景色 */
+  border-radius: 12px;
+  border: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* 画像がはみ出さないように */
+  position: relative; /* 条件表示のために必要 */
+  text-align: center; /* テキストの中央揃え */
+  font-size: 11px; /* 必要に応じてフォントサイズ調整 */
+  font-weight: 700;
+  color: var(--text); /* テキストカラー */
+}
+
+/* ダークモード時のスキンアイテム背景色 */
+:root[data-theme="dark"] .skin-item {
+  background-color: #1f2937;
+}
+
+.skin-item.selected {
+  border-color: var(--accent); /* 選択中のスキンにアクセントカラーの枠線 */
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 解禁済みスキン（画像表示用） */
+.skin-item.unlocked {
+  background-color: transparent; /* 画像表示時は背景色なし */
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.skin-item.unlocked:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.skin-item.selected.unlocked:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.skin-item img {
+  max-width: 80px; /* 画像の最大幅 */
+  max-height: 80px; /* 画像の最大高さ */
+  object-fit: cover; /* 画像のアスペクト比を保ちつつ、要素を埋める */
+  border-radius: 10px; /* 画像の角を丸く */
+  display: block; /* 画像の下に不要な隙間ができないように */
+}
+
+/* 未解禁スキンの情報表示用 */
+.skin-locked-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.skin-name {
+  font-weight: 800;
+  margin-bottom: 4px;
+  font-size: 10px; /* 名前を少し小さく */
+}
+
+.skin-requirement {
+  font-size: 8px; /* 条件をさらに小さく */
+  color: var(--muted);
+  line-height: 1.2; /* 行間を調整 */
+}
+
+/* 必要に応じて、ホバー時のスケールや影の調整 */
+/* .skin-item:hover { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); } */
