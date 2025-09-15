@@ -653,45 +653,107 @@ body {
   word-break: break-all; /* 長い数字がはみ出さないように強制的に改行 */
 }
 
-/* ==== Responsive adjustment for skin list ==== */
-@media (max-width: 768px) { /* タブレットサイズ以下 */
-  .skin-list {
-    gap: 10px; /* ギャップを少し減らす */
-  }
-  .skin-item {
-    width: 80px; /* 幅を少し狭める */
-    height: 80px;
-    font-size: 10px;
-  }
-  .skin-item img {
-    max-width: 65px;
-    max-height: 65px;
-  }
-  .skin-name {
-    font-size: 9px;
-  }
-  .skin-requirement {
-    font-size: 6px;
-  }
+/* ===== Skin Selector - List Style ===== */
+.skin-selector {
+  padding: 20px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-top: 20px;
 }
 
-@media (max-width: 480px) { /* スマートフォンサイズ */
-  .skin-list {
-    gap: 8px;
-  }
-  .skin-item {
-    width: 70px; /* さらに狭める */
-    height: 70px;
-    font-size: 9px;
-  }
-  .skin-item img {
-    max-width: 55px;
-    max-height: 55px;
-  }
-  .skin-name {
-    font-size: 8px;
-  }
-  .skin-requirement {
-    font-size: 5px;
-  }
+.skin-selector h2 {
+  margin-bottom: 16px;
+  font-size: 24px;
+}
+
+.skin-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column; /* 縦に並べる */
+  gap: 12px;
+}
+
+.skin-item-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: var(--chip);
+  border-radius: 12px;
+  padding: 12px;
+  transition: background-color 0.2s ease;
+}
+
+:root[data-theme="dark"] .skin-item-list {
+  background: var(--chip);
+}
+
+.skin-item-list:hover {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+.skin-item-list:hover .skin-status,
+.skin-item-list:hover .skin-placeholder {
+  color: #fff;
+}
+
+.skin-item-list:hover .btn.ghost {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.skin-item-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skin-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.skin-placeholder {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  background-color: var(--muted);
+  color: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+.skin-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.skin-name {
+  font-weight: 800;
+}
+
+.skin-status {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.btn.ghost.apply-btn {
+  font-weight: 800;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.btn.ghost.apply-btn:disabled {
+  border-color: var(--muted);
+  color: var(--muted);
+  cursor: not-allowed;
 }
