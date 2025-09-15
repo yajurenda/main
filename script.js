@@ -573,45 +573,75 @@ if($("load-file")) $("load-file").addEventListener("change", e=>uploadSave(e.tar
 
 /* ========== Skins: render / unlock / apply ========== */
 function renderSkins() {
-  if (!skinListEl) return;
-  skinListEl.innerHTML = "";
+  if (!skinListEl) return;
+  skinListEl.innerHTML = "";
 
-  SKINS.forEach((s, index) => { // indexを追加
-    const li = document.createElement("li");
-    const unlocked = unlockedSkinIds.has(s.id);
-    li.className = "skin-item " + (unlocked ? "unlocked" : "locked");
+  SKINS.forEach(s => {
+    const li = document.createElement("li");
+    const unlocked = unlockedSkinIds.has(s.id);
+    li.className = "skin-item-list"; // 新しいクラス名に変更
 
-    let skinInfoHTML;
-    if (unlocked) {
-      skinInfoHTML = `<img src="${s.src}" alt="${s.name}" />`;
-      if (s.id === currentSkinId) {
-        li.classList.add("selected");
-      }
-    } else {
-      skinInfoHTML = `
-        <div class="skin-locked-info">
-          <span class="skin-name">？？？</span>
-          <span class="skin-requirement">※${fmt(BigInt(s.need))}回</span>
-        </div>
-      `;
-    }
+    let skinInfoHTML;
+    if (unlocked) {
+      skinInfoHTML = `
+        <div class="skin-item-info">
+          <img src="${s.src}" alt="${s.name}" class="skin-image" />
+          <div class="skin-details">
+            <span class="skin-name">${s.name}</span>
+            <span class="skin-status">入手済み</span>
+          </div>
+        </div>
+        <button class="btn ghost apply-btn" data-id="${s.id}">適用</button>
+      `;
+    } else {
+      skinInfoHTML = `
+        <div class="skin-item-info">
+          <div class="skin-placeholder">???</div>
+          <div class="skin-details">
+            <span class="skin-name">？？？</span>
+            <span class="skin-status">解禁条件：${fmt(BigInt(s.need))}回</span>
+          </div>
+        </div>
+        <button class="btn ghost buy-btn" disabled>購入</button>
+      `;
+    }
 
-    li.innerHTML = skinInfoHTML;
+    li.innerHTML = skinInfoHTML;
 
-    li.addEventListener("click", () => {
-      if (unlocked) {
-        currentSkinId = s.id;
-        updateClickerSkin();
-        renderSkins();
-        makeToast(`スキンを変更: ${s.name}`);
-      } else {
-        makeToast("じゃあまず、条件を満たしてくれるかな？");
-      }
-    });
+    // ボタンのイベントリスナーを設定
+    const applyBtn = li.querySelector(".apply-btn");
+    const buyBtn = li.querySelector(".buy-btn");
+    
+    if (applyBtn) {
+      if (s.id === currentSkinId) {
+        applyBtn.textContent = "適用中";
+        applyBtn.disabled = true;
+      }
+      applyBtn.addEventListener("click", () => {
+        currentSkinId = s.id;
+        updateClickerSkin();
+        renderSkins();
+        makeToast(`スキンを変更: ${s.name}`);
+      });
+    }
 
-    skinListEl.appendChild(li);
-  });
+    if (buyBtn) {
+      if (total >= BigInt(s.need)) {
+        buyBtn.disabled = false;
+        buyBtn.textContent = "購入";
+        buyBtn.addEventListener("click", () => {
+          // 購入ロジックは前回と同様
+          unlockedSkinIds.add(s.id);
+          currentSkinId = s.id;
+          updateClickerSkin();
+          renderSkins();
+          makeToast(`スキンを購入: ${s.name}`);
+        });
+      }
+    }
+
+    skinListEl.appendChild(li);
+  });
 }
 
-// ... (updateClickerSkin 関数は変更なし)
-// ... (initDefaults 関数の中で renderSkins() と updateClickerSkin() を呼び出す)
+// updateClickerSkin関数は変更なし
