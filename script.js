@@ -571,6 +571,63 @@ if($("load-file")) $("load-file").addEventListener("change", e=>uploadSave(e.tar
   updateClickerSkin();
 })();
 
-/* ===========================
-   End of script.js
-   =========================== */
+/* ========== Skins: render / unlock / apply ========== */
+function renderSkins(){
+  if(!skinListEl) return;
+  skinListEl.innerHTML = "";
+
+  SKINS.forEach(s => {
+    const li = document.createElement("li");
+    const unlocked = unlockedSkinIds.has(s.id);
+    li.className = "skin-item " + (unlocked ? "unlocked" : "locked"); // CSSクラスをskin-itemに変更
+
+    let skinInfoHTML;
+    if (unlocked) {
+      // 解禁済みの場合
+      skinInfoHTML = `<img src="${s.src}" alt="${s.name}" />`; // 画像を表示
+      if (s.id === currentSkinId) {
+        li.classList.add("selected"); // 現在選択中のスキンに'selected'クラスを追加
+      }
+    } else {
+      // 未解禁の場合
+      skinInfoHTML = `
+        <div class="skin-locked-info">
+          <span class="skin-name">？？？</span>
+          <span class="skin-requirement">※${fmt(BigInt(s.need))}回</span>
+        </div>
+      `;
+    }
+
+    li.innerHTML = skinInfoHTML;
+
+    // スキンのクリックイベントリスナー
+    li.addEventListener("click", () => {
+      if (unlocked) {
+        currentSkinId = s.id;
+        updateClickerSkin();
+        renderSkins(); // 再描画して選択状態を更新
+        makeToast(`スキンを変更: ${s.name}`);
+      } else {
+        makeToast("じゃあまず、条件を満たしてくれるかな？");
+      }
+    });
+
+    skinListEl.appendChild(li);
+  });
+}
+
+// updateClickerSkin関数も、画像ソースのパスを正しく設定するように更新
+function updateClickerSkin(){
+  if(!clicker) return;
+  const img = clicker.querySelector("img");
+  const skin = SKINS.find(s => s.id === currentSkinId);
+  // スキンが適用されているか、かつ解禁されているかを確認
+  if (skin && unlockedSkinIds.has(skin.id)) {
+    img.src = skin.src;
+  } else {
+    img.src = "click.png"; // デフォルト画像に戻す
+  }
+}
+
+// 初期描画時にもスキンが正しく適用されるように render() の後などに呼び出す
+// (function initDefaults(){ ... })() の中で renderSkins() と updateClickerSkin() を呼び出すのが良いでしょう。
