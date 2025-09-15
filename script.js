@@ -1,10 +1,3 @@
-/* ===========================
-   script.js — 完全版（修正版）
-   ・高/安ソート、着せ替え購入制御
-   ・スキン保存対応
-   ・バッジアニメーション永続化（DOMを再作成しない）
-   =========================== */
-
 /* ========== State ========== */
 let count = 0n, best = 0n, total = 0n;
 let cps = 0;
@@ -319,7 +312,7 @@ const BADGES = [
   { id:"bX2", need:"1145141919810364364", name:"野獣先輩" },
   { id:"bX3", need:"1919191919191919191", name:"イキマスター" },
   { id:"bX4", need:"4545454545454545454", name:"シコマスター" },
-  { id:"bX5", need:"8101000811919114514", name:"ヌゥン！ヘッ！ヘッ！ ア゛...（大迫真）" },
+  { id:"bX5", need:"8101000811919114514", name:"ヌゥン！ヘッ！ヘッ！ア゛ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛ア゛↑ア゛↑ア゛↑ア゛↑ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛！！！！ウ゛ア゛ア゛ア゛ア゛ア゛ア゛ァ゛ァ゛ァ゛ァ゛ァ゛ァ゛ァ！！！！！フ ウ゛ウ゛ウ゛ゥ゛ゥ゛ゥ゛ン！！！！フ ウ゛ゥ゛ゥ゛ゥン！！！！(大迫真)" },
   { id:"bX6", need:"81010008119191145144545191969072156858519999999", name:"やじゅれんだ" },
 ];
 const LAST_BADGE_ID = "bLast";
@@ -363,7 +356,7 @@ function renderBadges(){
   // ending UI
   const unlockedLast = unlockedBadgeIds.has(LAST_BADGE_ID);
   if(endingOpenBtn) endingOpenBtn.disabled = !unlockedLast;
-  if(endingHint) endingHint.textContent = unlockedLast ? "解禁済み：いつでも視聴できます。" : "最終バッジを獲得すると解放されます。";
+  if(endingHint) endingHint.textContent = unlockedLast ? "解禁済み：いつでも視聴できますねぇ！" : "最終バッジを獲得すると解放されますねぇ！されますされます";
 }
 
 function unlockBadgesIfAny(currentTotal){
@@ -395,7 +388,7 @@ function renderSkins(){
         updateClickerSkin();
         renderSkins();
       }else{
-        makeToast("まずは条件を満たしてください");
+        makeToast("じゃあまず、条件を満たしてくれるかな？");
       }
     });
     if(s.id === currentSkinId) li.style.fontWeight = "800";
@@ -549,7 +542,7 @@ function downloadSave(){
     a.href = url; a.download = "yajurenda_save.yjrnd";
     document.body.appendChild(a);
     setTimeout(()=>{ a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); makeToast("✅ セーブをダウンロードしました"); }, 30);
-  }catch(e){ alert("セーブに失敗しました: " + e.message); }
+  }catch(e){ alert("セーブに失敗しました。バグの場合はFormまでお願いします。: " + e.message); }
 }
 function uploadSave(file){
   if(!file) return;
