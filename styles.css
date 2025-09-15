@@ -660,6 +660,10 @@ body {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   margin-top: 20px;
+  /* レイアウトの修正 */
+  max-width: 600px; /* リストの最大幅を制限 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .skin-selector h2 {
@@ -672,7 +676,7 @@ body {
   padding: 0;
   margin: 0;
   display: flex;
-  flex-direction: column; /* 縦に並べる */
+  flex-direction: column;
   gap: 12px;
 }
 
@@ -701,6 +705,7 @@ body {
   color: #fff;
 }
 
+/* ボタンのホバー状態の修正 */
 .skin-item-list:hover .btn.ghost {
   color: #fff;
   border-color: rgba(255, 255, 255, 0.5);
@@ -754,6 +759,14 @@ body {
 
 .btn.ghost.apply-btn:disabled {
   border-color: var(--muted);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+/* 新しいボタンのスタイル */
+.btn.ghost.disabled-btn {
+  font-weight: 800;
+  border: 1px solid var(--muted);
   color: var(--muted);
   cursor: not-allowed;
 }
