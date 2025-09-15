@@ -553,27 +553,30 @@ body {
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  margin-top: 20px; /* 必要に応じてマージンを追加 */
+  margin-top: 20px;
 }
 
 .skin-selector h2 {
   margin-bottom: 16px;
   font-size: 24px;
+  text-align: center; /* タイトルを中央揃えに */
 }
 
 .skin-list {
   display: flex;
+  flex-wrap: wrap; /* 要素がはみ出さないように折り返す */
   gap: 16px;
-  flex-wrap: wrap;
   padding: 0;
   list-style: none;
-  justify-content: center; /* 中央揃えにする場合 */
+  justify-content: center; /* アイテムを中央揃えにする */
+  max-width: 800px; /* リスト全体の最大幅を制限（必要に応じて調整） */
+  margin: 0 auto; /* 中央揃え */
 }
 
 .skin-item {
-  width: 90px; /* 画像サイズに合わせて調整 */
-  height: 90px; /* 画像サイズに合わせて調整 */
-  background-color: #eee; /* デフォルトの背景色 */
+  width: 100px; /* 各スキンの幅を固定（画像サイズに合わせて調整） */
+  height: 100px; /* 各スキンの高さを固定 */
+  background-color: var(--chip); /* 背景色をチップ色に */
   border-radius: 12px;
   border: 2px solid transparent;
   display: flex;
@@ -582,25 +585,27 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* 画像がはみ出さないように */
-  position: relative; /* 条件表示のために必要 */
-  text-align: center; /* テキストの中央揃え */
-  font-size: 11px; /* 必要に応じてフォントサイズ調整 */
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  font-size: 11px;
   font-weight: 700;
-  color: var(--text); /* テキストカラー */
+  color: var(--text);
+  flex-direction: column; /* 要素を縦に並べる */
+  padding: 8px; /* 内側の余白 */
+  box-sizing: border-box; /* paddingとborderをwidth/heightに含める */
 }
 
 /* ダークモード時のスキンアイテム背景色 */
 :root[data-theme="dark"] .skin-item {
-  background-color: #1f2937;
+  background-color: var(--chip); /* ダークモードでもチップ色を維持 */
 }
 
 .skin-item.selected {
-  border-color: var(--accent); /* 選択中のスキンにアクセントカラーの枠線 */
+  border-color: var(--accent);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
 }
 
-/* 解禁済みスキン（画像表示用） */
 .skin-item.unlocked {
   background-color: transparent; /* 画像表示時は背景色なし */
   border: none;
@@ -618,11 +623,12 @@ body {
 }
 
 .skin-item img {
-  max-width: 80px; /* 画像の最大幅 */
-  max-height: 80px; /* 画像の最大高さ */
-  object-fit: cover; /* 画像のアスペクト比を保ちつつ、要素を埋める */
-  border-radius: 10px; /* 画像の角を丸く */
-  display: block; /* 画像の下に不要な隙間ができないように */
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  margin-bottom: 4px; /* 画像とテキストの間に少し余白 */
 }
 
 /* 未解禁スキンの情報表示用 */
@@ -631,20 +637,61 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 5px;
+  width: 100%; /* 親要素の幅いっぱいに広げる */
 }
 
 .skin-name {
   font-weight: 800;
-  margin-bottom: 4px;
-  font-size: 10px; /* 名前を少し小さく */
+  margin-bottom: 2px; /* 名前と条件の間の余白を減らす */
+  font-size: 10px;
 }
 
 .skin-requirement {
-  font-size: 8px; /* 条件をさらに小さく */
+  font-size: 7px; /* 条件表示をさらに小さく、細く */
   color: var(--muted);
-  line-height: 1.2; /* 行間を調整 */
+  line-height: 1.1;
+  word-break: break-all; /* 長い数字がはみ出さないように強制的に改行 */
 }
 
-/* 必要に応じて、ホバー時のスケールや影の調整 */
-/* .skin-item:hover { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); } */
+/* ==== Responsive adjustment for skin list ==== */
+@media (max-width: 768px) { /* タブレットサイズ以下 */
+  .skin-list {
+    gap: 10px; /* ギャップを少し減らす */
+  }
+  .skin-item {
+    width: 80px; /* 幅を少し狭める */
+    height: 80px;
+    font-size: 10px;
+  }
+  .skin-item img {
+    max-width: 65px;
+    max-height: 65px;
+  }
+  .skin-name {
+    font-size: 9px;
+  }
+  .skin-requirement {
+    font-size: 6px;
+  }
+}
+
+@media (max-width: 480px) { /* スマートフォンサイズ */
+  .skin-list {
+    gap: 8px;
+  }
+  .skin-item {
+    width: 70px; /* さらに狭める */
+    height: 70px;
+    font-size: 9px;
+  }
+  .skin-item img {
+    max-width: 55px;
+    max-height: 55px;
+  }
+  .skin-name {
+    font-size: 8px;
+  }
+  .skin-requirement {
+    font-size: 5px;
+  }
+}
